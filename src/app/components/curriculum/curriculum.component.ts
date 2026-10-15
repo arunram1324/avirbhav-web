@@ -1,0 +1,268 @@
+import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AcademyDataService, ModuleItem } from '../../services/academy-data.service';
+
+@Component({
+  selector: 'app-curriculum',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <section id="curriculum" class="py-20 sm:py-28 lg:py-32 bg-[#FBFBFA] border-b border-slate-200/70 overflow-hidden">
+      <div class="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
+        
+        <!-- Framer Style Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50/80 border border-blue-200/60 text-xs font-bold text-brand-blue uppercase tracking-widest mb-4">
+            <span>What we offer / Curriculum</span>
+          </div>
+          <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            What You'll Master in 150 Days
+          </h2>
+          <p class="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+            End-to-end career tracks engineered to take you from a curious beginner to an in-demand performance marketer, media buyer, and freelance growth strategist.
+          </p>
+        </div>
+
+        <!-- Framer-Style Interactive Services Accordion / Track Showcase -->
+        <div class="space-y-4">
+          @for (item of modules; track item.id; let i = $index) {
+            
+            <!-- EXPANDED ACTIVE CARD (Framer Dark Card Aesthetic) -->
+            @if (activeModuleIndex === i) {
+              <div class="relative bg-slate-950 text-white rounded-3xl sm:rounded-[32px] p-6 sm:p-10 lg:p-12 border border-slate-800 shadow-2xl overflow-hidden transition-all duration-500 animate-fadeIn">
+                
+                <!-- Background Ambient Glow -->
+                <div class="absolute -top-32 -right-32 w-96 h-96 bg-brand-blue/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                  
+                  <!-- Left: 3D Visual Card / Badge -->
+                  <div 
+                    (click)="viewCourse.emit(item.id)"
+                    class="lg:col-span-4 flex flex-col justify-between h-full min-h-[260px] sm:min-h-[320px] rounded-2xl sm:rounded-3xl p-6 sm:p-8 bg-gradient-to-br {{ item.gradient }} border border-white/10 relative overflow-hidden group cursor-pointer hover:border-cyan-400/50 transition-all">
+                    
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-mono font-bold tracking-widest text-white/70 uppercase">
+                        Track {{ item.id }}
+                      </span>
+                      <span class="text-xs font-bold px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/20">
+                        {{ item.badge }}
+                      </span>
+                    </div>
+
+                    <div class="my-auto py-6 flex flex-col items-center text-center">
+                      <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-4xl sm:text-5xl shadow-2xl transform transition-transform group-hover:scale-110 duration-300">
+                        {{ item.icon }}
+                      </div>
+                      <span class="mt-4 text-sm font-semibold text-white/90">
+                        150-Day Intensive Module
+                      </span>
+                      <span class="text-[11px] text-cyan-300 font-bold mt-1 group-hover:underline flex items-center gap-1">
+                        <span>Click for Full Details</span>
+                        <span>↗</span>
+                      </span>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-white/70 border-t border-white/10 pt-3">
+                      <span>Live Client Training</span>
+                      <span class="font-bold text-white">Avirbhav Certified</span>
+                    </div>
+                  </div>
+
+                  <!-- Right: Core Content & Deliverables -->
+                  <div class="lg:col-span-8 flex flex-col justify-between">
+                    <div>
+                      <!-- Category & Action Row -->
+                      <div class="flex flex-wrap items-center justify-between gap-4 mb-3">
+                        <div class="flex items-center gap-3">
+                          <span class="text-base sm:text-lg font-mono font-bold text-brand-blue">{{ item.id }}</span>
+                          <span class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400">
+                            {{ item.category }}
+                          </span>
+                        </div>
+
+                        <!-- CTA Action Buttons -->
+                        <div class="flex items-center gap-3">
+                          <!-- View Course Details (Reference Site Style) -->
+                          <button 
+                            (click)="viewCourse.emit(item.id)"
+                            class="inline-flex items-center gap-2 bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-md shadow-yellow-500/10 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer">
+                            <span>View Full Syllabus & Batches</span>
+                            <span class="text-base leading-none">↗</span>
+                          </button>
+
+                          <!-- Quick Enroll Modal -->
+                          <button 
+                            (click)="openBooking.emit(item.title)"
+                            class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full border border-slate-700 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer">
+                            <span>Enroll</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Large Service Title (Clickable) -->
+                      <h3 
+                        (click)="viewCourse.emit(item.id)"
+                        class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight hover:text-cyan-400 cursor-pointer transition-colors group">
+                        <span>{{ item.title }}</span>
+                        <span class="text-2xl text-cyan-400 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
+                      </h3>
+
+                      <!-- Metric Highlight (Framer Stat style: e.g. "34+ projects done") -->
+                      <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-2xl sm:text-3xl font-extrabold text-brand-yellow font-heading">
+                          {{ item.metric }}
+                        </span>
+                        <span class="text-sm sm:text-base font-medium text-slate-300">
+                          {{ item.metricLabel }}
+                        </span>
+                      </div>
+
+                      <!-- Description -->
+                      <p class="mt-3 text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
+                        {{ item.desc }}
+                      </p>
+                    </div>
+
+                    <!-- 3 Deliverables Pill Boxes (Framer Style Pill Cards) -->
+                    <div class="mt-8 pt-6 border-t border-slate-800/80">
+                      <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">
+                          Key Masteries & Deliverables
+                        </span>
+                        <button 
+                          (click)="viewCourse.emit(item.id)" 
+                          class="text-xs text-cyan-400 hover:underline font-semibold cursor-pointer">
+                          See all 12 modules →
+                        </button>
+                      </div>
+                      
+                      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        @for (deliverable of item.deliverables; track deliverable) {
+                          <div 
+                            (click)="viewCourse.emit(item.id)"
+                            class="p-3.5 sm:p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors backdrop-blur-sm flex items-center gap-2.5 cursor-pointer">
+                            <div class="w-2 h-2 rounded-full bg-brand-blue shrink-0"></div>
+                            <span class="text-xs sm:text-sm font-semibold text-white leading-snug">
+                              {{ deliverable }}
+                            </span>
+                          </div>
+                        }
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+            } @else {
+              <!-- COLLAPSED ROW (Framer Clean Divider Row) -->
+              <div 
+                (click)="setActiveModule(i)"
+                class="group bg-white hover:bg-slate-50 border border-slate-200/90 rounded-2xl sm:rounded-3xl p-5 sm:p-7 transition-all duration-300 cursor-pointer flex items-center justify-between shadow-sm hover:shadow-md">
+                
+                <div class="flex items-center gap-4 sm:gap-8">
+                  <!-- Monospace Index Number -->
+                  <span class="text-xl sm:text-2xl font-mono font-bold text-slate-400 group-hover:text-brand-blue transition-colors w-10 sm:w-12 shrink-0">
+                    {{ item.id }}
+                  </span>
+
+                  <!-- Title & Category Info -->
+                  <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">
+                      {{ item.category }}
+                    </span>
+                    <h3 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 group-hover:text-brand-blue transition-colors">
+                      {{ item.title }}
+                    </h3>
+                  </div>
+                </div>
+
+                <!-- Right Action Button / Arrow -->
+                <div class="flex items-center gap-3">
+                  <span class="hidden sm:inline-block text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600 group-hover:bg-blue-50 group-hover:text-brand-blue transition-colors">
+                    {{ item.badge }}
+                  </span>
+                  <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-100 group-hover:bg-brand-blue text-slate-700 group-hover:text-white flex items-center justify-center font-bold text-sm sm:text-base transition-all duration-300 group-hover:scale-105">
+                    ↗
+                  </div>
+                </div>
+
+              </div>
+            }
+
+          }
+        </div>
+
+        <!-- Deliverables / What You Get Banner -->
+        <div class="mt-16 sm:mt-24 bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-12 shadow-sm">
+          <div class="text-center max-w-2xl mx-auto mb-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-xs font-bold text-emerald-700 mb-3">
+              ★ GUARANTEED OUTCOMES
+            </div>
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">What You Get With Every Enrollment</h3>
+            <p class="text-sm sm:text-base text-slate-500 mt-2">Comprehensive career acceleration, live portfolio assets, and dedicated mentorship</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            @for (benefit of benefits; track benefit) {
+              <div class="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-100 hover:border-slate-200 transition-colors">
+                <div class="w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-sm sm:text-base font-semibold text-slate-800">{{ benefit }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- High-converting Banner for Free Strategy Kit -->
+          <div class="mt-10 p-6 sm:p-8 rounded-2xl bg-slate-950 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-brand-yellow/10 border border-brand-yellow/30 text-brand-yellow text-xs font-bold uppercase tracking-wider">
+                🎁 Free Starter Pack Included
+              </span>
+              <h4 class="text-xl sm:text-2xl font-bold mt-2">Get 30+ Performance Marketing SOPs & Ad Templates</h4>
+              <p class="text-xs sm:text-sm text-slate-400 mt-1">Book your free 1:1 strategy slot today and instantly receive our internal agency swipe files.</p>
+            </div>
+            
+            <button 
+              (click)="openBooking.emit('Free Starter Pack Banner')"
+              class="shrink-0 inline-flex items-center gap-2 bg-brand-blue hover:bg-brand-blueHover text-white font-bold text-sm px-6 py-3.5 rounded-full shadow-lg shadow-blue-500/20 transition-all hover:scale-105 active:scale-95 cursor-pointer">
+              <span>Claim Free Starter Pack ↗</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  `
+})
+export class CurriculumComponent {
+  @Output() openBooking = new EventEmitter<string>();
+  @Output() viewCourse = new EventEmitter<string>();
+
+  activeModuleIndex = 0;
+
+  setActiveModule(index: number) {
+    this.activeModuleIndex = index;
+  }
+
+  academyService = inject(AcademyDataService);
+
+  get modules(): ModuleItem[] {
+    return this.academyService.courses();
+  }
+
+  benefits: string[] = [
+    '100% Practical Hands-on Training',
+    'Placement Support & Mock Interviews',
+    'Live Client Campaign Budgets',
+    'Resume & Case Study Portfolio Setup',
+    'Recognized Internship Certificate',
+    'Tamil + English Dual Explanation'
+  ];
+}

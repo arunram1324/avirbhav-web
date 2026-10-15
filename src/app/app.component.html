@@ -1,0 +1,49 @@
+@if (isAdminView()) {
+  <app-admin-panel></app-admin-panel>
+} @else if (selectedCourseId()) {
+  <app-course-detail 
+    [courseId]="selectedCourseId()!"
+    (goBack)="closeCourse()"
+    (openBookingModal)="openModal($event)">
+  </app-course-detail>
+
+  <!-- Interactive Booking / WhatsApp Modal -->
+  <app-booking-modal 
+    [isOpen]="isBookingModalOpen()" 
+    [initialSource]="activeModalSource()"
+    (close)="closeModal()">
+  </app-booking-modal>
+} @else {
+  <main class="min-h-screen flex flex-col bg-white">
+    <!-- Top Navigation Bar -->
+    <app-navbar 
+      (openBooking)="openModal($event)" 
+      (viewCourse)="openCourse($event)">
+    </app-navbar>
+
+    <!-- Hero Section (Figma Match) -->
+    <app-hero (openBooking)="openModal($event)"></app-hero>
+
+    <!-- Stats & Value Proposition Blue Banner (Figma Match) -->
+    <app-stats-banner 
+      (openEnquiry)="openModal($event)" 
+      (openBooking)="openModal($event)">
+    </app-stats-banner>
+
+    <!-- Detailed Curriculum & Benefits -->
+    <app-curriculum 
+      (openBooking)="openModal($event)"
+      (viewCourse)="openCourse($event)">
+    </app-curriculum>
+
+    <!-- Footer with Contact & Location -->
+    <app-footer (openBooking)="openModal($event)"></app-footer>
+
+    <!-- Interactive Booking / WhatsApp Modal -->
+    <app-booking-modal 
+      [isOpen]="isBookingModalOpen()" 
+      [initialSource]="activeModalSource()"
+      (close)="closeModal()">
+    </app-booking-modal>
+  </main>
+}
