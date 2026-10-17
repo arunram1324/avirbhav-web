@@ -111,6 +111,24 @@ export interface SiteBackupData {
   seoConfig: SeoConfig;
 }
 
+export interface SiteSnapshot {
+  id: string;
+  version: string; // e.g. "v4.3.0"
+  title: string;
+  description: string;
+  createdAt: string;
+  isLive: boolean;
+  author: string;
+  highlights: string[];
+  dataSnapshot?: SiteBackupData;
+}
+
+export interface AutoReplySettings {
+  subjectTemplate: string;
+  bodyTemplate: string;
+  enabled: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -125,12 +143,33 @@ export class AcademyDataService {
   private readonly SITE_CONTENT_KEY = 'avirbhav_site_content_v2';
   private readonly SEO_CONFIG_KEY = 'avirbhav_seo_config_v1';
   private readonly AUTH_STORAGE_KEY = 'avirbhav_admin_auth_v1';
+  private readonly SNAPSHOTS_STORAGE_KEY = 'avirbhav_snapshots_v1';
+  private readonly ACTIVE_VERSION_KEY = 'avirbhav_active_version_v1';
+  private readonly AUTO_REPLY_STORAGE_KEY = 'avirbhav_autoreply_v1';
 
   // Reactive state signals
   leads = signal<Lead[]>([]);
   courses = signal<ModuleItem[]>([]);
   courseCatalog = signal<Record<string, CourseDetailData>>({});
   assets = signal<AssetItem[]>([]);
+  currentVersion = signal<string>('v4.3.0');
+  snapshots = signal<SiteSnapshot[]>([]);
+  autoReplySettings = signal<AutoReplySettings>({
+    subjectTemplate: 'Thank you for reaching out, {{name}}! — Avirbhav Digital Academy',
+    bodyTemplate: `Hi {{name}},
+
+Thank you for enquiring about the "{{program}}" with Avirbhav Digital Academy.
+
+Our program features strictly 4 students per batch, hands-on live client ad spends (₹10L+), and guaranteed 100% placement support.
+
+I have received your inquiry and our principal mentor Deekshith will reach out to you directly via WhatsApp or phone call at {{phone}} shortly to schedule your free 1:1 strategy session.
+
+Best regards,
+Deekshith & Arun
+Avirbhav Digital Academy
+Nehru Nagar, Perungudi, Chennai - 600041`,
+    enabled: true
+  });
 
   siteContent = signal<SiteContent>({
     announcementText: 'Next Micro-Cohort Starts November 1st • Strictly 4 Students Per Batch',
@@ -419,9 +458,106 @@ export class AcademyDataService {
     if (savedSeo) {
       this.seoConfig.set({ ...this.seoConfig(), ...savedSeo });
     }
+
+    // 8. Initialize Version Snapshots
+    const savedVersion = this.getFromStorage<string>(this.ACTIVE_VERSION_KEY);
+    if (savedVersion) {
+      this.currentVersion.set(savedVersion);
+    }
+    const savedSnapshots = this.getFromStorage<SiteSnapshot[]>(this.SNAPSHOTS_STORAGE_KEY);
+    if (savedSnapshots && savedSnapshots.length > 0) {
+      this.snapshots.set(savedSnapshots);
+    } else {
+      const defaultSnapshots: SiteSnapshot[] = [
+        {
+          id: 'ver-4-3-0',
+          version: 'v4.3.0',
+          title: 'Release v4.3.0 - Complete 12-Module Deep Course Blueprint & Agency SOPs',
+          description: 'Full production release featuring 12-module in-depth syllabus breakdowns with AI tools, 2-step OTP Admin CMS Gate, and Auto-Reply Lead Drawer.',
+          createdAt: new Date().toISOString(),
+          isLive: true,
+          author: 'Arun K R / Deekshith',
+          highlights: [
+            '12-Module Deep Syllabus with AI tools & topic breakdowns',
+            'Admin CMS with 2-step OTP Gate & Auto-Reply CRM Drawer',
+            'Dynamic Media Asset Library with 1-click site assignment',
+            'Live Google SERP & Social Sharing Card Previews'
+          ]
+        },
+        {
+          id: 'ver-4-2-0',
+          version: 'v4.2.0',
+          title: 'Release v4.2.0 - Strict 4-Student Micro-Cohort USP & Mentorship Framework',
+          description: 'Stabilized release introducing the 4-seats-per-batch micro-cohort guarantee, mentor spotlight with ₹10L+ live ad spend, and instant WhatsApp booking.',
+          createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+          isLive: false,
+          author: 'Arun K R / Deekshith',
+          highlights: [
+            'Prominent 4-Seats-Per-Batch USP badge across Hero & Curriculum',
+            'Mentor Spotlight for Deekshith with ₹10L+ ad spend proof',
+            'Direct WhatsApp & Instant 1:1 Strategy Slot Booking Modal'
+          ]
+        },
+        {
+          id: 'ver-4-1-0',
+          version: 'v4.1.0',
+          title: 'Release v4.1.0 - Initial Launch & Hero Admissions Architecture',
+          description: 'Core architectural release establishing design system, high-contrast dark theme, blue stats banner, and responsive course catalog.',
+          createdAt: new Date(Date.now() - 86400000 * 8).toISOString(),
+          isLive: false,
+          author: 'Arun K R / Deekshith',
+          highlights: [
+            'Figma-exact Dark Navy & Sky Blue high-contrast design system',
+            'Blue Stats Banner (10+ Batches, 93% Placement, 220+ Students)',
+            'Interactive Curriculum Track Preview & Admissions Ticker'
+          ]
+        }
+      ];
+      this.snapshots.set(defaultSnapshots);
+      this.saveToStorage(this.SNAPSHOTS_STORAGE_KEY, defaultSnapshots);
+    }
+
+    // 9. Initialize Auto-Reply Settings
+    const savedAutoReply = this.getFromStorage<AutoReplySettings>(this.AUTO_REPLY_STORAGE_KEY);
+    if (savedAutoReply) {
+      this.autoReplySettings.set(savedAutoReply);
+    }
   }
 
-  // --- Admin Authentication ---
+  // --- Admin OTP & Authentication ---
+  private activeOtp: string = '123456';
+  private activeOtpEmail: string = 'admin@avirbhav.com';
+
+  sendOtp(email: string): { success: boolean; otp: string; message: string } {
+    const trimmed = (email || '').trim().toLowerCase();
+    if (!trimmed || !trimmed.includes('@')) {
+      return { success: false, otp: '', message: 'Please enter a valid work email address.' };
+    }
+
+    this.activeOtpEmail = trimmed;
+    this.activeOtp = '123456'; // Deterministic demo OTP matching arun-portfolio
+    return {
+      success: true,
+      otp: this.activeOtp,
+      message: `A 6-digit security code has been dispatched to ${trimmed}.`
+    };
+  }
+
+  verifyOtp(email: string, otp: string): { success: boolean; message: string } {
+    const trimmedOtp = (otp || '').trim();
+
+    if (!trimmedOtp || trimmedOtp.length < 6) {
+      return { success: false, message: 'Please enter the complete 6-digit verification code.' };
+    }
+
+    if (trimmedOtp === '123456' || trimmedOtp === this.activeOtp) {
+      this.isAuthenticated.set(true);
+      this.saveToStorage(this.AUTH_STORAGE_KEY, true);
+      return { success: true, message: 'Verification successful. Welcome to Admin CMS.' };
+    }
+
+    return { success: false, message: 'Invalid verification code. Please check your inbox or click the Demo OTP banner.' };
+  }
 
   login(email: string, pass: string): boolean {
     const validEmail = 'admin@avirbhav.com';
@@ -438,6 +574,110 @@ export class AcademyDataService {
   logout(): void {
     this.isAuthenticated.set(false);
     this.saveToStorage(this.AUTH_STORAGE_KEY, false);
+  }
+
+  // --- Snapshot Versioning & Auto-Reply Methods ---
+
+  getFullDataSnapshot(): SiteBackupData {
+    return {
+      version: this.currentVersion(),
+      exportedAt: new Date().toISOString(),
+      leads: JSON.parse(JSON.stringify(this.leads())),
+      courses: JSON.parse(JSON.stringify(this.courses())),
+      courseCatalog: JSON.parse(JSON.stringify(this.courseCatalog())),
+      assets: JSON.parse(JSON.stringify(this.assets())),
+      siteContent: JSON.parse(JSON.stringify(this.siteContent())),
+      seoConfig: JSON.parse(JSON.stringify(this.seoConfig()))
+    };
+  }
+
+  restoreFullDataSnapshot(data: Partial<SiteBackupData>): void {
+    if (data.siteContent) {
+      this.siteContent.set({ ...this.siteContent(), ...data.siteContent });
+      this.saveToStorage(this.SITE_CONTENT_KEY, this.siteContent());
+    }
+    if (data.seoConfig) {
+      this.seoConfig.set({ ...this.seoConfig(), ...data.seoConfig });
+      this.saveToStorage(this.SEO_CONFIG_KEY, this.seoConfig());
+      this.applySeoTags();
+    }
+    if (data.courses && Array.isArray(data.courses)) {
+      this.courses.set(data.courses);
+      this.saveToStorage(this.COURSES_STORAGE_KEY, data.courses);
+    }
+    if (data.courseCatalog) {
+      this.courseCatalog.set(data.courseCatalog);
+      this.saveToStorage(this.CATALOG_STORAGE_KEY, data.courseCatalog);
+    }
+    if (data.assets && Array.isArray(data.assets)) {
+      this.assets.set(data.assets);
+      this.saveToStorage(this.ASSETS_STORAGE_KEY, data.assets);
+    }
+    if (data.leads && Array.isArray(data.leads)) {
+      this.leads.set(data.leads);
+      this.saveToStorage(this.LEADS_STORAGE_KEY, data.leads);
+    }
+  }
+
+  createSnapshot(version: string, title: string, description: string, highlights: string[]): SiteSnapshot {
+    const cleanVer = version.trim().startsWith('v') ? version.trim() : `v${version.trim()}`;
+    const id = `ver-${Date.now()}-${cleanVer.replace(/\./g, '-')}`;
+    const snapshotData = this.getFullDataSnapshot();
+
+    const newSnapshot: SiteSnapshot = {
+      id,
+      version: cleanVer,
+      title: title.trim() || `Site Snapshot ${cleanVer}`,
+      description: description.trim() || 'Manual backup snapshot created via Admin Portal.',
+      createdAt: new Date().toISOString(),
+      isLive: true,
+      author: 'Arun K R / Deekshith',
+      highlights: highlights && highlights.length ? highlights : ['Full site state & CMS data backup'],
+      dataSnapshot: snapshotData
+    };
+
+    this.currentVersion.set(cleanVer);
+    this.saveToStorage(this.ACTIVE_VERSION_KEY, cleanVer);
+
+    const updated = [newSnapshot, ...this.snapshots().map(s => ({ ...s, isLive: false }))];
+    this.snapshots.set(updated);
+    this.saveToStorage(this.SNAPSHOTS_STORAGE_KEY, updated);
+
+    return newSnapshot;
+  }
+
+  restoreSnapshot(snapshot: SiteSnapshot): boolean {
+    if (!snapshot) return false;
+    try {
+      if (snapshot.dataSnapshot) {
+        this.restoreFullDataSnapshot(snapshot.dataSnapshot);
+      }
+      this.currentVersion.set(snapshot.version);
+      this.saveToStorage(this.ACTIVE_VERSION_KEY, snapshot.version);
+
+      const updated = this.snapshots().map(s => ({
+        ...s,
+        isLive: s.id === snapshot.id
+      }));
+      this.snapshots.set(updated);
+      this.saveToStorage(this.SNAPSHOTS_STORAGE_KEY, updated);
+      return true;
+    } catch (e) {
+      console.error('Failed to restore snapshot:', e);
+      return false;
+    }
+  }
+
+  deleteSnapshot(id: string): void {
+    const updated = this.snapshots().filter(s => s.id !== id);
+    this.snapshots.set(updated);
+    this.saveToStorage(this.SNAPSHOTS_STORAGE_KEY, updated);
+  }
+
+  updateAutoReplySettings(settings: Partial<AutoReplySettings>): void {
+    const updated = { ...this.autoReplySettings(), ...settings };
+    this.autoReplySettings.set(updated);
+    this.saveToStorage(this.AUTO_REPLY_STORAGE_KEY, updated);
   }
 
   // --- Lead CRUD Methods ---

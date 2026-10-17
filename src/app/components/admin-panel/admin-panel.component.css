@@ -1,4 +1,5 @@
-/* Admin Panel Custom Utilities & Transitions */
+/* Admin Panel Custom Utilities & Arun-Portfolio Reference Styles */
+
 .fade-in {
   animation: fadeIn 0.25s ease-out forwards;
 }
@@ -14,7 +15,7 @@
   }
 }
 
-/* Custom Scrollbar for Drawer and Previews */
+/* Custom Scrollbar for Drawer, Tables and Previews */
 .custom-scroll::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -32,4 +33,141 @@
 
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(12, 169, 255, 0.6);
+}
+
+/* 2-Step OTP Authentication Styles (arun-portfolio/login exact match) */
+.otp-banner {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1.5px dashed #0CA9FF;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  animation: fadeIn 0.25s ease both;
+  transition: all 0.2s ease;
+}
+
+.otp-banner:hover {
+  background: rgba(12, 169, 255, 0.12);
+  border-color: #38bdf8;
+  transform: translateY(-1px);
+}
+
+.otp-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #0CA9FF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.otp-val-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.otp-number {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  color: #f8fafc;
+}
+
+.otp-click-hint {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0CA9FF;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(12, 169, 255, 0.3);
+}
+
+.otp-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-text-link {
+  background: none;
+  border: none;
+  color: #0CA9FF;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-text-link:hover {
+  text-decoration: underline;
+}
+
+.otp-inp {
+  text-align: center !important;
+  font-size: 24px !important;
+  letter-spacing: 0.35em !important;
+  font-weight: 800 !important;
+  padding: 0 14px !important;
+  font-family: monospace, sans-serif !important;
+}
+
+.resend-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.resend-txt {
+  font-size: 12.5px;
+  color: #94a3b8;
+}
+
+.btn-resend {
+  background: none;
+  border: none;
+  color: #0CA9FF;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-resend:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.btn-resend:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Glassmorphism cards */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(51, 65, 85, 0.7);
+}
+
+/* Pulsing Live indicator */
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.3);
+  }
+}
+
+.pulse-dot {
+  animation: pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

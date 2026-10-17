@@ -71,8 +71,11 @@ export class AppComponent {
       const hash = window.location.hash || '';
       
       const isAdmin = pathname.startsWith('/admin') || 
+                      pathname.startsWith('/login') || 
                       hash.startsWith('#admin') || 
-                      hash.startsWith('#/admin');
+                      hash.startsWith('#/admin') ||
+                      hash.startsWith('#login') ||
+                      hash.startsWith('#/login');
                       
       this.isAdminView.set(isAdmin);
 

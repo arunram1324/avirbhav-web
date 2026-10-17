@@ -1,168 +1,295 @@
 <div class="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans">
   
-  <!-- ========================================== -->
-  <!-- 1. ADMIN AUTHENTICATION SCREEN (LOGIN GATE) -->
-  <!-- ========================================== -->
+  <!-- ======================================================== -->
+  <!-- 1. ADMIN 2-STEP OTP AUTHENTICATION SCREEN (arun-portfolio) -->
+  <!-- ======================================================== -->
   @if (!academyService.isAuthenticated()) {
-    <div class="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div class="min-h-screen flex flex-col bg-slate-950 text-slate-100">
       
-      <div class="w-full max-w-md bg-slate-950/90 border border-slate-800 rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden backdrop-blur-xl">
-        <!-- Glow background effect -->
-        <div class="absolute -top-24 -left-24 w-52 h-52 bg-brand-blue/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-24 -right-24 w-52 h-52 bg-brand-yellow/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <!-- Brand Icon & Header -->
-        <div class="flex flex-col items-center text-center mb-8 relative z-10">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-blue to-cyan-400 flex items-center justify-center font-black text-white text-2xl shadow-xl shadow-blue-500/20 mb-4">
+      <!-- Top Login Bar matching arun-portfolio/login -->
+      <header class="h-18 px-6 sm:px-10 flex items-center justify-between border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+        <div (click)="navigateToLiveSite('/')" class="flex items-center gap-3 cursor-pointer group">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-blue to-cyan-400 flex items-center justify-center font-black text-white text-sm shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
             AV
           </div>
-          <h1 class="text-2xl font-extrabold text-white tracking-tight">Avirbhav Digital Academy</h1>
-          <p class="text-sm text-slate-400 mt-1">Admin CMS & Management Portal</p>
+          <span class="font-bold text-sm tracking-tight text-white group-hover:text-brand-blue transition-colors">
+            AVIRBHAV ACADEMY
+          </span>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-sky-500/10 text-brand-blue border border-sky-500/30">
+            CMS ACCESS
+          </span>
         </div>
 
-        <!-- Login Error Alert -->
-        @if (loginError()) {
-          <div class="mb-6 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs sm:text-sm flex items-center gap-2.5">
-            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        <button 
+          (click)="toggleTheme()" 
+          type="button" 
+          class="w-10 h-10 rounded-full border border-slate-800 bg-slate-900/80 hover:border-brand-blue/60 text-slate-300 hover:text-brand-blue flex items-center justify-center transition-all cursor-pointer"
+          title="Toggle Theme">
+          @if (isDarkMode()) {
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-            <span>{{ loginError() }}</span>
-          </div>
-        }
+          } @else {
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          }
+        </button>
+      </header>
 
-        <!-- Login Form -->
-        <form (ngSubmit)="handleLogin()" class="space-y-4 relative z-10">
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Admin Email</label>
-            <div class="relative">
-              <svg class="w-5 h-5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-              </svg>
-              <input 
-                type="email" 
-                [(ngModel)]="loginEmail" 
-                name="email"
-                required
-                placeholder="admin@avirbhav.com"
-                class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-sm text-slate-100 placeholder-slate-500 transition-colors" />
-            </div>
-          </div>
+      <!-- Center Auth Card Container -->
+      <main class="flex-1 flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+        <!-- Glow accents -->
+        <div class="absolute -top-32 -left-32 w-80 h-80 bg-brand-blue/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-brand-yellow/10 rounded-full blur-3xl pointer-events-none"></div>
 
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Password</label>
-            <div class="relative">
-              <svg class="w-5 h-5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <input 
-                [type]="showPassword() ? 'text' : 'password'" 
-                [(ngModel)]="loginPassword" 
-                name="password"
-                required
-                placeholder="••••••••"
-                class="w-full pl-11 pr-11 py-3 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-sm text-slate-100 placeholder-slate-500 transition-colors" />
-              
-              <button 
-                type="button" 
-                (click)="showPassword.set(!showPassword())"
-                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  @if (showPassword()) {
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                  } @else {
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  }
+        <div class="w-full max-w-md bg-slate-950/90 border border-slate-800/90 rounded-3xl p-7 sm:p-9 shadow-2xl relative overflow-hidden backdrop-blur-2xl fade-in">
+          
+          <!-- Card Top: Lock Icon & Titles -->
+          <div class="text-center mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/25 text-brand-blue inline-flex items-center justify-center shadow-lg shadow-sky-500/10 mb-4">
+              @if (loginStep() === 'email') {
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
-              </button>
+              } @else {
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              }
             </div>
+
+            <h1 class="text-2xl font-extrabold text-white tracking-tight">
+              {{ loginStep() === 'email' ? 'CMS Portal Sign In' : 'Check Your Email' }}
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1.5 leading-relaxed">
+              {{ loginStep() === 'email' 
+                 ? 'Enter your email to receive a secure 6-digit login verification code (OTP).' 
+                 : 'We have dispatched a 6-digit security code to ' + loginEmail + '. Please check your inbox and enter the code below.' }}
+            </p>
           </div>
 
-          <!-- Quick Demo Credentials Filler -->
-          <div class="pt-2">
-            <button 
-              type="button"
-              (click)="fillDemoCredentials()"
-              class="w-full py-2 px-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-[11px] text-slate-400 hover:text-brand-blue flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
-              <span>🔑 Auto-Fill Demo Credentials (admin&#64;avirbhav.com / admin123)</span>
-            </button>
-          </div>
-
-          <div class="pt-2">
-            <button 
-              type="submit" 
-              class="w-full py-3.5 px-6 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-sm tracking-wide shadow-lg shadow-blue-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer">
-              <span>Sign In to Admin Portal</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          <!-- Error Alert Banner -->
+          @if (loginError()) {
+            <div class="mb-5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2.5 fade-in">
+              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-            </button>
-          </div>
+              <span>{{ loginError() }}</span>
+            </div>
+          }
 
-          <div class="pt-4 text-center">
+          <!-- ============================== -->
+          <!-- STEP 1: EMAIL INPUT FORM       -->
+          <!-- ============================== -->
+          @if (loginStep() === 'email') {
+            <form (ngSubmit)="onSendOtp()" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Work Email</label>
+                <div class="relative">
+                  <svg class="w-5 h-5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                  </svg>
+                  <input 
+                    type="email" 
+                    [(ngModel)]="loginEmail" 
+                    name="email"
+                    required
+                    placeholder="admin@avirbhav.com"
+                    class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-sm text-slate-100 placeholder-slate-500 transition-colors" />
+                </div>
+              </div>
+
+              <!-- Quick Demo Credentials Filler Button -->
+              <div>
+                <button 
+                  type="button"
+                  (click)="fillDemoCredentials()"
+                  class="w-full py-2 px-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-[11px] text-slate-400 hover:text-brand-blue flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+                  <span>🔑 Auto-Fill Demo Credentials (admin&#64;avirbhav.com)</span>
+                </button>
+              </div>
+
+              <div class="pt-2">
+                <button 
+                  type="submit" 
+                  [disabled]="isLoading()"
+                  class="w-full py-3.5 px-6 rounded-xl bg-brand-blue hover:bg-sky-400 disabled:opacity-50 text-white font-bold text-sm tracking-wide shadow-lg shadow-blue-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer">
+                  @if (isLoading()) {
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    <span>Sending Code...</span>
+                  } @else {
+                    <span>Send Verification Code</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  }
+                </button>
+              </div>
+            </form>
+          }
+
+          <!-- ============================== -->
+          <!-- STEP 2: 6-DIGIT OTP FORM       -->
+          <!-- ============================== -->
+          @if (loginStep() === 'otp') {
+            <div class="space-y-4 fade-in">
+              
+              <!-- Development Demo OTP Banner (Exact arun-portfolio match) -->
+              <div (click)="fillDemoOtp()" class="otp-banner group" title="Click to auto-fill demo OTP">
+                <span class="otp-badge">DEVELOPMENT DEMO OTP CODE</span>
+                <div class="otp-val-row">
+                  <span class="otp-number font-mono">{{ demoOtpCode }}</span>
+                  <span class="otp-click-hint group-hover:bg-brand-blue group-hover:text-white transition-colors">
+                    Click to Auto-Fill
+                  </span>
+                </div>
+              </div>
+
+              <form (ngSubmit)="onVerifyOtp()" class="space-y-4">
+                <div class="form-group">
+                  <div class="otp-header-row mb-1.5">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">Verification Code</label>
+                    <button type="button" (click)="changeEmail()" class="btn-text-link">Change Email</button>
+                  </div>
+
+                  <input 
+                    id="login-otp" 
+                    type="text" 
+                    maxlength="6" 
+                    placeholder="••••••" 
+                    [(ngModel)]="loginOtp" 
+                    name="otp" 
+                    autocomplete="one-time-code" 
+                    required 
+                    class="w-full py-3 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-slate-100 placeholder-slate-600 transition-colors otp-inp" />
+                </div>
+
+                <div class="pt-2">
+                  <button 
+                    type="submit" 
+                    [disabled]="isLoading() || loginOtp.length < 6"
+                    class="w-full py-3.5 px-6 rounded-xl bg-brand-blue hover:bg-sky-400 disabled:opacity-50 text-white font-bold text-sm tracking-wide shadow-lg shadow-blue-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer">
+                    @if (isLoading()) {
+                      <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                      </svg>
+                      <span>Verifying...</span>
+                    } @else {
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>Verify & Enter Portal</span>
+                    }
+                  </button>
+                </div>
+
+                <!-- Resend Row -->
+                <div class="resend-row">
+                  <span class="resend-txt">Didn't receive code?</span>
+                  <button 
+                    type="button" 
+                    (click)="resendOtp()" 
+                    [disabled]="resendCountdown() > 0" 
+                    class="btn-resend">
+                    {{ resendCountdown() > 0 ? ('Resend in ' + resendCountdown() + 's') : 'Resend Code' }}
+                  </button>
+                </div>
+              </form>
+
+            </div>
+          }
+
+          <!-- Return to Public Portfolio / Site -->
+          <div class="pt-6 mt-6 border-t border-slate-900 text-center">
             <button 
               type="button" 
               (click)="navigateToLiveSite('/')" 
-              class="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer">
-              ← Return to Public Website
+              class="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer inline-flex items-center gap-1.5">
+              <span>← Return to Public Website</span>
             </button>
           </div>
-        </form>
 
-      </div>
+        </div>
+      </main>
 
-      <p class="mt-8 text-xs text-slate-600 text-center">
-        Avirbhav Infotech & Academy Management System • Protected Route
-      </p>
+      <footer class="py-4 text-center text-xs text-slate-600 border-t border-slate-900">
+        Avirbhav Digital Academy CMS • Protected Route • 2-Step Security Verified
+      </footer>
     </div>
   }
 
-  <!-- ========================================== -->
-  <!-- 2. ADMIN DASHBOARD (AUTHENTICATED)        -->
-  <!-- ========================================== -->
+  <!-- ======================================================== -->
+  <!-- 2. ADMIN CMS DASHBOARD (AUTHENTICATED)                 -->
+  <!-- ======================================================== -->
   @else {
-    <!-- Top Admin Header -->
-    <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-30 px-6 py-4">
+    <!-- Top Admin Header Bar matching arun-portfolio/admin -->
+    <header class="bg-slate-950/90 border-b border-slate-800 sticky top-0 z-30 px-4 sm:px-6 py-3.5 backdrop-blur-xl">
       <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
         
-        <div class="flex items-center gap-4">
+        <!-- Left: Brand & Status -->
+        <div class="flex items-center gap-3.5">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-blue to-cyan-400 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-blue-500/20">
             AV
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <h1 class="text-lg sm:text-xl font-extrabold text-white tracking-tight">Avirbhav Digital Academy</h1>
-              <span class="px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-brand-blue text-[11px] font-bold uppercase tracking-wider">
-                Full CMS Portal
+              <h1 class="text-base sm:text-lg font-extrabold text-white tracking-tight">Avirbhav Digital Academy</h1>
+              <span class="px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-brand-blue text-[10px] font-bold uppercase tracking-wider">
+                ADMIN CMS
               </span>
             </div>
-            <p class="text-xs text-slate-400">Manage Assets, Courses, Syllabus, Content & Backups</p>
+            
+            <div class="flex items-center gap-3 mt-0.5 text-xs text-slate-400">
+              <!-- Live Indicator with pulse dot -->
+              <span class="inline-flex items-center gap-1.5 text-emerald-400 font-bold text-[11px]">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
+                PRODUCTION LIVE
+              </span>
+              <span>•</span>
+              <span class="text-slate-400 font-mono text-[11px]">{{ academyService.currentVersion() }}</span>
+              <span>•</span>
+              <span class="text-slate-400 text-[11px]">Snapshots Saved ({{ academyService.snapshots().length }})</span>
+            </div>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <!-- Back to Live Site -->
+        <!-- Right: Profile Pill & Quick Actions -->
+        <div class="flex items-center gap-2.5">
+          
+          <!-- Admin User Profile Pill -->
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+            <span class="font-semibold text-slate-200">Deekshith & Arun</span>
+            <span class="text-[10px] text-slate-500 uppercase tracking-wider">Super Admin</span>
+          </div>
+
+          <!-- View Live Site -->
           <button 
             (click)="navigateToLiveSite('/')" 
-            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold border border-slate-700 transition-all hover:scale-105 cursor-pointer">
-            <span>← View Live Site</span>
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-all hover:scale-105 cursor-pointer">
+            <span>View Public Site ↗</span>
           </button>
 
           <!-- Export Excel -->
           <button 
             (click)="exportAllToExcel()" 
-            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-emerald-600/20 transition-all hover:scale-105 cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600/90 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/20 transition-all hover:scale-105 cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <span class="hidden sm:inline">Export Leads</span>
           </button>
 
-          <!-- Log Out Button -->
+          <!-- Logout -->
           <button 
             (click)="handleLogout()" 
-            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs sm:text-sm font-semibold transition-all cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-semibold transition-all cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             <span>Logout</span>
@@ -172,238 +299,349 @@
       </div>
     </header>
 
-    <!-- Main Admin Content Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+    <!-- Main Admin Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
       
-      <!-- Summary KPI Cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-        <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
-          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Total Enquiries</span>
-          <div class="flex items-baseline justify-between">
-            <span class="text-2xl sm:text-3xl font-extrabold text-white font-heading">{{ academyService.leads().length }}</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-brand-blue font-bold">1:1 Bookings</span>
-          </div>
-        </div>
-
-        <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
-          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">New Leads</span>
-          <div class="flex items-baseline justify-between">
-            <span class="text-2xl sm:text-3xl font-extrabold text-brand-yellow font-heading">{{ newLeadsCount() }}</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/10 text-brand-yellow font-bold">Pending</span>
-          </div>
-        </div>
-
-        <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
-          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Enrolled</span>
-          <div class="flex items-baseline justify-between">
-            <span class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-heading">{{ enrolledCount() }}</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-bold">Confirmed</span>
-          </div>
-        </div>
-
-        <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
-          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Course Catalog</span>
-          <div class="flex items-baseline justify-between">
-            <span class="text-2xl sm:text-3xl font-extrabold text-cyan-400 font-heading">{{ academyService.courses().length }}</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 font-bold">Active Tracks</span>
-          </div>
-        </div>
-
-        <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md col-span-2 sm:col-span-1">
-          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Media Assets</span>
-          <div class="flex items-baseline justify-between">
-            <span class="text-2xl sm:text-3xl font-extrabold text-pink-400 font-heading">{{ academyService.assets().length }}</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-400 font-bold">In Library</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Navigation Tab Switcher (6 TABS) -->
+      <!-- 7 CMS TABS NAV STRIP (Matching arun-portfolio tabbed architecture) -->
       <div class="flex flex-wrap items-center gap-2 border-b border-slate-800 pb-3">
+        
+        <!-- Tab 1: Overview & Analytics -->
+        <button 
+          id="tab-btn-overview"
+          (click)="setTab('overview')"
+          [class.bg-brand-blue]="activeTab() === 'overview'"
+          [class.text-white]="activeTab() === 'overview'"
+          [class.bg-slate-800]="activeTab() !== 'overview'"
+          [class.text-slate-400]="activeTab() !== 'overview'"
+          class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>📊 Overview & Analytics</span>
+        </button>
+
+        <!-- Tab 2: Leads & Inquiries CRM -->
         <button 
           id="tab-btn-leads"
-          (click)="activeTab.set('leads')"
+          (click)="setTab('leads')"
           [class.bg-brand-blue]="activeTab() === 'leads'"
           [class.text-white]="activeTab() === 'leads'"
           [class.bg-slate-800]="activeTab() !== 'leads'"
           [class.text-slate-400]="activeTab() !== 'leads'"
-          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
-          <span>📋 Bookings & Leads (CRM)</span>
+          class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>📬 Inquiries & Leads (CRM)</span>
           <span class="px-2 py-0.5 rounded-full text-[11px] bg-black/20 text-white font-mono">
             {{ academyService.leads().length }}
           </span>
+          @if (newLeadsCount() > 0) {
+            <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+          }
         </button>
 
+        <!-- Tab 3: Courses & Syllabus -->
         <button 
           id="tab-btn-courses"
-          (click)="activeTab.set('courses')"
+          (click)="setTab('courses')"
           [class.bg-brand-blue]="activeTab() === 'courses'"
           [class.text-white]="activeTab() === 'courses'"
           [class.bg-slate-800]="activeTab() !== 'courses'"
           [class.text-slate-400]="activeTab() !== 'courses'"
-          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
-          <span>🎓 Courses & Syllabus (CRUD)</span>
+          class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>🎓 Courses & Syllabus</span>
           <span class="px-2 py-0.5 rounded-full text-[11px] bg-black/20 text-white font-mono">
             {{ academyService.courses().length }}
           </span>
         </button>
 
+        <!-- Tab 4: Media Assets Library -->
         <button 
           id="tab-btn-assets"
-          (click)="activeTab.set('assets')"
+          (click)="setTab('assets')"
           [class.bg-brand-blue]="activeTab() === 'assets'"
           [class.text-white]="activeTab() === 'assets'"
           [class.bg-slate-800]="activeTab() !== 'assets'"
           [class.text-slate-400]="activeTab() !== 'assets'"
-          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
-          <span>🖼️ Assets & Media Library</span>
+          class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>🖼️ Media Library</span>
           <span class="px-2 py-0.5 rounded-full text-[11px] bg-black/20 text-white font-mono">
             {{ academyService.assets().length }}
           </span>
         </button>
 
+        <!-- Tab 5: Site Content & Copy -->
         <button 
           id="tab-btn-content"
-          (click)="activeTab.set('content')"
+          (click)="setTab('content')"
           [class.bg-brand-blue]="activeTab() === 'content'"
           [class.text-white]="activeTab() === 'content'"
           [class.bg-slate-800]="activeTab() !== 'content'"
           [class.text-slate-400]="activeTab() !== 'content'"
-          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
-          <span>🎨 Page Content Editor</span>
+          class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>🎨 Site Content & Branding</span>
         </button>
 
+        <!-- Tab 6: SEO & Social SERP -->
         <button 
           id="tab-btn-seo"
-          (click)="activeTab.set('seo')"
+          (click)="setTab('seo')"
           [class.bg-brand-blue]="activeTab() === 'seo'"
           [class.text-white]="activeTab() === 'seo'"
           [class.bg-slate-800]="activeTab() !== 'seo'"
           [class.text-slate-400]="activeTab() !== 'seo'"
-          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
-          <span>🔍 SEO & Meta Tags</span>
+          class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>🔍 SEO & Social SERP</span>
         </button>
 
+        <!-- Tab 7: Version Snapshots & Backup -->
         <button 
-          id="tab-btn-backup"
-          (click)="activeTab.set('backup')"
-          [class.bg-brand-blue]="activeTab() === 'backup'"
-          [class.text-white]="activeTab() === 'backup'"
-          [class.bg-slate-800]="activeTab() !== 'backup'"
-          [class.text-slate-400]="activeTab() !== 'backup'"
-          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
-          <span>⚙️ Backup & Reset</span>
+          id="tab-btn-snapshots"
+          (click)="setTab('snapshots')"
+          [class.bg-brand-blue]="activeTab() === 'snapshots'"
+          [class.text-white]="activeTab() === 'snapshots'"
+          [class.bg-slate-800]="activeTab() !== 'snapshots'"
+          [class.text-slate-400]="activeTab() !== 'snapshots'"
+          class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>🛡️ Version Snapshots</span>
+          <span class="px-2 py-0.5 rounded-full text-[11px] bg-black/20 text-white font-mono">
+            {{ academyService.snapshots().length }}
+          </span>
         </button>
+
       </div>
 
-      <!-- Toast Notification Banner -->
-      @if (toastMessage()) {
-        <div class="p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-sm flex items-center justify-between shadow-lg fade-in">
-          <div class="flex items-center gap-2">
-            <span>✅</span>
-            <span>{{ toastMessage() }}</span>
+      <!-- ============================================== -->
+      <!-- TAB 1: OVERVIEW & ANALYTICS                    -->
+      <!-- ============================================== -->
+      @if (activeTab() === 'overview') {
+        <div class="space-y-6 fade-in">
+          
+          <!-- Summary KPI Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+            
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Total Inquiries</span>
+              <div class="flex items-baseline justify-between">
+                <span class="text-2xl sm:text-3xl font-extrabold text-white font-heading">{{ academyService.leads().length }}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-brand-blue font-bold">1:1 Bookings</span>
+              </div>
+            </div>
+
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">New Inquiries</span>
+              <div class="flex items-baseline justify-between">
+                <span class="text-2xl sm:text-3xl font-extrabold text-brand-yellow font-heading">{{ newLeadsCount() }}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/10 text-brand-yellow font-bold">Pending</span>
+              </div>
+            </div>
+
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Enrolled</span>
+              <div class="flex items-baseline justify-between">
+                <span class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-heading">{{ enrolledCount() }}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-bold">Confirmed</span>
+              </div>
+            </div>
+
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Conversion Rate</span>
+              <div class="flex items-baseline justify-between">
+                <span class="text-2xl sm:text-3xl font-extrabold text-cyan-400 font-heading">{{ conversionRate() }}%</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 font-bold">Lead-to-Paid</span>
+              </div>
+            </div>
+
+            <!-- Micro-Cohort 4 Seats / Batch Capacity Gauge -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md col-span-2 sm:col-span-1">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Micro-Cohort USP</span>
+              <div class="flex items-baseline justify-between mb-1">
+                <span class="text-2xl sm:text-3xl font-extrabold text-brand-blue font-heading">4 Only</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-brand-blue font-bold">Cap / Batch</span>
+              </div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-2">
+                <div class="bg-gradient-to-r from-brand-blue to-cyan-400 h-full rounded-full" [style.width.%]="(enrolledCount() % 4 || 3) * 25"></div>
+              </div>
+              <span class="text-[10px] text-slate-500 mt-1 block">Cohort Batch #11: 3 of 4 Seats Filled</span>
+            </div>
+
           </div>
-          <button (click)="toastMessage.set('')" class="text-emerald-400 hover:text-white cursor-pointer">✕</button>
+
+          <!-- Quick Actions Bar -->
+          <div class="p-5 rounded-2xl bg-slate-950 border border-slate-800">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Quick CMS Actions</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <button (click)="openAddLeadModal()" class="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition-all hover:scale-105 cursor-pointer">
+                <span class="text-xl block mb-1">➕</span>
+                <span class="text-xs font-bold text-white block">Record Walk-in</span>
+                <span class="text-[10px] text-slate-500">Add manual student lead</span>
+              </button>
+
+              <button (click)="openCreateCourseModal()" class="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition-all hover:scale-105 cursor-pointer">
+                <span class="text-xl block mb-1">🎓</span>
+                <span class="text-xs font-bold text-white block">Add Course Track</span>
+                <span class="text-[10px] text-slate-500">12 Modules Blueprint</span>
+              </button>
+
+              <button (click)="openUploadAssetModal()" class="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition-all hover:scale-105 cursor-pointer">
+                <span class="text-xl block mb-1">🖼️</span>
+                <span class="text-xs font-bold text-white block">Upload Asset</span>
+                <span class="text-[10px] text-slate-500">Logo, mentor or poster</span>
+              </button>
+
+              <button (click)="openAutoReplyDrawer()" class="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition-all hover:scale-105 cursor-pointer">
+                <span class="text-xl block mb-1">✉️</span>
+                <span class="text-xs font-bold text-white block">Auto-Reply CRM</span>
+                <span class="text-[10px] text-slate-500">Template email drafts</span>
+              </button>
+
+              <button (click)="openCreateSnapshotModal()" class="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition-all hover:scale-105 cursor-pointer">
+                <span class="text-xl block mb-1">🛡️</span>
+                <span class="text-xs font-bold text-white block">Create Snapshot</span>
+                <span class="text-[10px] text-slate-500">Backup site state & rollback</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Inquiries Activity Stream -->
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-base font-bold text-white">Recent Student Inquiries</h3>
+                <p class="text-xs text-slate-400">Incoming admissions and booking inquiries from website</p>
+              </div>
+              <button (click)="setTab('leads')" class="text-xs font-bold text-brand-blue hover:underline cursor-pointer">
+                View All Inquiries →
+              </button>
+            </div>
+
+            <div class="divide-y divide-slate-800/80">
+              @for (lead of academyService.leads().slice(0, 4); track lead.id) {
+                <div class="py-3 flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center font-bold text-white text-xs">
+                      {{ lead.name.charAt(0) }}
+                    </div>
+                    <div>
+                      <h4 class="text-xs sm:text-sm font-bold text-white">{{ lead.name }}</h4>
+                      <p class="text-[11px] text-slate-400">{{ lead.program }} • <span class="text-slate-500">{{ formatDate(lead.createdAt) }}</span></p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <span [ngClass]="lead.status === 'New' ? 'bg-yellow-500/10 text-brand-yellow' : lead.status === 'Contacted' ? 'bg-blue-500/10 text-brand-blue' : lead.status === 'Enrolled' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-800 text-slate-400'" class="px-2 py-0.5 rounded-full text-[10px] font-bold">
+                      {{ lead.status }}
+                    </span>
+
+                    <button 
+                      (click)="viewLeadDetail(lead)" 
+                      class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-brand-blue font-semibold cursor-pointer">
+                      View & Reply
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
         </div>
       }
 
       <!-- ============================================== -->
-      <!-- TAB 1: LEADS & BOOKINGS MANAGER (CRM)          -->
+      <!-- TAB 2: INQUIRIES & LEADS CRM                   -->
       <!-- ============================================== -->
       @if (activeTab() === 'leads') {
         <div class="space-y-6 fade-in">
           
-          <!-- Filter Bar & Search & Add Manual Lead -->
-          <div class="bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+          <!-- Filters & Actions Header -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
             
             <!-- Search Input -->
-            <div class="relative w-full md:w-80">
+            <div class="relative flex-1 max-w-md">
               <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input 
                 type="text" 
                 [(ngModel)]="searchQuery" 
-                placeholder="Search by student name, phone..."
-                class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-xs sm:text-sm text-slate-200 placeholder-slate-500" />
+                placeholder="Search by student name, phone, program, or notes..."
+                class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 placeholder-slate-500 outline-none focus:border-brand-blue" />
             </div>
 
             <!-- Status Filter Pills -->
-            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
               @for (st of ['All', 'New', 'Contacted', 'Enrolled', 'Closed']; track st) {
                 <button 
-                  type="button"
-                  (click)="selectedStatusFilter.set($any(st))"
+                  (click)="setStatusFilter(st)"
                   [class.bg-brand-blue]="selectedStatusFilter() === st"
                   [class.text-white]="selectedStatusFilter() === st"
                   [class.bg-slate-900]="selectedStatusFilter() !== st"
                   [class.text-slate-400]="selectedStatusFilter() !== st"
-                  class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-800 hover:border-slate-700 transition-colors cursor-pointer">
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-800 transition-colors whitespace-nowrap cursor-pointer">
                   {{ st }}
                 </button>
               }
             </div>
 
-            <!-- Add Manual Lead Button -->
-            <button 
-              (click)="openAddLeadModal()"
-              class="w-full md:w-auto px-4 py-2 rounded-xl bg-brand-yellow hover:bg-yellow-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer">
-              <span>+ Record New Enquiry</span>
-            </button>
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2">
+              <button 
+                (click)="openAutoReplyDrawer()"
+                class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                <span>✉️ Auto-Reply Settings</span>
+              </button>
+
+              <button 
+                (click)="openAddLeadModal()"
+                class="px-3.5 py-2 rounded-xl bg-brand-blue hover:bg-sky-400 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer">
+                <span>➕ New Lead</span>
+              </button>
+            </div>
+
           </div>
 
-          <!-- Leads Table -->
+          <!-- Leads Data Table / Cards -->
           <div class="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs sm:text-sm text-slate-300">
-                <thead class="bg-slate-900/80 text-slate-400 text-[11px] uppercase tracking-wider font-semibold border-b border-slate-800">
+            <div class="overflow-x-auto custom-scroll">
+              <table class="w-full text-left text-xs sm:text-sm">
+                <thead class="bg-slate-900/80 text-slate-400 uppercase text-[11px] font-bold tracking-wider border-b border-slate-800">
                   <tr>
-                    <th class="py-3.5 px-4">Student & Contact</th>
-                    <th class="py-3.5 px-4">Course Track</th>
-                    <th class="py-3.5 px-4">Source & Date</th>
-                    <th class="py-3.5 px-4">Status</th>
-                    <th class="py-3.5 px-4 text-right">Actions</th>
+                    <th class="p-3.5 sm:p-4">Student</th>
+                    <th class="p-3.5 sm:p-4">Program & Source</th>
+                    <th class="p-3.5 sm:p-4">Phone / WhatsApp</th>
+                    <th class="p-3.5 sm:p-4">Status</th>
+                    <th class="p-3.5 sm:p-4">Date</th>
+                    <th class="p-3.5 sm:p-4 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-800/60">
                   @for (lead of filteredLeads(); track lead.id) {
-                    <tr class="hover:bg-slate-900/40 transition-colors">
-                      <td class="py-3.5 px-4">
-                        <div class="font-bold text-white text-sm">{{ lead.name }}</div>
-                        <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
-                          <span>{{ lead.phone }}</span>
-                          @if (lead.email) {
-                            <span>• {{ lead.email }}</span>
-                          }
+                    <tr class="hover:bg-slate-900/40 transition-colors group">
+                      <!-- Name & Email -->
+                      <td class="p-3.5 sm:p-4">
+                        <div class="font-bold text-white">{{ lead.name }}</div>
+                        <div class="text-[11px] text-slate-500 font-mono">{{ lead.email || 'No email provided' }}</div>
+                      </td>
+
+                      <!-- Program & Source -->
+                      <td class="p-3.5 sm:p-4">
+                        <span class="text-brand-blue font-semibold block">{{ lead.program }}</span>
+                        <span class="text-[10px] text-slate-500">{{ lead.source }}</span>
+                      </td>
+
+                      <!-- Phone & WhatsApp Link -->
+                      <td class="p-3.5 sm:p-4">
+                        <div class="flex items-center gap-2">
+                          <span class="font-mono text-slate-300">{{ lead.phone }}</span>
+                          <a 
+                            [href]="getWhatsAppLink(lead)" 
+                            target="_blank" 
+                            rel="noopener"
+                            class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white border border-emerald-500/30 text-[10px] font-bold transition-all"
+                            title="Chat on WhatsApp">
+                            WhatsApp
+                          </a>
                         </div>
-                        @if (lead.notes) {
-                          <div class="text-[11px] text-amber-300/80 mt-1 italic">Note: {{ lead.notes }}</div>
-                        }
                       </td>
 
-                      <td class="py-3.5 px-4">
-                        <span class="inline-block px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-brand-blue font-semibold text-xs">
-                          {{ lead.program }}
-                        </span>
-                      </td>
-
-                      <td class="py-3.5 px-4 text-xs text-slate-400">
-                        <div>{{ lead.source }}</div>
-                        <div class="text-[11px] text-slate-500">{{ formatDate(lead.createdAt) }}</div>
-                      </td>
-
-                      <td class="py-3.5 px-4">
-                        <select 
-                          [ngModel]="lead.status" 
-                          (ngModelChange)="changeLeadStatus(lead.id, $event)"
-                          class="px-2.5 py-1 rounded-lg text-xs font-bold border outline-none bg-slate-900 cursor-pointer"
-                          [class.text-amber-400]="lead.status === 'New'"
-                          [class.border-amber-500-30]="lead.status === 'New'"
-                          [class.text-blue-400]="lead.status === 'Contacted'"
-                          [class.border-blue-500-30]="lead.status === 'Contacted'"
-                          [class.text-emerald-400]="lead.status === 'Enrolled'"
-                          [class.border-emerald-500-30]="lead.status === 'Enrolled'"
-                          [class.text-slate-400]="lead.status === 'Closed'">
+                      <!-- Status Dropdown -->
+                      <td class="p-3.5 sm:p-4">
+                        <select [ngModel]="lead.status" (ngModelChange)="changeLeadStatus(lead.id, $event)" [ngClass]="lead.status === 'New' ? 'bg-yellow-500/10 text-brand-yellow' : lead.status === 'Contacted' ? 'bg-blue-500/10 text-brand-blue' : lead.status === 'Enrolled' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-800 text-slate-400'" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-800 outline-none cursor-pointer">
                           <option value="New">🟡 New</option>
                           <option value="Contacted">🔵 Contacted</option>
                           <option value="Enrolled">🟢 Enrolled</option>
@@ -411,41 +649,45 @@
                         </select>
                       </td>
 
-                      <td class="py-3.5 px-4 text-right">
-                        <div class="flex items-center justify-end gap-2">
-                          <!-- Direct WhatsApp Link -->
-                          <a 
-                            [href]="getWhatsAppLink(lead)" 
-                            target="_blank" 
-                            class="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
-                            title="Chat on WhatsApp">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.97.53 1.939.816 2.8.816 3.181 0 5.767-2.586 5.768-5.766.001-3.181-2.585-5.803-5.772-5.803zm3.377 8.243c-.145.408-.847.781-1.183.829-.336.048-.77.067-1.246-.086-.475-.154-1.096-.364-1.895-.816-.799-.452-1.391-1.026-1.879-1.564-.488-.538-.795-1.137-.905-1.428-.11-.291-.013-.483.109-.647.108-.146.241-.371.362-.556.121-.186.161-.318.242-.53.08-.212.04-.398-.02-.557-.061-.159-.544-1.312-.746-1.798-.197-.474-.398-.41-.548-.418-.141-.007-.302-.008-.463-.008-.161 0-.423.06-.645.301-.222.241-.847.828-.847 2.019 0 1.191.867 2.343.988 2.505.121.161 1.708 2.608 4.137 3.657.578.249 1.029.398 1.381.51.554.176 1.058.151 1.457.092.444-.067 1.365-.559 1.557-1.099.192-.54.192-1.003.134-1.099-.058-.096-.214-.154-.447-.27z"/>
-                            </svg>
-                          </a>
+                      <!-- Date -->
+                      <td class="p-3.5 sm:p-4 text-xs text-slate-500 font-mono whitespace-nowrap">
+                        {{ formatDate(lead.createdAt) }}
+                      </td>
 
-                          <!-- Edit Lead -->
+                      <!-- Actions: View & Reply Drawer, Edit, Delete -->
+                      <td class="p-3.5 sm:p-4 text-right">
+                        <div class="flex items-center justify-end gap-1.5">
                           <button 
-                            (click)="openEditLeadModal(lead)" 
-                            class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer"
-                            title="Edit notes / details">
-                            ✏️
+                            (click)="viewLeadDetail(lead)" 
+                            class="px-2.5 py-1 rounded-lg bg-brand-blue/10 hover:bg-brand-blue text-brand-blue hover:text-white border border-brand-blue/30 text-xs font-bold transition-all cursor-pointer"
+                            title="View Enquiry & Auto-Reply Draft">
+                            View & Reply
                           </button>
 
-                          <!-- Delete Lead -->
+                          <button 
+                            (click)="openEditLeadModal(lead)" 
+                            class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                            title="Edit Record">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                          </button>
+
                           <button 
                             (click)="deleteLead(lead.id)" 
-                            class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-colors cursor-pointer"
+                            class="p-1.5 rounded-lg bg-slate-900 hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
                             title="Delete Lead">
-                            🗑️
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
                           </button>
                         </div>
                       </td>
                     </tr>
                   } @empty {
                     <tr>
-                      <td colspan="5" class="text-center py-12 text-slate-500">
-                        No enquiries matching your search or status filter.
+                      <td colspan="6" class="p-8 text-center text-slate-500 text-xs sm:text-sm">
+                        No enquiries matched your filter. Click "+ New Lead" to add one!
                       </td>
                     </tr>
                   }
@@ -457,9 +699,6 @@
         </div>
       }
 
-      <!-- ============================================== -->
-      <!-- TAB 2: COURSES & DETAILED SYLLABUS (FULL CRUD) -->
-      <!-- ============================================== -->
       @if (activeTab() === 'courses') {
         <div class="space-y-6 fade-in">
           
@@ -975,42 +1214,118 @@
       <!-- ============================================== -->
       <!-- TAB 6: BACKUP & SYSTEM SETTINGS                -->
       <!-- ============================================== -->
-      @if (activeTab() === 'backup') {
-        <div class="space-y-6 fade-in max-w-4xl">
-          
-          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-2">
-            <h2 class="text-xl font-extrabold text-white">Website Backups & Safety Controls</h2>
-            <p class="text-xs sm:text-sm text-slate-400">
-              Export your entire website state (enquiries, custom courses, 12 syllabus modules, uploaded assets, and page content) as a single portable JSON file.
-            </p>
-          </div>
+      
+      
 
-          <!-- Export Box -->
-          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <!-- ======================================================== -->
+      <!-- TAB 7: VERSION CONTROL & SNAPSHOTS (arun-portfolio match)  -->
+      <!-- ======================================================== -->
+      @if (activeTab() === 'snapshots') {
+        <div class="space-y-6 fade-in max-w-5xl">
+          
+          <!-- Header Banner with Pulse Live Indicator -->
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h3 class="text-base font-bold text-white flex items-center gap-2">
-                <span>📥</span>
-                <span>Export Full Site Backup</span>
-              </h3>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-dot"></span>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Production Live Snapshot Engine</span>
+              </div>
+              <h2 class="text-xl font-extrabold text-white">Version Control & Instant Rollback</h2>
               <p class="text-xs text-slate-400 mt-1">
-                Generates an encrypted JSON archive containing all site configuration, leads, and assets.
+                Create versioned snapshots of the entire website (courses, 12 syllabus modules, site content, media assets, leads, and SEO).
               </p>
             </div>
-            <button 
-              (click)="handleExportBackup()"
-              class="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-600/20 transition-all cursor-pointer">
-              Download Backup (.json)
-            </button>
+
+            <!-- Action buttons -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button 
+                id="btn-create-snapshot"
+                (click)="openCreateSnapshotModal()"
+                class="px-4 py-2.5 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 transition-all flex items-center gap-2 cursor-pointer">
+                <span>➕ Create Snapshot</span>
+              </button>
+
+              <button 
+                (click)="handleExportBackup()"
+                class="px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center gap-1.5 cursor-pointer">
+                <span>📥 Export JSON</span>
+              </button>
+            </div>
           </div>
 
-          <!-- Import Box -->
+          <!-- Saved Snapshots List (Matching arun-portfolio snapshot list) -->
+          <div class="space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Available Version Snapshots ({{ academyService.snapshots().length }})</h3>
+
+            @for (snap of academyService.snapshots(); track snap.id) {
+              <div class="p-5 rounded-2xl bg-slate-950 border transition-all" [ngClass]="snap.isLive ? 'border-emerald-500/40 bg-emerald-950/10' : 'border-slate-800'">
+                
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-2">
+                  <div class="flex items-center gap-2.5 flex-wrap">
+                    <span class="font-mono text-sm font-extrabold px-2.5 py-0.5 rounded-lg" [ngClass]="snap.isLive ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-300'">
+                      {{ snap.version }}
+                    </span>
+
+                    <h4 class="font-bold text-sm text-white">{{ snap.title }}</h4>
+
+                    @if (snap.isLive) {
+                      <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        CURRENTLY LIVE
+                      </span>
+                    }
+                  </div>
+
+                  <span class="text-[11px] text-slate-500 font-mono">{{ formatDate(snap.createdAt) }}</span>
+                </div>
+
+                <p class="text-xs text-slate-400 mb-3 leading-relaxed">{{ snap.description }}</p>
+
+                <!-- Highlights Pills -->
+                @if (snap.highlights && snap.highlights.length) {
+                  <div class="flex flex-wrap gap-1.5 mb-4">
+                    @for (hl of snap.highlights; track hl) {
+                      <span class="text-[11px] px-2.5 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-slate-300">
+                        ✓ {{ hl }}
+                      </span>
+                    }
+                  </div>
+                }
+
+                <!-- Snapshot Actions -->
+                <div class="flex items-center justify-between pt-3 border-t border-slate-900">
+                  <span class="text-[11px] text-slate-500">Author: {{ snap.author || 'Arun / Deekshith' }}</span>
+
+                  <div class="flex items-center gap-2">
+                    @if (!snap.isLive) {
+                      <button 
+                        (click)="confirmRollback(snap)"
+                        class="px-3 py-1.5 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+                        Rollback to this Snapshot
+                      </button>
+                    }
+
+                    <button 
+                      (click)="confirmDeleteSnapshot(snap)"
+                      class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 text-xs font-semibold transition-colors cursor-pointer"
+                      title="Delete snapshot">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            }
+          </div>
+
+          <!-- Restore from JSON / Backup Box -->
           <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
             <h3 class="text-base font-bold text-white flex items-center gap-2">
               <span>📤</span>
-              <span>Restore from Backup File</span>
+              <span>Import & Restore from JSON Backup File</span>
             </h3>
             <p class="text-xs text-slate-400">
-              Upload a previously exported .json file or paste its contents below to restore the complete site state.
+              Upload an exported JSON archive or paste JSON content directly to restore all website state.
             </p>
 
             <div class="space-y-3">
@@ -1056,9 +1371,256 @@
     </main>
   }
 
-  <!-- ============================================== -->
-  <!-- MODAL: CREATE / EDIT COURSE & SYLLABUS DRAWER  -->
-  <!-- ============================================== -->
+  <!-- ======================================================== -->
+  <!-- MODAL: LEAD DETAIL & AUTO-REPLY DRAWER (arun-portfolio)  -->
+  <!-- ======================================================== -->
+  @if (isLeadDetailModalOpen() && selectedLead()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md fade-in">
+      <div class="bg-slate-950 border border-slate-800 w-full max-w-2xl rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scroll">
+        
+        <div class="flex items-start justify-between border-b border-slate-800 pb-3">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 text-brand-blue border border-blue-500/30">
+              INQUIRY DETAILS
+            </span>
+            <h3 class="text-xl font-extrabold text-white mt-1">{{ selectedLead()!.name }}</h3>
+            <p class="text-xs text-slate-400">{{ selectedLead()!.program }} • Received {{ formatDate(selectedLead()!.createdAt) }}</p>
+          </div>
+          <button (click)="closeLeadDetailModal()" class="text-slate-400 hover:text-white cursor-pointer p-1">✕</button>
+        </div>
+
+        <!-- Contact & Source Info -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs">
+          <div>
+            <span class="text-slate-500 block uppercase font-bold text-[10px]">Phone Number / WhatsApp</span>
+            <span class="font-mono text-white text-sm font-semibold">{{ selectedLead()!.phone }}</span>
+          </div>
+
+          <div>
+            <span class="text-slate-500 block uppercase font-bold text-[10px]">Email Address</span>
+            <span class="font-mono text-white text-sm font-semibold">{{ selectedLead()!.email || 'Not provided' }}</span>
+          </div>
+
+          <div>
+            <span class="text-slate-500 block uppercase font-bold text-[10px]">Website Enquiry Source</span>
+            <span class="text-slate-300 font-semibold">{{ selectedLead()!.source }}</span>
+          </div>
+
+          <div>
+            <span class="text-slate-500 block uppercase font-bold text-[10px]">Current Status</span>
+            <span class="font-bold text-brand-yellow">{{ selectedLead()!.status }}</span>
+          </div>
+
+          @if (selectedLead()!.notes) {
+            <div class="col-span-2 pt-2 border-t border-slate-800">
+              <span class="text-slate-500 block uppercase font-bold text-[10px]">Student Notes</span>
+              <p class="text-slate-300 italic">{{ selectedLead()!.notes }}</p>
+            </div>
+          }
+        </div>
+
+        <!-- Dynamic Auto-Reply Draft Preview (Matching arun-portfolio auto-reply engine) -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-brand-blue flex items-center gap-1.5">
+              <span>✉️ Generated Auto-Reply Response</span>
+            </h4>
+            <button (click)="openAutoReplyDrawer()" class="text-[11px] text-slate-400 hover:text-white underline cursor-pointer">
+              Edit Template
+            </button>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2.5">
+            <div>
+              <span class="text-[10px] font-bold text-slate-500 uppercase block">Subject Preview</span>
+              <div class="text-xs font-semibold text-white bg-slate-950 p-2 rounded-lg border border-slate-800/80">
+                {{ replyPreviewSubject() }}
+              </div>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-bold text-slate-500 uppercase block">Body Draft</span>
+              <div class="text-xs text-slate-300 bg-slate-950 p-3 rounded-lg border border-slate-800/80 whitespace-pre-wrap font-sans leading-relaxed">
+                {{ replyPreviewBody() }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800">
+          <a 
+            [href]="getWhatsAppLink(selectedLead()!)"
+            target="_blank"
+            rel="noopener"
+            class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-md">
+            <span>💬 Direct WhatsApp</span>
+          </a>
+
+          <div class="flex items-center gap-2">
+            <button 
+              (click)="copyReplyDraft()"
+              class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-semibold text-xs transition-colors cursor-pointer">
+              📋 Copy Draft
+            </button>
+
+            @if (selectedLead()!.email) {
+              <button 
+                (click)="openEmailComposer(selectedLead()!)"
+                class="px-4 py-2 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs transition-colors cursor-pointer shadow-md">
+                Open Email Client ↗
+              </button>
+            }
+
+            <button 
+              (click)="closeLeadDetailModal()"
+              class="px-3 py-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white font-semibold text-xs cursor-pointer">
+              Close
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- DRAWER: AUTO-REPLY TEMPLATE SETTINGS (arun-portfolio)    -->
+  <!-- ======================================================== -->
+  @if (isAutoReplyDrawerOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md fade-in">
+      <div class="bg-slate-950 border border-slate-800 w-full max-w-xl rounded-3xl p-6 sm:p-8 space-y-4 shadow-2xl relative">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <span>⚙️</span>
+            <span>Auto-Reply Template Settings</span>
+          </h3>
+          <button (click)="closeAutoReplyDrawer()" class="text-slate-400 hover:text-white cursor-pointer">✕</button>
+        </div>
+
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Configure default template for instant email drafts. Supported placeholder tokens:
+          <code class="text-brand-blue">{{ '{{name}}' }}</code>, 
+          <code class="text-brand-blue">{{ '{{program}}' }}</code>, 
+          <code class="text-brand-blue">{{ '{{phone}}' }}</code>, 
+          <code class="text-brand-blue">{{ '{{email}}' }}</code>.
+        </p>
+
+        <div class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Subject Template</label>
+            <input 
+              type="text" 
+              [(ngModel)]="autoReplyForm.subjectTemplate" 
+              class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none focus:border-brand-blue" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Email Body Template</label>
+            <textarea 
+              rows="9" 
+              [(ngModel)]="autoReplyForm.bodyTemplate" 
+              class="w-full p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none focus:border-brand-blue leading-relaxed font-sans"></textarea>
+          </div>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-800">
+          <button (click)="closeAutoReplyDrawer()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold text-xs cursor-pointer">Cancel</button>
+          <button (click)="saveAutoReplySettings()" class="px-5 py-2 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs cursor-pointer shadow-md">Save Templates</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- MODAL: CREATE SNAPSHOT MODAL (arun-portfolio match)      -->
+  <!-- ======================================================== -->
+  @if (isCreateSnapshotModalOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md fade-in">
+      <div class="bg-slate-950 border border-slate-800 w-full max-w-lg rounded-3xl p-6 sm:p-8 space-y-4 shadow-2xl relative">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <span>🛡️</span>
+            <span>Create New Version Snapshot</span>
+          </h3>
+          <button (click)="closeCreateSnapshotModal()" class="text-slate-400 hover:text-white cursor-pointer">✕</button>
+        </div>
+
+        <p class="text-xs text-slate-400">
+          Take a complete snapshot of all active courses, 12 syllabus modules, media assets, site content, and SEO config.
+        </p>
+
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Version Tag *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="snapshotForm.version" 
+              placeholder="e.g. v4.4.0" 
+              class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 font-mono outline-none focus:border-brand-blue" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Snapshot Title *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="snapshotForm.title" 
+              placeholder="e.g. Release v4.4.0 — Weekend Batch Curriculum Update" 
+              class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none focus:border-brand-blue" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Description</label>
+            <textarea 
+              rows="2" 
+              [(ngModel)]="snapshotForm.description" 
+              placeholder="Summary of changes included in this version..." 
+              class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none focus:border-brand-blue"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Highlights (Pills)</label>
+            <div class="space-y-2">
+              <input type="text" [(ngModel)]="snapshotForm.highlight1" placeholder="Highlight 1 (e.g. 12-Module Deep Syllabus state)" class="w-full px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none focus:border-brand-blue" />
+              <input type="text" [(ngModel)]="snapshotForm.highlight2" placeholder="Highlight 2 (e.g. Micro-Cohort 4 Seats USP Guarantee)" class="w-full px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none focus:border-brand-blue" />
+              <input type="text" [(ngModel)]="snapshotForm.highlight3" placeholder="Highlight 3 (e.g. Production Assets & SERP tags)" class="w-full px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none focus:border-brand-blue" />
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-800">
+          <button (click)="closeCreateSnapshotModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold text-xs cursor-pointer">Cancel</button>
+          <button (click)="submitCreateSnapshot()" class="px-5 py-2 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs cursor-pointer shadow-md">Create & Mark Live</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- MODAL: CONFIRM ACTION DIALOG (arun-portfolio match)      -->
+  <!-- ======================================================== -->
+  @if (confirmModal() && confirmModal()!.isOpen) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md fade-in">
+      <div class="bg-slate-950 border border-slate-800 w-full max-w-md rounded-3xl p-6 sm:p-7 space-y-4 shadow-2xl relative">
+        <h3 class="text-lg font-bold text-white">{{ confirmModal()!.title }}</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">{{ confirmModal()!.message }}</p>
+
+        <div class="pt-3 flex items-center justify-end gap-3">
+          <button (click)="closeConfirmModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold text-xs cursor-pointer">Cancel</button>
+          <button 
+            (click)="executeConfirmAction()"
+            [class.bg-rose-600]="confirmModal()!.isDanger"
+            [class.hover:bg-rose-500]="confirmModal()!.isDanger"
+            [class.bg-brand-blue]="!confirmModal()!.isDanger"
+            [class.hover:bg-sky-400]="!confirmModal()!.isDanger"
+            class="px-5 py-2 rounded-xl text-white font-bold text-xs cursor-pointer shadow-md transition-all">
+            {{ confirmModal()!.confirmBtnText }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
   @if (isCourseModalOpen()) {
     <div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md fade-in overflow-y-auto">
       
@@ -1488,6 +2050,15 @@
         </div>
 
       </div>
+    </div>
+  }
+
+
+
+  <!-- Global Toast Alert Message -->
+  @if (toastMessage()) {
+    <div class="fixed bottom-6 right-6 z-50 px-5 py-3 rounded-2xl bg-brand-blue text-white text-xs sm:text-sm font-bold shadow-2xl shadow-blue-500/40 border border-white/20 fade-in flex items-center gap-2">
+      <span>{{ toastMessage() }}</span>
     </div>
   }
 
