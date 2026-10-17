@@ -1,19 +1,14 @@
-
 name: Deploy website to Hostinger
 
 'on':
   push:
     branches:
-      - main
-  workflow_dispatch:
-
-permissions:
-  contents: read
+      - arun1324
+  workflow_dispatch: {}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
