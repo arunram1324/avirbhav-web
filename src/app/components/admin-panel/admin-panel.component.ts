@@ -23,8 +23,8 @@ import { CourseDetailData, SyllabusModule } from "../../data/course-catalog.data
 export class AdminPanelComponent implements OnDestroy {
   academyService = inject(AcademyDataService);
 
-  // Active Admin Tab: 7 comprehensive tabs matching arun-portfolio
-  activeTab = signal<"overview" | "leads" | "courses" | "assets" | "content" | "seo" | "snapshots">("overview");
+  // Active Admin Tab: 8 comprehensive tabs matching arun-portfolio + Pages Studio
+  activeTab = signal<"overview" | "leads" | "pages" | "courses" | "assets" | "content" | "seo" | "snapshots">("overview");
 
   // Theme toggle
   isDarkMode = signal(true);
@@ -239,12 +239,94 @@ export class AdminPanelComponent implements OnDestroy {
     });
   });
 
+  // --- Dedicated Pages & Live Content Studio (Senior Frontend Dev UX) ---
+  selectedPageId = signal<"home" | "01" | "02" | "03" | "04">("home");
+  pageEditorViewMode = signal<"split" | "editor">("split");
+  selectedPageSection = signal<string>("all");
+  isPageDirty = signal<boolean>(false);
+
+  // Home Page live editable form state
+  homeEditForm: SiteContent = { ...this.academyService.siteContent() };
+  homeFloatingTagsStr = "";
+  homeBenefitsStr = "";
+
+  // Course Pages live editable form state
+  courseEditForm: CourseDetailData = { ...this.academyService.getCourseDetail("01") };
+
+  // Helper Methods for Character & Word Counting
+  getCharCount(text: string | null | undefined): number {
+    return (text || "").length;
+  }
+
+  getWordCount(text: string | null | undefined): number {
+    const trimmed = (text || "").trim();
+    if (!trimmed) return 0;
+    return trimmed.split(/\s+/).filter(Boolean).length;
+  }
+
+  getReadingTime(text: string | null | undefined): string {
+    const words = this.getWordCount(text);
+    if (words === 0) return "< 1s read";
+    const seconds = Math.max(1, Math.round((words / 200) * 60));
+    return seconds < 60 ? `~${seconds}s read` : `~${Math.ceil(seconds / 60)}m read`;
+  }
+
+  selectPage(pageId: "home" | "01" | "02" | "03" | "04"): void {
+    this.selectedPageId.set(pageId);
+    if (pageId === "home") {
+      const content = this.academyService.siteContent();
+      this.homeEditForm = { ...content };
+      this.homeFloatingTagsStr = (content.floatingTags || []).join(", ");
+      this.homeBenefitsStr = (content.benefits || []).join("\n");
+    } else {
+      const detail = this.academyService.getCourseDetail(pageId);
+      this.courseEditForm = JSON.parse(JSON.stringify(detail));
+    }
+    this.isPageDirty.set(false);
+  }
+
+  markPageDirty(): void {
+    this.isPageDirty.set(true);
+  }
+
+  savePageContent(): void {
+    if (this.selectedPageId() === "home") {
+      this.homeEditForm.floatingTags = this.homeFloatingTagsStr
+        .split(",")
+        .map(s => s.trim())
+        .filter(Boolean);
+      this.homeEditForm.benefits = this.homeBenefitsStr
+        .split("\n")
+        .map(s => s.trim())
+        .filter(Boolean);
+      this.academyService.updateSiteContent(this.homeEditForm);
+      this.showToast("⚡ Home Page live copy published successfully!");
+    } else {
+      this.academyService.saveCourse(this.courseEditForm);
+      this.showToast(`⚡ ${this.courseEditForm.shortTitle || 'Course'} page published successfully!`);
+    }
+    this.isPageDirty.set(false);
+  }
+
+  revertPageContent(): void {
+    this.selectPage(this.selectedPageId());
+    this.showToast("Reverted page to published live version.");
+  }
+
+  getPageLiveUrl(): string {
+    const pid = this.selectedPageId();
+    if (pid === "home") return "/";
+    const detail = this.academyService.getCourseDetail(pid);
+    return `/courses/${detail.slug || "social-media-marketing"}`;
+  }
+
   constructor() {
     this.refreshForms();
     if (typeof window !== "undefined") {
       const updateFromHash = () => {
         const hash = window.location.hash || "";
         if (hash.includes("overview")) this.activeTab.set("overview");
+        else if (hash.includes("pages")) this.activeTab.set("pages");
         else if (hash.includes("assets")) this.activeTab.set("assets");
         else if (hash.includes("courses")) this.activeTab.set("courses");
         else if (hash.includes("content")) this.activeTab.set("content");
@@ -271,9 +353,14 @@ export class AdminPanelComponent implements OnDestroy {
     this.benefitsString = (content.benefits || []).join("\n");
     this.seoForm = { ...this.academyService.seoConfig() };
     this.autoReplyForm = { ...this.academyService.autoReplySettings() };
+
+    this.homeEditForm = { ...content };
+    this.homeFloatingTagsStr = (content.floatingTags || []).join(", ");
+    this.homeBenefitsStr = (content.benefits || []).join("\n");
+    this.courseEditForm = JSON.parse(JSON.stringify(this.academyService.getCourseDetail("01")));
   }
 
-  setTab(tab: "overview" | "leads" | "courses" | "assets" | "content" | "seo" | "snapshots"): void {
+  setTab(tab: "overview" | "leads" | "pages" | "courses" | "assets" | "content" | "seo" | "snapshots"): void {
     this.activeTab.set(tab);
     if (typeof window !== "undefined") {
       window.location.hash = "#" + tab;

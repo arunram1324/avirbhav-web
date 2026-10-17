@@ -335,6 +335,24 @@
           }
         </button>
 
+        <!-- Tab 3: Pages & Live Content Studio (Senior Dev UX) -->
+        <button 
+          id="tab-btn-pages"
+          (click)="setTab('pages')"
+          [class.bg-brand-blue]="activeTab() === 'pages'"
+          [class.text-white]="activeTab() === 'pages'"
+          [class.bg-slate-800]="activeTab() !== 'pages'"
+          [class.text-slate-400]="activeTab() !== 'pages'"
+          class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>📑 Pages</span>
+          <span class="px-2 py-0.5 rounded-full text-[11px] bg-black/20 text-white font-mono">
+            5
+          </span>
+          @if (isPageDirty()) {
+            <span class="w-2 h-2 rounded-full bg-brand-yellow animate-pulse" title="Unsaved changes"></span>
+          }
+        </button>
+
         <!-- Tab 3: Courses & Syllabus -->
         <button 
           id="tab-btn-courses"
@@ -699,6 +717,1048 @@
         </div>
       }
 
+      <!-- ======================================================== -->
+      <!-- TAB: PAGES & LIVE VISUAL CONTENT STUDIO (SENIOR DEV UX)     -->
+      <!-- ======================================================== -->
+      @if (activeTab() === 'pages') {
+        <div class="space-y-6 fade-in">
+          
+          <!-- Studio Header & Action Command Bar -->
+          <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 shadow-xl">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Pages Live Content Studio</span>
+                <span class="text-slate-600">•</span>
+                <span class="text-xs font-mono text-slate-400">Word & Char Metric Engine</span>
+              </div>
+              <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
+                <span>📑 Pages & Live Visual Editor</span>
+              </h2>
+              <p class="text-xs text-slate-400 mt-1">
+                Directly edit live copy for Home and Course landing pages. Every input features real-time character & word analytics.
+              </p>
+            </div>
+
+            <!-- Global Action Controls -->
+            <div class="flex flex-wrap items-center gap-2.5 w-full xl:w-auto justify-start xl:justify-end">
+              <!-- Live URL Pill -->
+              <a 
+                [href]="getPageLiveUrl()" 
+                target="_blank" 
+                class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-brand-blue flex items-center gap-1.5 transition-all">
+                <span>Public Route: <strong class="font-mono text-slate-200">{{ getPageLiveUrl() }}</strong></span>
+                <span>↗</span>
+              </a>
+
+              <!-- Unsaved Changes Pill -->
+              @if (isPageDirty()) {
+                <span class="px-3 py-2 rounded-xl text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                  Unsaved Edits
+                </span>
+              }
+
+              <!-- View Mode Toggle -->
+              <div class="flex items-center p-1 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold">
+                <button 
+                  (click)="pageEditorViewMode.set('editor')"
+                  [class.bg-slate-800]="pageEditorViewMode() === 'editor'"
+                  [class.text-white]="pageEditorViewMode() === 'editor'"
+                  [class.text-slate-400]="pageEditorViewMode() !== 'editor'"
+                  class="px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+                  title="Full width form editor">
+                  <span>📝 Editor</span>
+                </button>
+                <button 
+                  (click)="pageEditorViewMode.set('split')"
+                  [class.bg-brand-blue]="pageEditorViewMode() === 'split'"
+                  [class.text-white]="pageEditorViewMode() === 'split'"
+                  [class.text-slate-400]="pageEditorViewMode() !== 'split'"
+                  class="px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+                  title="Side-by-side interactive preview">
+                  <span>◫ Split Preview</span>
+                </button>
+              </div>
+
+              <!-- Revert Button -->
+              <button 
+                (click)="revertPageContent()"
+                [disabled]="!isPageDirty()"
+                [class.opacity-40]="!isPageDirty()"
+                [class.cursor-not-allowed]="!isPageDirty()"
+                class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                <span>🔄 Revert</span>
+              </button>
+
+              <!-- Publish Page Live Button -->
+              <button 
+                id="btn-publish-page"
+                (click)="savePageContent()"
+                class="px-4 py-2 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 transition-all flex items-center gap-1.5 cursor-pointer">
+                <span>💾 Publish Live</span>
+                <span class="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] bg-black/20 font-mono">⌘S</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Page Navigator Segmented Tabs -->
+          <div class="bg-slate-950 p-2 rounded-2xl border border-slate-800 flex items-center gap-2 overflow-x-auto custom-scroll">
+            
+            <!-- Home Page Tab -->
+            <button 
+              id="page-btn-home"
+              (click)="selectPage('home')"
+              [ngClass]="selectedPageId() === 'home' ? 'bg-brand-blue text-white shadow-lg' : 'bg-slate-900 text-slate-400 hover:text-white'"
+              class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap flex items-center gap-2 border border-slate-800 cursor-pointer">
+              <span>🏠 Home Landing Page (/)</span>
+              <span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-mono">LIVE</span>
+            </button>
+
+            <!-- Track 01 Tab -->
+            <button 
+              id="page-btn-01"
+              (click)="selectPage('01')"
+              [ngClass]="selectedPageId() === '01' ? 'bg-brand-blue text-white shadow-lg' : 'bg-slate-900 text-slate-400 hover:text-white'"
+              class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap flex items-center gap-2 border border-slate-800 cursor-pointer">
+              <span>📱 Track 01: Social Media Marketing</span>
+            </button>
+
+            <!-- Track 02 Tab -->
+            <button 
+              id="page-btn-02"
+              (click)="selectPage('02')"
+              [ngClass]="selectedPageId() === '02' ? 'bg-brand-blue text-white shadow-lg' : 'bg-slate-900 text-slate-400 hover:text-white'"
+              class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap flex items-center gap-2 border border-slate-800 cursor-pointer">
+              <span>🎬 Track 02: Instagram & Reels Growth</span>
+            </button>
+
+            <!-- Track 03 Tab -->
+            <button 
+              id="page-btn-03"
+              (click)="selectPage('03')"
+              [ngClass]="selectedPageId() === '03' ? 'bg-brand-blue text-white shadow-lg' : 'bg-slate-900 text-slate-400 hover:text-white'"
+              class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap flex items-center gap-2 border border-slate-800 cursor-pointer">
+              <span>📊 Track 03: Meta & Google Ads</span>
+            </button>
+
+            <!-- Track 04 Tab -->
+            <button 
+              id="page-btn-04"
+              (click)="selectPage('04')"
+              [ngClass]="selectedPageId() === '04' ? 'bg-brand-blue text-white shadow-lg' : 'bg-slate-900 text-slate-400 hover:text-white'"
+              class="px-4 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap flex items-center gap-2 border border-slate-800 cursor-pointer">
+              <span>🔍 Track 04: SEO & Website Ranking</span>
+            </button>
+
+          </div>
+
+          <!-- Section Filter Navigator Bar -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[11px] whitespace-nowrap pl-1">Sections:</span>
+            
+            @if (selectedPageId() === 'home') {
+              @for (sec of [
+                { id: 'all', label: 'All Sections' },
+                { id: 'hero', label: '📌 Hero & Ticker' },
+                { id: 'stats', label: '📊 Stats Banner' },
+                { id: 'usp', label: '👥 Micro-Cohort USP' },
+                { id: 'mentor', label: '👨‍🏫 Mentor Spotlight' },
+                { id: 'footer', label: '📞 Contact & Footer' }
+              ]; track sec.id) {
+                <button 
+                  (click)="selectedPageSection.set(sec.id)"
+                  [ngClass]="selectedPageSection() === sec.id ? 'bg-slate-800 text-brand-blue border-brand-blue/40' : 'bg-slate-950 text-slate-400 border-slate-800'"
+                  class="px-3 py-1.5 rounded-lg border font-semibold transition-colors whitespace-nowrap cursor-pointer">
+                  {{ sec.label }}
+                </button>
+              }
+            } @else {
+              @for (sec of [
+                { id: 'all', label: 'All Sections' },
+                { id: 'hero', label: '📌 Hero & Category' },
+                { id: 'salary', label: '💼 Salary & Career' },
+                { id: 'genai', label: '🤖 GenAI Agency Box' },
+                { id: 'proof', label: '⭐ Case Study & Quotes' }
+              ]; track sec.id) {
+                <button 
+                  (click)="selectedPageSection.set(sec.id)"
+                  [ngClass]="selectedPageSection() === sec.id ? 'bg-slate-800 text-brand-blue border-brand-blue/40' : 'bg-slate-950 text-slate-400 border-slate-800'"
+                  class="px-3 py-1.5 rounded-lg border font-semibold transition-colors whitespace-nowrap cursor-pointer">
+                  {{ sec.label }}
+                </button>
+              }
+            }
+          </div>
+
+          <!-- Split / Full Layout Workspace Grid -->
+          <div class="grid grid-cols-1 gap-6 items-start" [ngClass]="pageEditorViewMode() === 'split' ? 'lg:grid-cols-12' : 'lg:grid-cols-1'">
+            
+            <!-- ============================================== -->
+            <!-- LEFT COLUMN: LIVE EDITABLE FIELD INSPECTORS    -->
+            <!-- ============================================== -->
+            <div [ngClass]="pageEditorViewMode() === 'split' ? 'lg:col-span-7' : 'lg:col-span-12'" class="space-y-6">
+
+              <!-- ========================================== -->
+              <!-- VIEW A: HOME PAGE EDITABLE SECTIONS        -->
+              <!-- ========================================== -->
+              @if (selectedPageId() === 'home') {
+
+                <!-- Section 1: Hero & Announcements -->
+                @if (selectedPageSection() === 'all' || selectedPageSection() === 'hero') {
+                  <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-5 shadow-lg">
+                    <div class="border-b border-slate-800/80 pb-3 flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="p-1.5 rounded-lg bg-blue-500/10 text-brand-blue font-bold text-sm">📌</span>
+                        <div>
+                          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Hero Section & Announcement Ticker</h3>
+                          <p class="text-[11px] text-slate-400">Primary visual impression and above-the-fold value proposition</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
+                        Section: Hero
+                      </span>
+                    </div>
+
+                    <!-- Announcement Ticker Text -->
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between">
+                        <label class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                          <span>Top Announcement Ticker</span>
+                          <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-900 border border-slate-800 text-slate-400">Banner</span>
+                        </label>
+                        <span class="text-[10px] text-slate-400">Recommended: 60–100 chars</span>
+                      </div>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="homeEditForm.announcementText"
+                        (input)="markPageDirty()"
+                        id="field-announcement-text"
+                        placeholder="e.g. Strictly 4 Members Per Batch • 100% Personalized 1-on-1 Mentorship..."
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue text-xs sm:text-sm text-slate-100 placeholder-slate-500 outline-none transition-all" />
+                      
+                      <!-- Live Metric Inspector Bar -->
+                      <div class="flex items-center justify-between text-[11px] font-mono px-1 pt-0.5">
+                        <span class="text-slate-400 flex items-center gap-1.5">
+                          <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getCharCount(homeEditForm.announcementText) >= 40 ? 'bg-emerald-400' : 'bg-slate-400'"></span>
+                          {{ getReadingTime(homeEditForm.announcementText) }}
+                        </span>
+                        <div class="flex items-center gap-2">
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-blue">{{ getCharCount(homeEditForm.announcementText) }}</strong> chars
+                          </span>
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-yellow">{{ getWordCount(homeEditForm.announcementText) }}</strong> words
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Micro-Batch USP Badge -->
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between">
+                        <label class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                          <span>Micro-Cohort USP Badge (Top Pill)</span>
+                          <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/10 border border-amber-500/20 text-brand-yellow">USP</span>
+                        </label>
+                        <span class="text-[10px] text-slate-400">Strictly 4 students constraint</span>
+                      </div>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="homeEditForm.heroBadge"
+                        (input)="markPageDirty()"
+                        id="field-hero-badge"
+                        placeholder="⚡ Strictly 4 Students Per Batch • 100% Individual Mentorship & Live Ad Spend"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue text-xs sm:text-sm text-slate-100 placeholder-slate-500 outline-none transition-all" />
+                      
+                      <!-- Live Metric Inspector Bar -->
+                      <div class="flex items-center justify-between text-[11px] font-mono px-1 pt-0.5">
+                        <span class="text-slate-400 flex items-center gap-1.5">
+                          <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getCharCount(homeEditForm.heroBadge) >= 20 ? 'bg-emerald-400' : 'bg-slate-400'"></span>
+                          {{ getReadingTime(homeEditForm.heroBadge) }}
+                        </span>
+                        <div class="flex items-center gap-2">
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-blue">{{ getCharCount(homeEditForm.heroBadge) }}</strong> chars
+                          </span>
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-yellow">{{ getWordCount(homeEditForm.heroBadge) }}</strong> words
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Main Hero Headline -->
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between">
+                        <label class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                          <span>Main Hero Headline</span>
+                          <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-900 border border-slate-800 text-slate-400">H1 Tag</span>
+                        </label>
+                        <span class="text-[10px] text-slate-400">Recommended: 35–65 chars</span>
+                      </div>
+                      <textarea 
+                        rows="2"
+                        [(ngModel)]="homeEditForm.heroHeadline"
+                        (input)="markPageDirty()"
+                        id="field-hero-headline"
+                        placeholder="e.g. Launch Your Digital Marketing Career in 150 Days."
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue text-sm font-semibold text-white placeholder-slate-500 outline-none transition-all resize-y"></textarea>
+                      
+                      <!-- Live Metric Inspector Bar -->
+                      <div class="flex items-center justify-between text-[11px] font-mono px-1 pt-0.5">
+                        <span class="text-slate-400 flex items-center gap-1.5">
+                          <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getCharCount(homeEditForm.heroHeadline) >= 30 && getCharCount(homeEditForm.heroHeadline) <= 65 ? 'bg-emerald-400' : 'bg-slate-400'"></span>
+                          {{ getReadingTime(homeEditForm.heroHeadline) }}
+                        </span>
+                        <div class="flex items-center gap-2">
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong [ngClass]="getCharCount(homeEditForm.heroHeadline) > 75 ? 'text-amber-400' : 'text-brand-blue'">{{ getCharCount(homeEditForm.heroHeadline) }}</strong> chars
+                          </span>
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-yellow">{{ getWordCount(homeEditForm.heroHeadline) }}</strong> words
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Subheading Description -->
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between">
+                        <label class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                          <span>Subheading Description</span>
+                          <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-900 border border-slate-800 text-slate-400">P Tag</span>
+                        </label>
+                        <span class="text-[10px] text-slate-400">High-converting elevator pitch</span>
+                      </div>
+                      <textarea 
+                        rows="3"
+                        [(ngModel)]="homeEditForm.heroSubheading"
+                        (input)="markPageDirty()"
+                        id="field-hero-subheading"
+                        placeholder="e.g. Master SEO, Ads, and AI with our agency-style training..."
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue text-xs sm:text-sm text-slate-200 placeholder-slate-500 outline-none transition-all resize-y leading-relaxed"></textarea>
+                      
+                      <!-- Live Metric Inspector Bar -->
+                      <div class="flex items-center justify-between text-[11px] font-mono px-1 pt-0.5">
+                        <span class="text-slate-400 flex items-center gap-1.5">
+                          <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getCharCount(homeEditForm.heroSubheading) >= 60 ? 'bg-emerald-400' : 'bg-slate-400'"></span>
+                          {{ getReadingTime(homeEditForm.heroSubheading) }}
+                        </span>
+                        <div class="flex items-center gap-2">
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-blue">{{ getCharCount(homeEditForm.heroSubheading) }}</strong> chars
+                          </span>
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-yellow">{{ getWordCount(homeEditForm.heroSubheading) }}</strong> words
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Primary Hero CTA Label -->
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between">
+                        <label class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                          <span>Hero Primary Button CTA Label</span>
+                          <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-900 border border-slate-800 text-slate-400">Button</span>
+                        </label>
+                        <span class="text-[10px] text-slate-400">Short action verb</span>
+                      </div>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="homeEditForm.heroCtaText"
+                        (input)="markPageDirty()"
+                        id="field-hero-cta"
+                        placeholder="e.g. Book Now"
+                        class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue text-xs sm:text-sm text-slate-100 placeholder-slate-500 outline-none transition-all" />
+                      
+                      <div class="flex items-center justify-between text-[11px] font-mono px-1 pt-0.5">
+                        <span class="text-slate-400">{{ getReadingTime(homeEditForm.heroCtaText) }}</span>
+                        <div class="flex items-center gap-2">
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-blue">{{ getCharCount(homeEditForm.heroCtaText) }}</strong> chars
+                          </span>
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-yellow">{{ getWordCount(homeEditForm.heroCtaText) }}</strong> words
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                }
+
+                <!-- Section 2: Blue Stats Banner -->
+                @if (selectedPageSection() === 'all' || selectedPageSection() === 'stats') {
+                  <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-5 shadow-lg">
+                    <div class="border-b border-slate-800/80 pb-3 flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="p-1.5 rounded-lg bg-blue-500/10 text-brand-blue font-bold text-sm">📊</span>
+                        <div>
+                          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Blue Stats Banner & Floating Proof</h3>
+                          <p class="text-[11px] text-slate-400">High-contrast metrics proving student outcomes and academy authority</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
+                        Section: Stats
+                      </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <!-- Stat 1 -->
+                      <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                        <label class="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">Stat 1</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="homeEditForm.stat1Value" 
+                          (input)="markPageDirty()"
+                          placeholder="10+" 
+                          class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-sm font-bold text-cyan-400 outline-none" />
+                        <input 
+                          type="text" 
+                          [(ngModel)]="homeEditForm.stat1Label" 
+                          (input)="markPageDirty()"
+                          placeholder="Batches" 
+                          class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-300 outline-none" />
+                        <div class="text-[10px] font-mono text-slate-400 text-right">
+                          {{ getCharCount(homeEditForm.stat1Value) + getCharCount(homeEditForm.stat1Label) }} chars
+                        </div>
+                      </div>
+
+                      <!-- Stat 2 -->
+                      <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                        <label class="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">Stat 2</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="homeEditForm.stat2Value" 
+                          (input)="markPageDirty()"
+                          placeholder="93%" 
+                          class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-sm font-bold text-cyan-400 outline-none" />
+                        <input 
+                          type="text" 
+                          [(ngModel)]="homeEditForm.stat2Label" 
+                          (input)="markPageDirty()"
+                          placeholder="Placement Record" 
+                          class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-300 outline-none" />
+                        <div class="text-[10px] font-mono text-slate-400 text-right">
+                          {{ getCharCount(homeEditForm.stat2Value) + getCharCount(homeEditForm.stat2Label) }} chars
+                        </div>
+                      </div>
+
+                      <!-- Stat 3 -->
+                      <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                        <label class="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">Stat 3</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="homeEditForm.stat3Value" 
+                          (input)="markPageDirty()"
+                          placeholder="220+" 
+                          class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-sm font-bold text-cyan-400 outline-none" />
+                        <input 
+                          type="text" 
+                          [(ngModel)]="homeEditForm.stat3Label" 
+                          (input)="markPageDirty()"
+                          placeholder="Students Graduated" 
+                          class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-300 outline-none" />
+                        <div class="text-[10px] font-mono text-slate-400 text-right">
+                          {{ getCharCount(homeEditForm.stat3Value) + getCharCount(homeEditForm.stat3Label) }} chars
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Floating Tags -->
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between">
+                        <label class="text-xs font-semibold text-slate-200">Floating Social Proof Badges (Comma-separated)</label>
+                        <span class="text-[10px] text-slate-400">Separated by comma</span>
+                      </div>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="homeFloatingTagsStr"
+                        (input)="markPageDirty()"
+                        placeholder="Strictly 4 Students/Batch, Live Client Spend, 100% Practical, 1:1 Review"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue text-xs sm:text-sm text-slate-100 placeholder-slate-500 outline-none" />
+                      <div class="flex items-center justify-end text-[11px] font-mono text-slate-400 pt-0.5">
+                        <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                          <strong class="text-brand-blue">{{ getCharCount(homeFloatingTagsStr) }}</strong> chars • <strong class="text-brand-yellow">{{ getWordCount(homeFloatingTagsStr) }}</strong> words
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                }
+
+                <!-- Section 3: Micro-Cohort USP & Mentorship -->
+                @if (selectedPageSection() === 'all' || selectedPageSection() === 'usp') {
+                  <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-5 shadow-lg">
+                    <div class="border-b border-slate-800/80 pb-3 flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="p-1.5 rounded-lg bg-amber-500/10 text-brand-yellow font-bold text-sm">👥</span>
+                        <div>
+                          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Curriculum Pillars & Guaranteed Deliverables</h3>
+                          <p class="text-[11px] text-slate-400">Strictly 4 students per batch USP and agency starter pack</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
+                        Section: Curriculum
+                      </span>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="text-xs font-semibold text-slate-200">Curriculum Section Heading</label>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="homeEditForm.curriculumHeading"
+                        (input)="markPageDirty()"
+                        placeholder="What You'll Master in 150 Days"
+                        class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue text-xs sm:text-sm text-slate-100 outline-none" />
+                      <div class="flex items-center justify-end text-[11px] font-mono text-slate-400 pt-0.5">
+                        <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                          <strong class="text-brand-blue">{{ getCharCount(homeEditForm.curriculumHeading) }}</strong> chars • <strong class="text-brand-yellow">{{ getWordCount(homeEditForm.curriculumHeading) }}</strong> words
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="text-xs font-semibold text-slate-200">Curriculum Section Subheading</label>
+                      <textarea 
+                        rows="2"
+                        [(ngModel)]="homeEditForm.curriculumSubheading"
+                        (input)="markPageDirty()"
+                        placeholder="Consolidated into 4 high-demand agency tracks with strictly 4 students per batch..."
+                        class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue text-xs sm:text-sm text-slate-200 outline-none resize-y"></textarea>
+                      <div class="flex items-center justify-end text-[11px] font-mono text-slate-400 pt-0.5">
+                        <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                          <strong class="text-brand-blue">{{ getCharCount(homeEditForm.curriculumSubheading) }}</strong> chars • <strong class="text-brand-yellow">{{ getWordCount(homeEditForm.curriculumSubheading) }}</strong> words
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Guaranteed Benefits (One per line) -->
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between">
+                        <label class="text-xs font-semibold text-slate-200">Guaranteed Student Deliverables (One per line)</label>
+                        <span class="text-[10px] text-slate-400">Bulleted benefits</span>
+                      </div>
+                      <textarea 
+                        rows="4"
+                        [(ngModel)]="homeBenefitsStr"
+                        (input)="markPageDirty()"
+                        placeholder="100% Practical Client Budget Execution&#10;1-on-1 Desk Mentorship by Agency Founder&#10;Guaranteed Micro-Cohort of Strictly 4 Students&#10;Portfolio With ₹10L+ Ad Spend Proof"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue text-xs text-slate-200 outline-none font-mono resize-y"></textarea>
+                      <div class="flex items-center justify-end text-[11px] font-mono text-slate-400 pt-0.5">
+                        <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                          <strong class="text-brand-blue">{{ getCharCount(homeBenefitsStr) }}</strong> chars • <strong class="text-brand-yellow">{{ getWordCount(homeBenefitsStr) }}</strong> words
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                }
+
+                <!-- Section 4: Mentor Spotlight (Deekshith) -->
+                @if (selectedPageSection() === 'all' || selectedPageSection() === 'mentor') {
+                  <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-5 shadow-lg">
+                    <div class="border-b border-slate-800/80 pb-3 flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="p-1.5 rounded-lg bg-pink-500/10 text-pink-400 font-bold text-sm">👨‍🏫</span>
+                        <div>
+                          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Lead Mentor Spotlight (Deekshith)</h3>
+                          <p class="text-[11px] text-slate-400">Founder credentials and live ₹10L+ ad spend proof</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
+                        Section: Mentor
+                      </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-200">Mentor Full Name</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="homeEditForm.mentorName"
+                          (input)="markPageDirty()"
+                          placeholder="Deekshith"
+                          class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none" />
+                      </div>
+                      <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-200">Mentor Role</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="homeEditForm.mentorRole"
+                          (input)="markPageDirty()"
+                          placeholder="Founder & Head Performance Mentor"
+                          class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none" />
+                      </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="text-xs font-semibold text-slate-200">Ad Spend Handled Highlight Badge</label>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="homeEditForm.mentorAdBudgets"
+                        (input)="markPageDirty()"
+                        placeholder="Managed ₹10L+ in Live Meta & Google Ad Budgets"
+                        class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none" />
+                      <div class="flex items-center justify-end text-[11px] font-mono text-slate-400 pt-0.5">
+                        <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                          <strong class="text-brand-blue">{{ getCharCount(homeEditForm.mentorAdBudgets) }}</strong> chars • <strong class="text-brand-yellow">{{ getWordCount(homeEditForm.mentorAdBudgets) }}</strong> words
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="text-xs font-semibold text-slate-200">Mentor Bio & Mentorship Style</label>
+                      <textarea 
+                        rows="3"
+                        [(ngModel)]="homeEditForm.mentorBio"
+                        (input)="markPageDirty()"
+                        placeholder="Personally coaching each micro-cohort of 4 students..."
+                        class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-200 outline-none resize-y"></textarea>
+                      <div class="flex items-center justify-end text-[11px] font-mono text-slate-400 pt-0.5">
+                        <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                          <strong class="text-brand-blue">{{ getCharCount(homeEditForm.mentorBio) }}</strong> chars • <strong class="text-brand-yellow">{{ getWordCount(homeEditForm.mentorBio) }}</strong> words
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                }
+
+                <!-- Section 5: Contact & Footer -->
+                @if (selectedPageSection() === 'all' || selectedPageSection() === 'footer') {
+                  <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-5 shadow-lg">
+                    <div class="border-b border-slate-800/80 pb-3 flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 font-bold text-sm">📞</span>
+                        <div>
+                          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Contact & Admissions Info</h3>
+                          <p class="text-[11px] text-slate-400">Direct phone numbers, WhatsApp links, and physical address</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
+                        Section: Footer
+                      </span>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="text-xs font-semibold text-slate-200">Admissions Status Banner Badge</label>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="homeEditForm.admissionsStatus"
+                        (input)="markPageDirty()"
+                        placeholder="🟢 Admissions Open for Next Micro-Cohort (Batch #11)"
+                        class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none" />
+                      <div class="flex items-center justify-end text-[11px] font-mono text-slate-400 pt-0.5">
+                        <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                          <strong class="text-brand-blue">{{ getCharCount(homeEditForm.admissionsStatus) }}</strong> chars • <strong class="text-brand-yellow">{{ getWordCount(homeEditForm.admissionsStatus) }}</strong> words
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-200">Direct Phone Number</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="homeEditForm.phone"
+                          (input)="markPageDirty()"
+                          placeholder="+91 98765 43210"
+                          class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none" />
+                      </div>
+                      <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-200">WhatsApp Support Number</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="homeEditForm.whatsappNumber"
+                          (input)="markPageDirty()"
+                          placeholder="+91 98765 43210"
+                          class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none" />
+                      </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="text-xs font-semibold text-slate-200">Physical Campus Location</label>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="homeEditForm.address"
+                        (input)="markPageDirty()"
+                        placeholder="No. 42, Anna Nagar West, Chennai, Tamil Nadu - 600040"
+                        class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none" />
+                    </div>
+
+                  </div>
+                }
+
+              } 
+              <!-- ========================================== -->
+              <!-- VIEW B: COURSE DETAIL PAGES (01, 02, etc.) -->
+              <!-- ========================================== -->
+              @else {
+
+                <!-- Section 1: Course Hero & Category -->
+                @if (selectedPageSection() === 'all' || selectedPageSection() === 'hero') {
+                  <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-5 shadow-lg">
+                    <div class="border-b border-slate-800/80 pb-3 flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="p-1.5 rounded-lg bg-blue-500/10 text-brand-blue font-bold text-sm">🎓</span>
+                        <div>
+                          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Track {{ courseEditForm.id }} Hero & Category Branding</h3>
+                          <p class="text-[11px] text-slate-400">Above-the-fold headline, micro-batch pill, and focus area</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
+                        Track: {{ courseEditForm.id }}
+                      </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <!-- Title Prefix -->
+                      <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                          <label class="text-xs font-semibold text-slate-200">Headline Main Prefix</label>
+                          <span class="text-[10px] text-slate-400">First part</span>
+                        </div>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="courseEditForm.titlePrefix"
+                          (input)="markPageDirty()"
+                          id="field-course-prefix"
+                          placeholder="e.g. Social Media Marketing"
+                          class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue text-xs sm:text-sm text-slate-100 outline-none" />
+                        
+                        <div class="flex items-center justify-end text-[11px] font-mono text-slate-400 pt-0.5">
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-blue">{{ getCharCount(courseEditForm.titlePrefix) }}</strong> chars • <strong class="text-brand-yellow">{{ getWordCount(courseEditForm.titlePrefix) }}</strong> words
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Title Highlight -->
+                      <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                          <label class="text-xs font-semibold text-slate-200">Headline Highlight</label>
+                          <span class="text-[10px] text-brand-blue">Cyan text</span>
+                        </div>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="courseEditForm.titleHighlight"
+                          (input)="markPageDirty()"
+                          id="field-course-highlight"
+                          placeholder="e.g. & AI Automation"
+                          class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue text-xs sm:text-sm text-cyan-400 font-bold outline-none" />
+                        
+                        <div class="flex items-center justify-end text-[11px] font-mono text-slate-400 pt-0.5">
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-blue">{{ getCharCount(courseEditForm.titleHighlight) }}</strong> chars • <strong class="text-brand-yellow">{{ getWordCount(courseEditForm.titleHighlight) }}</strong> words
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Category & USP Badge -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-200">Category Label</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="courseEditForm.category"
+                          (input)="markPageDirty()"
+                          placeholder="Marketing Service • Organic Virality"
+                          class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none" />
+                        <div class="text-[10px] font-mono text-slate-400 text-right">{{ getCharCount(courseEditForm.category) }} chars</div>
+                      </div>
+
+                      <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-200">USP Pill Badge (Pill 3)</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="courseEditForm.heroPill3"
+                          (input)="markPageDirty()"
+                          placeholder="👥 Strictly 4 Students / Batch"
+                          class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-brand-yellow outline-none font-semibold" />
+                        <div class="text-[10px] font-mono text-slate-400 text-right">{{ getCharCount(courseEditForm.heroPill3) }} chars</div>
+                      </div>
+                    </div>
+
+                    <!-- Tagline -->
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between">
+                        <label class="text-xs font-semibold text-slate-200">Course Tagline & Value Pitch</label>
+                        <span class="text-[10px] text-slate-400">1-2 sentences</span>
+                      </div>
+                      <textarea 
+                        rows="2"
+                        [(ngModel)]="courseEditForm.tagline"
+                        (input)="markPageDirty()"
+                        placeholder="Master platform algorithms, audience segmentation, organic virality blueprints..."
+                        class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-200 outline-none resize-y"></textarea>
+                      <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 pt-0.5">
+                        <span class="text-slate-400">{{ getReadingTime(courseEditForm.tagline) }}</span>
+                        <div class="flex items-center gap-2">
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-blue">{{ getCharCount(courseEditForm.tagline) }}</strong> chars
+                          </span>
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-yellow">{{ getWordCount(courseEditForm.tagline) }}</strong> words
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                }
+
+                <!-- Section 2: Salary & Career Outcomes -->
+                @if (selectedPageSection() === 'all' || selectedPageSection() === 'salary') {
+                  <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-5 shadow-lg">
+                    <div class="border-b border-slate-800/80 pb-3 flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 font-bold text-sm">💼</span>
+                        <div>
+                          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Salary Benchmarks & Career Guarantee</h3>
+                          <p class="text-[11px] text-slate-400">CareerFoundry-style salary outcome card</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
+                        Section: Career
+                      </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-200">Average Salary Stat</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="courseEditForm.averageSalary"
+                          (input)="markPageDirty()"
+                          placeholder="₹6.5L – 12L"
+                          class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-sm font-extrabold text-emerald-400 outline-none" />
+                        <div class="text-[10px] font-mono text-slate-400 text-right">{{ getCharCount(courseEditForm.averageSalary) }} chars</div>
+                      </div>
+
+                      <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-200">Salary Context Subtext</label>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="courseEditForm.salarySubtext"
+                          (input)="markPageDirty()"
+                          placeholder="Agency media buyer or growth marketer average CTC"
+                          class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none" />
+                        <div class="text-[10px] font-mono text-slate-400 text-right">{{ getCharCount(courseEditForm.salarySubtext) }} chars</div>
+                      </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="text-xs font-semibold text-slate-200">Alumni Transformation Story Title</label>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="courseEditForm.alumniCaseTitle"
+                        (input)="markPageDirty()"
+                        placeholder="From College Fresher to ₹8.5 LPA Performance Lead"
+                        class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none" />
+                      <div class="flex items-center justify-end text-[11px] font-mono text-slate-400 pt-0.5">
+                        <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                          <strong class="text-brand-blue">{{ getCharCount(courseEditForm.alumniCaseTitle) }}</strong> chars • <strong class="text-brand-yellow">{{ getWordCount(courseEditForm.alumniCaseTitle) }}</strong> words
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                }
+
+                <!-- Section 3: GenAI Agency Callout -->
+                @if (selectedPageSection() === 'all' || selectedPageSection() === 'genai') {
+                  <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-5 shadow-lg">
+                    <div class="border-b border-slate-800/80 pb-3 flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="p-1.5 rounded-lg bg-purple-500/10 text-purple-400 font-bold text-sm">🤖</span>
+                        <div>
+                          <h3 class="text-sm font-bold text-white uppercase tracking-wider">GenAI Automation Agency Workflows</h3>
+                          <p class="text-[11px] text-slate-400">CareerFoundry-style AI curriculum justification banner</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
+                        Section: GenAI
+                      </span>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="text-xs font-semibold text-slate-200">GenAI Callout Question</label>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="courseEditForm.genAiQuestion"
+                        (input)="markPageDirty()"
+                        placeholder="Why is GenAI critical for modern marketing teams?"
+                        class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-100 outline-none" />
+                      <div class="text-[10px] font-mono text-slate-400 text-right">{{ getCharCount(courseEditForm.genAiQuestion) }} chars</div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="text-xs font-semibold text-slate-200">GenAI Callout Detailed Answer</label>
+                      <textarea 
+                        rows="4"
+                        [(ngModel)]="courseEditForm.genAiAnswer"
+                        (input)="markPageDirty()"
+                        placeholder="At Avirbhav, you master ChatGPT-4o copywriting workflows, Midjourney ad graphics, and ManyChat funnels..."
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none resize-y leading-relaxed"></textarea>
+                      <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 pt-0.5">
+                        <span class="text-slate-400">{{ getReadingTime(courseEditForm.genAiAnswer) }}</span>
+                        <div class="flex items-center gap-2">
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-blue">{{ getCharCount(courseEditForm.genAiAnswer) }}</strong> chars
+                          </span>
+                          <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                            <strong class="text-brand-yellow">{{ getWordCount(courseEditForm.genAiAnswer) }}</strong> words
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                }
+
+              }
+
+            </div>
+
+            <!-- ============================================== -->
+            <!-- RIGHT COLUMN: INTERACTIVE LIVE PREVIEW PANE    -->
+            <!-- ============================================== -->
+            @if (pageEditorViewMode() === 'split') {
+              <div class="lg:col-span-5 sticky top-24 space-y-4">
+                
+                <!-- Live Preview Top Header -->
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 shadow-xl flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-white">Live Reactive Preview</span>
+                  </div>
+                  <span class="text-[11px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
+                    Real-time
+                  </span>
+                </div>
+
+                <!-- Live Preview Canvas Container -->
+                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 shadow-2xl space-y-5 max-h-[800px] overflow-y-auto custom-scroll">
+                  
+                  <!-- Preview for Home Page -->
+                  @if (selectedPageId() === 'home') {
+                    
+                    <!-- Preview 1: Announcement Ticker -->
+                    <div class="p-2.5 rounded-xl bg-gradient-to-r from-blue-900/40 via-sky-900/30 to-slate-900 border border-blue-500/30 text-[11px] text-slate-200 flex items-center justify-between gap-2 shadow-inner">
+                      <span class="truncate">{{ homeEditForm.announcementText }}</span>
+                      <span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-brand-yellow text-slate-950 whitespace-nowrap">
+                        {{ homeEditForm.announcementTag || 'EXCLUSIVE' }}
+                      </span>
+                    </div>
+
+                    <!-- Preview 2: Hero Section Card -->
+                    <div class="p-6 rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 space-y-4 shadow-xl">
+                      <!-- Hero Badge -->
+                      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-brand-yellow text-[11px] font-bold">
+                        {{ homeEditForm.heroBadge }}
+                      </div>
+
+                      <!-- Hero Headline -->
+                      <h1 class="text-xl sm:text-2xl font-black text-white leading-tight">
+                        {{ homeEditForm.heroHeadline }}
+                      </h1>
+
+                      <!-- Subheading -->
+                      <p class="text-xs text-slate-300 leading-relaxed">
+                        {{ homeEditForm.heroSubheading }}
+                      </p>
+
+                      <!-- Action Button -->
+                      <div class="pt-2 flex items-center gap-3">
+                        <button class="px-5 py-2 rounded-xl bg-brand-yellow text-slate-950 font-extrabold text-xs shadow-md">
+                          {{ homeEditForm.heroCtaText || 'Book Now' }} ↗
+                        </button>
+                        <span class="text-[11px] text-slate-400 font-mono">1:4 Ratio Capped</span>
+                      </div>
+                    </div>
+
+                    <!-- Preview 3: Blue Stats Banner -->
+                    <div class="p-4 rounded-xl bg-gradient-to-r from-blue-900/70 via-sky-900/80 to-blue-950 border border-sky-500/30 grid grid-cols-3 gap-2 text-center shadow-lg">
+                      <div>
+                        <div class="text-base font-black text-cyan-300 font-heading">{{ homeEditForm.stat1Value }}</div>
+                        <div class="text-[10px] text-slate-300 uppercase font-semibold">{{ homeEditForm.stat1Label }}</div>
+                      </div>
+                      <div class="border-x border-sky-700/40">
+                        <div class="text-base font-black text-cyan-300 font-heading">{{ homeEditForm.stat2Value }}</div>
+                        <div class="text-[10px] text-slate-300 uppercase font-semibold">{{ homeEditForm.stat2Label }}</div>
+                      </div>
+                      <div>
+                        <div class="text-base font-black text-cyan-300 font-heading">{{ homeEditForm.stat3Value }}</div>
+                        <div class="text-[10px] text-slate-300 uppercase font-semibold">{{ homeEditForm.stat3Label }}</div>
+                      </div>
+                    </div>
+
+                    <!-- Preview 4: Mentor Spotlight Mini Card -->
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-3.5">
+                      <div class="w-12 h-12 rounded-full bg-slate-800 border-2 border-brand-blue flex-shrink-0 overflow-hidden flex items-center justify-center font-bold text-white text-sm">
+                        {{ homeEditForm.mentorName ? homeEditForm.mentorName.charAt(0) : 'D' }}
+                      </div>
+                      <div>
+                        <div class="text-xs font-bold text-white">{{ homeEditForm.mentorName }}</div>
+                        <div class="text-[11px] text-brand-blue">{{ homeEditForm.mentorRole }}</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">{{ homeEditForm.mentorAdBudgets }}</div>
+                      </div>
+                    </div>
+
+                  } 
+                  <!-- Preview for Course Page -->
+                  @else {
+
+                    <div class="p-6 rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 space-y-4 shadow-xl">
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-mono font-bold text-brand-blue px-2.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/20">
+                          TRACK {{ courseEditForm.id }}
+                        </span>
+                        <span class="text-[11px] font-semibold text-brand-yellow px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30">
+                          {{ courseEditForm.heroPill3 }}
+                        </span>
+                      </div>
+
+                      <h1 class="text-xl sm:text-2xl font-black text-white leading-tight">
+                        {{ courseEditForm.titlePrefix }} <span class="text-cyan-400">{{ courseEditForm.titleHighlight }}</span>
+                      </h1>
+
+                      <p class="text-xs text-slate-300 leading-relaxed">
+                        {{ courseEditForm.tagline }}
+                      </p>
+
+                      <!-- Salary Pill -->
+                      <div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 flex items-center justify-between">
+                        <span class="text-[11px] text-slate-300">Average Salary:</span>
+                        <span class="text-sm font-extrabold text-emerald-400 font-mono">{{ courseEditForm.averageSalary }}</span>
+                      </div>
+
+                      <!-- GenAI Question Box -->
+                      <div class="p-3.5 rounded-xl bg-purple-950/20 border border-purple-500/30 space-y-1">
+                        <div class="text-[11px] font-bold text-purple-300">🤖 {{ courseEditForm.genAiQuestion }}</div>
+                        <div class="text-[10px] text-slate-300 line-clamp-3 leading-relaxed">{{ courseEditForm.genAiAnswer }}</div>
+                      </div>
+                    </div>
+
+                  }
+
+                </div>
+
+              </div>
+            }
+
+          </div>
+
+        </div>
+      }
+
+      <!-- ============================================== -->
+      <!-- TAB: COURSES & SYLLABUS MANAGEMENT            -->
+      <!-- ============================================== -->
       @if (activeTab() === 'courses') {
         <div class="space-y-6 fade-in">
           
