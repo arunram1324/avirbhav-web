@@ -1,6 +1,6 @@
 name: Deploy website to Hostinger
 
-'on':
+on:
   push:
     branches:
       - arun1324
@@ -22,6 +22,7 @@ jobs:
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
           local-dir: ./
           protocol: ftp
+          timeout: 300000 # <-- Intha line thaan puthusa add aagirukku
           exclude: |
             **/.git*
             **/.git*/**
