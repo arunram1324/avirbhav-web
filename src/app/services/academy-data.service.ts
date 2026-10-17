@@ -141,7 +141,7 @@ export class AcademyDataService {
     heroHeadline: 'Launch Your Digital Marketing\nCareer in 150 Days.',
     heroSubheading: 'Master SEO, Ads, and AI with our agency-style training. Get 100% placement guaranteed —without quitting your day job.',
     heroCtaText: 'Book Now',
-    heroBadge: '⚡ Strictly 4 Students Per Batch • 100% Individual Mentorship & Live Ad Spend',
+    heroBadge: 'Strictly 4 Students Per Batch • 100% Individual Mentorship & Live Ad Spend',
 
     stat1Value: '10+',
     stat1Label: 'Batches',
@@ -481,12 +481,12 @@ export class AcademyDataService {
 
   getCourseDetail(idOrSlug: string): CourseDetailData {
     if (!idOrSlug) return this.courseCatalog()['01'] || getCourseByIdOrSlug('01');
-    
+
     const cat = this.courseCatalog();
     if (cat[idOrSlug]) {
       return cat[idOrSlug];
     }
-    
+
     const normalized = idOrSlug.trim().toLowerCase();
     const found = Object.values(cat).find(
       c => c.slug?.toLowerCase() === normalized || c.id?.toLowerCase() === normalized
@@ -762,7 +762,7 @@ export class AcademyDataService {
 
     const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    
+
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     const today = new Date().toISOString().split('T')[0];
