@@ -1,15 +1,8 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AcademyDataService } from '../../services/academy-data.service';
-
-interface SyllabusModule {
-  id: number;
-  title: string;
-  duration: string;
-  topics: string[];
-  tools: string[];
-}
+import { CourseDetailData, getCourseByIdOrSlug, SyllabusModule, PricingPlan } from '../../data/course-catalog.data';
 
 interface BatchSchedule {
   type: string;
@@ -29,7 +22,30 @@ interface BatchSchedule {
 export class CourseDetailComponent {
   academyService = inject(AcademyDataService);
 
-  @Input() courseId: string = '01';
+  courseIdSignal = signal<string>('01');
+  @Input() set courseId(val: string) {
+    this.courseIdSignal.set(val || '01');
+  }
+  get courseId(): string {
+    return this.courseIdSignal();
+  }
+
+  courseData = computed<CourseDetailData>(() => {
+    return this.academyService.getCourseDetail(this.courseIdSignal());
+  });
+
+  get syllabusModules(): SyllabusModule[] {
+    return this.courseData().syllabusModules;
+  }
+
+  get whyFaqs(): { q: string; a: string }[] {
+    return this.courseData().whyFaqs;
+  }
+
+  get faqs(): { q: string; a: string }[] {
+    return this.courseData().faqs;
+  }
+
   @Output() goBack = new EventEmitter<void>();
   @Output() openBookingModal = new EventEmitter<string>();
 
@@ -125,21 +141,6 @@ export class CourseDetailComponent {
     }
   ];
 
-  // CareerFoundry "Who it is for" Accordions
-  whyFaqs = [
-    {
-      q: 'Who is this program for?',
-      a: 'If you have the ambition to transform your career into digital marketing, freelancing, or high-growth agency roles, this program is designed for you. You don’t need any prior marketing or tech experience as we build from psychological core fundamentals to advanced Meta ad budgets and AI automation. Perfect for fresh graduates, career switchers, and business owners looking to scale.'
-    },
-    {
-      q: 'Why digital marketing & AI automation in 2026?',
-      a: 'Digital marketing is growing exponentially, but 2026 demands marketers who know AI workflows, algorithmic short-form video retention, and profitable paid acquisition. Our graduates don’t just post content; they build automated lead funnels and run high-budget Meta ad campaigns that generate real revenue for brands.'
-    },
-    {
-      q: 'Why Avirbhav Digital Academy instead of large crowded institutes?',
-      a: 'Traditional institutes dump 30 to 50 students in a single lecture room where questions are ignored and ad budgets are simulated on slides. At Avirbhav, our core USP is strictly 4 members per batch. Founder Deekshith Ravisankar sits desk-to-desk with you daily, auditing your real campaigns, allocating real client ad budgets, and coaching you until you are successfully placed.'
-    }
-  ];
 
   // Batch Schedules (Strict 4 Members USP)
   batchSchedules: BatchSchedule[] = [
@@ -190,154 +191,6 @@ export class CourseDetailComponent {
     { label: 'AI Marketing Tools', value: '25+', desc: 'GenAI workflows to 10x agency output' }
   ];
 
-  // 12 Comprehensive Syllabus Modules
-  syllabusModules: SyllabusModule[] = [
-    {
-      id: 1,
-      title: 'Foundation on Business, Brand Positioning & Audience Psychology',
-      duration: 'Week 1 - 2',
-      topics: [
-        'Consumer cognitive biases, attention economy & emotional purchase triggers',
-        'Niche selection & market opportunity audit with real client data',
-        'Brand positioning architecture: 0 to 1 identity systems that dominate niches',
-        'Crafting high-converting value propositions and core offers that sell themselves'
-      ],
-      tools: ['Notion', 'Miro', 'Google Trends', 'AnswerThePublic']
-    },
-    {
-      id: 2,
-      title: 'The Social Algorithm Engine: Instagram, YouTube, LinkedIn & X',
-      duration: 'Week 3 - 4',
-      topics: [
-        'Deconstructing recommendation algorithms: Watch time, shares, saves & velocity',
-        'Instagram Graph API & profile conversion funnels (turning viewers into paying followers)',
-        'YouTube Shorts algorithm mechanics vs long-form search intent ranking',
-        'LinkedIn thought leadership architecture for high-ticket B2B client acquisition'
-      ],
-      tools: ['Instagram Insights', 'YouTube Studio', 'Shield Analytics', 'Metricool']
-    },
-    {
-      id: 3,
-      title: '3-Second Retention Hook & Short-Form Video Mastery (Reels / Shorts)',
-      duration: 'Week 5 - 6',
-      topics: [
-        'The psychology of the 3-second visual and audio hook',
-        'Storyboarding viral short-form narratives using the Problem-Agitation-Solution formula',
-        'Audio trend forecasting and sound synchronization techniques',
-        'Batching 30 high-converting reels in a single weekend shoot'
-      ],
-      tools: ['CapCut Pro', 'Teleprompter AI', 'Epidemic Sound', 'Descript']
-    },
-    {
-      id: 4,
-      title: 'AI Content & Copywriting Systems (ChatGPT-4o, Claude 3.5 & Perplexity)',
-      duration: 'Week 7 - 8',
-      topics: [
-        'Advanced prompt engineering for persuasive marketing copy that converts',
-        'Training custom GPTs on brand voice, customer personas and competitive tone',
-        'AI-driven viral scriptwriting for video creators and founder brands',
-        'Building automated content repurposing pipelines (1 idea → 10 visual assets)'
-      ],
-      tools: ['ChatGPT-4o', 'Claude 3.5 Sonnet', 'Perplexity AI', 'Copy.ai']
-    },
-    {
-      id: 5,
-      title: 'AI-Powered Graphic Designing & Visual Identity Systems',
-      duration: 'Week 9 - 10',
-      topics: [
-        'Visual hierarchy, typography psychology and high-contrast social aesthetics',
-        'Canva AI Mastery: Magic Switch, Bulk Create, Background remover & Brand kits',
-        'Midjourney prompt mastery for hyper-realistic commercial ad visuals',
-        'Designing carousel slides with 80%+ swipe-through completion rates'
-      ],
-      tools: ['Canva Pro AI', 'Midjourney v6', 'Figma', 'Photoshop AI']
-    },
-    {
-      id: 6,
-      title: 'Video Editing & Motion Graphics for High-Retention Social Ads',
-      duration: 'Week 11 - 12',
-      topics: [
-        'Pacing, jump cuts, visual B-roll inserts, and audio design',
-        'Kinetic typography, animated auto-captions and sound effect (SFX) layering',
-        'Color grading for mobile displays (OLED & Retina display optimization)',
-        'Export presets for zero compression quality loss on Instagram'
-      ],
-      tools: ['CapCut Desktop', 'Adobe Premiere Pro', 'Submagic', 'ElevenLabs AI']
-    },
-    {
-      id: 7,
-      title: 'Organic Virality Blueprints & Community Building',
-      duration: 'Week 13 - 14',
-      topics: [
-        'Collaborations, remix culture and piggybacking on cultural trends',
-        'Community engagement loops: DMs, broadcast channels and comment funneling',
-        'User-Generated Content (UGC) campaigns that generate viral word-of-mouth',
-        'Crisis management and managing negative sentiment online'
-      ],
-      tools: ['ManyChat', 'Instagram Broadcast', 'Telegram Channels', 'SocialBlade']
-    },
-    {
-      id: 8,
-      title: 'Meta Ads Manager: Facebook & Instagram Paid Acquisition',
-      duration: 'Week 15 - 16',
-      topics: [
-        'Campaign Budget Optimization (CBO) vs Ad Set Budget (ABO)',
-        'Custom Audiences, Lookalikes (1%-10%) and Conversions API (CAPI) setup',
-        'Creative testing matrix: Hook variations, copy angles and thumbnail testing',
-        'Scaling winning ads from ₹1,000/day to ₹50,000/day profitably without burning ROAS'
-      ],
-      tools: ['Meta Ads Manager', 'Meta Pixel Helper', 'Google Tag Manager', 'Triple Whale']
-    },
-    {
-      id: 9,
-      title: 'Influencer Marketing & Brand Collaboration Deals',
-      duration: 'Week 17 - 18',
-      topics: [
-        'Identifying fake followers vs high-engagement micro-influencers',
-        'Cold outreach email & DM negotiation scripts that get 40%+ reply rates',
-        'Contract drafting, deliverables timeline and licensing rights',
-        'Affiliate tracking, discount codes and performance-driven payouts'
-      ],
-      tools: ['HypeAuditor', 'Modash', 'Notion CRM', 'DocuSign']
-    },
-    {
-      id: 10,
-      title: 'Social Media Automation & Lead Funnels (n8n, Make & Zapier)',
-      duration: 'Week 19 - 20',
-      topics: [
-        'Automated Instagram DM responses with keyword triggers (ManyChat)',
-        'Building no-code lead capture pipelines syncing DMs directly to Google Sheets & CRM',
-        'Automated daily performance alerts to WhatsApp and Slack via n8n',
-        'AI auto-reply agents that qualify leads before routing to sales calls'
-      ],
-      tools: ['n8n', 'Make.com', 'ManyChat', 'Zapier']
-    },
-    {
-      id: 11,
-      title: 'Analytics, Conversion Attribution & Monthly Client Reporting SOPs',
-      duration: 'Week 21 - 22',
-      topics: [
-        'Setting up Google Analytics 4 (GA4) with UTM parameter tagging',
-        'Building client-facing executive dashboards in Looker Studio',
-        'Attribution modeling: First-click vs Last-click vs Data-driven attribution',
-        'How to deliver a 30-minute monthly client review that secures contract renewals'
-      ],
-      tools: ['Google Analytics 4', 'Looker Studio', 'Supermetrics', 'Bitly']
-    },
-    {
-      id: 12,
-      title: 'Freelancing, High-Ticket Retainers & Placement Masterclass',
-      duration: 'Week 23 - 24',
-      topics: [
-        'Positioning yourself as a high-ticket Social Media Growth Consultant ($1k - $3k/mo)',
-        'Winning proposals and contract templates that protect your retainers',
-        'Upwork, LinkedIn and cold email client acquisition frameworks',
-        'Portfolio showcase build + Agency mock interviews with 100% placement support'
-      ],
-      tools: ['Upwork', 'LinkedIn Sales Navigator', 'Loom', 'Stripe / Wise']
-    }
-  ];
-
   // Industry Tools Grid
   toolsCovered = [
     { name: 'Meta Ads Manager', cat: 'Paid Advertising', icon: '📊' },
@@ -382,34 +235,6 @@ export class CourseDetailComponent {
     }
   ];
 
-  // FAQs emphasizing 4 members per batch USP
-  faqs = [
-    {
-      q: 'Why does Avirbhav strictly admit only 4 members per batch?',
-      a: 'Crowded classroom institutes pack 30 to 50 students in a batch where individual doubts are ignored. At Avirbhav, our core USP is 100% individual mentor attention. With only 4 members per batch, mentor Deekshith Ravisankar personally audits your campaigns, ad budgets, video scripts, and portfolio daily.'
-    },
-    {
-      q: 'Do I need prior marketing or technical knowledge to join this program?',
-      a: 'No prior experience is required! We start from fundamental brand psychology and business foundations, moving step-by-step into hands-on video editing, AI tools, and paid ads.'
-    },
-    {
-      q: 'Is this training practical or purely theoretical?',
-      a: '100% practical hands-on. You will work on real client budget accounts, create live ad campaigns, edit 30+ actual video reels, and build an agency-ready portfolio.'
-    },
-    {
-      q: 'Can working professionals attend on weekends?',
-      a: 'Yes! We offer a dedicated Weekend Intensive batch (Sunday 09:30 AM to 01:00 PM) plus weekday evening online batches (07:30 PM - 09:00 PM) designed specifically for working individuals.'
-    },
-    {
-      q: 'How does Avirbhav ensure 100% placement support?',
-      a: 'We have direct hiring partnerships with 40+ leading digital marketing agencies and e-commerce brands in Chennai and Bangalore. With only 4 students graduating per batch, our placement team gives each student dedicated attention until they receive multiple offer letters.'
-    },
-    {
-      q: 'What is the medium of instruction?',
-      a: 'Sessions are taught in clear, easy-to-understand Tamil + English (Bilingual mode), ensuring complex technical and marketing concepts are thoroughly understood.'
-    }
-  ];
-
   getFormattedId(id: number): string {
     return id < 10 ? '0' + id : '' + id;
   }
@@ -443,8 +268,8 @@ export class CourseDetailComponent {
       name: this.leadName.trim(),
       phone: this.leadPhone.trim(),
       email: this.leadEmail ? this.leadEmail.trim() : '',
-      program: 'Social Media Marketing with AI Automation (Mastery)',
-      source: `Course Details (Exclusive 4-Member ${this.learningMode} Batch)`,
+      program: this.courseData().shortTitle + ' (150-Day Mastery)',
+      source: `Course Details - ${this.courseData().shortTitle} (Exclusive 4-Member ${this.learningMode} Batch)`,
       notes: `Learning Mode: ${this.learningMode}. Fast-track reservation requested for 4-member batch.`
     });
 
@@ -454,7 +279,7 @@ export class CourseDetailComponent {
     const phoneClean = this.leadPhone.replace(/[^0-9]/g, '');
     const cleanPhoneWithCountry = phoneClean.length === 10 ? `91${phoneClean}` : phoneClean;
     const msg = encodeURIComponent(
-      `Hi Deekshith, I want to reserve a seat in the 4-Member Social Media Marketing Batch (${this.learningMode})! Name: ${this.leadName}. Please confirm seat availability & batch timings.`
+      `Hi Deekshith, I want to reserve a seat in the 4-Member ${this.courseData().shortTitle} Batch (${this.learningMode})! Name: ${this.leadName}. Please confirm seat availability & batch timings.`
     );
     
     if (typeof window !== 'undefined') {

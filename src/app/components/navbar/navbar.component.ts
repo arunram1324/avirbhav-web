@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AcademyDataService } from '../../services/academy-data.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,17 +12,21 @@ import { CommonModule } from '@angular/common';
         
         <!-- Logo -->
         <a href="#" class="flex items-center gap-3.5 group select-none">
-          <div class="relative w-11 h-9 sm:w-12 sm:h-10 flex items-center justify-center">
-            <!-- Geometric AV Logo -->
-            <svg class="w-full h-full" viewBox="0 0 70 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- A triangle in yellow -->
-              <path d="M5 45L25 5L45 45H32L25 30L18 45H5Z" fill="#FBEC52" />
-              <!-- V triangle in cyan blue -->
-              <path d="M30 5H43L50 26L57 5H70L55 45H45L30 5Z" fill="#0CA9FF" />
-              <!-- Corner box accent -->
-              <rect x="2" y="2" width="66" height="46" rx="2" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="3 3" class="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </svg>
-          </div>
+          @if (academyService.siteContent().siteLogoUrl && academyService.siteContent().siteLogoUrl !== '/images/logo.png') {
+            <img [src]="academyService.siteContent().siteLogoUrl" alt="Avirbhav Logo" class="h-9 sm:h-10 w-auto object-contain" />
+          } @else {
+            <div class="relative w-11 h-9 sm:w-12 sm:h-10 flex items-center justify-center">
+              <!-- Geometric AV Logo -->
+              <svg class="w-full h-full" viewBox="0 0 70 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- A triangle in yellow -->
+                <path d="M5 45L25 5L45 45H32L25 30L18 45H5Z" fill="#FBEC52" />
+                <!-- V triangle in cyan blue -->
+                <path d="M30 5H43L50 26L57 5H70L55 45H45L30 5Z" fill="#0CA9FF" />
+                <!-- Corner box accent -->
+                <rect x="2" y="2" width="66" height="46" rx="2" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="3 3" class="opacity-0 group-hover:opacity-100 transition-opacity" />
+              </svg>
+            </div>
+          }
           <div class="flex flex-col">
             <span class="text-xs sm:text-sm font-semibold tracking-wider text-slate-800 uppercase leading-none">Avirbhav Infotech</span>
             <span class="text-[10px] text-slate-400 font-medium tracking-wide">Digital Academy</span>
@@ -34,7 +39,7 @@ import { CommonModule } from '@angular/common';
           
           <!-- Programs Dropdown -->
           <div class="relative group" (mouseenter)="isProgramsOpen.set(true)" (mouseleave)="isProgramsOpen.set(false)">
-            <button class="flex items-center gap-1.5 hover:text-brand-blue transition-colors focus:outline-none py-2">
+            <button class="flex items-center gap-1.5 hover:text-brand-blue transition-colors focus:outline-none py-2 cursor-pointer">
               <span>Programs</span>
               <svg class="w-4 h-4 text-slate-400 group-hover:text-brand-blue transition-transform duration-200 group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
@@ -43,48 +48,24 @@ import { CommonModule } from '@angular/common';
 
             <!-- Dropdown Menu -->
             @if (isProgramsOpen()) {
-              <div class="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2.5 z-50 fade-in">
-                <button 
-                  type="button"
-                  (click)="viewCourse.emit('01'); isProgramsOpen.set(false)" 
-                  class="w-full flex items-start gap-3 p-2.5 rounded-xl hover:bg-blue-50/70 transition-colors text-left cursor-pointer group">
-                  <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-brand-blue flex items-center justify-center font-bold text-xs shrink-0 group-hover:bg-brand-blue group-hover:text-white transition-colors">SMM</div>
-                  <div>
-                    <div class="font-bold text-slate-900 text-sm group-hover:text-brand-blue transition-colors flex items-center gap-1.5">
-                      <span>Social Media Marketing</span>
-                      <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-yellow-100 text-amber-800 font-bold">HOT</span>
+              <div class="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2.5 z-50 fade-in max-h-96 overflow-y-auto">
+                @for (course of academyService.courses(); track course.id) {
+                  <button 
+                    type="button"
+                    (click)="viewCourse.emit(course.id); isProgramsOpen.set(false)" 
+                    class="w-full flex items-start gap-3 p-2.5 rounded-xl hover:bg-blue-50/70 transition-colors text-left cursor-pointer group">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-brand-blue flex items-center justify-center font-bold text-xs shrink-0 group-hover:bg-brand-blue group-hover:text-white transition-colors">
+                      {{ course.icon || course.id }}
                     </div>
-                    <div class="text-xs text-slate-500">AI Automation & Virality Blueprint</div>
-                  </div>
-                </button>
-                <a href="#curriculum" (click)="isProgramsOpen.set(false)" class="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div class="w-8 h-8 rounded-lg bg-blue-50 text-brand-blue flex items-center justify-center font-bold text-xs shrink-0">DM</div>
-                  <div>
-                    <div class="font-semibold text-slate-900 text-sm">Digital Marketing 150D</div>
-                    <div class="text-xs text-slate-500">Comprehensive agency-style program</div>
-                  </div>
-                </a>
-                <a href="#curriculum" (click)="isProgramsOpen.set(false)" class="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div class="w-8 h-8 rounded-lg bg-yellow-50 text-amber-600 flex items-center justify-center font-bold text-xs shrink-0">SEO</div>
-                  <div>
-                    <div class="font-semibold text-slate-900 text-sm">SEO & Web Ranking</div>
-                    <div class="text-xs text-slate-500">Technical & organic traffic growth</div>
-                  </div>
-                </a>
-                <a href="#curriculum" (click)="isProgramsOpen.set(false)" class="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div class="w-8 h-8 rounded-lg bg-blue-50 text-indigo-600 flex items-center justify-center font-bold text-xs shrink-0">ADS</div>
-                  <div>
-                    <div class="font-semibold text-slate-900 text-sm">Meta & Google Ads</div>
-                    <div class="text-xs text-slate-500">High-ROI performance campaigns</div>
-                  </div>
-                </a>
-                <a href="#curriculum" (click)="isProgramsOpen.set(false)" class="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs shrink-0">AI</div>
-                  <div>
-                    <div class="font-semibold text-slate-900 text-sm">AI Marketing Tools</div>
-                    <div class="text-xs text-slate-500">ChatGPT, Midjourney & Automations</div>
-                  </div>
-                </a>
+                    <div>
+                      <div class="font-bold text-slate-900 text-sm group-hover:text-brand-blue transition-colors flex items-center gap-1.5">
+                        <span>{{ course.title }}</span>
+                        <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-blue-100 text-blue-800 font-bold uppercase">{{ course.badge }}</span>
+                      </div>
+                      <div class="text-xs text-slate-500 line-clamp-1">{{ course.desc }}</div>
+                    </div>
+                  </button>
+                }
               </div>
             }
           </div>
@@ -144,6 +125,7 @@ import { CommonModule } from '@angular/common';
   `
 })
 export class NavbarComponent {
+  academyService = inject(AcademyDataService);
   @Output() openBooking = new EventEmitter<string>();
   @Output() viewCourse = new EventEmitter<string>();
 

@@ -17,7 +17,7 @@ import { AcademyDataService } from '../../services/academy-data.service';
         <!-- Micro-Batch USP Badge -->
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 text-xs sm:text-sm font-bold text-brand-blue mb-6 shadow-sm">
           <span class="w-2 h-2 rounded-full bg-brand-blue animate-pulse"></span>
-          <span>⚡ Strictly 4 Students Per Batch • 100% Individual Mentorship & Live Ad Spend</span>
+          <span>{{ academyService.siteContent().heroBadge }}</span>
         </div>
 
         <!-- Main Headline (Pixel-perfect Figma match & Dynamically editable) -->

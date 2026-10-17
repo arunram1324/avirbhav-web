@@ -3,12 +3,15 @@
   <!-- ============================================== -->
   <!-- 0. TOP USP ANNOUNCEMENT TICKER (HOME THEME)   -->
   <!-- ============================================== -->
-  <div class="bg-[#0F172A] text-white py-2.5 px-4 text-center text-xs font-semibold tracking-wide border-b border-slate-800">
+  <div
+    class="bg-[#0F172A] text-white py-2.5 px-4 text-center text-xs font-semibold tracking-wide border-b border-slate-800">
     <div class="max-w-[1500px] mx-auto flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
-      <span class="px-2.5 py-0.5 rounded-full bg-brand-yellow text-slate-950 text-[10px] font-black uppercase tracking-wider">
+      <span
+        class="px-2.5 py-0.5 rounded-full bg-brand-yellow text-slate-950 text-[10px] font-black uppercase tracking-wider">
         AVIRBHAV CORE USP
       </span>
-      <span>Strictly <strong>4 Members Per Batch</strong> • 100% Personalized 1-on-1 Mentorship & Live Client Ad Spend</span>
+      <span>Strictly <strong>4 Members Per Batch</strong> • 100% Personalized 1-on-1 Mentorship & Live Client Ad
+        Spend</span>
       <span class="hidden md:inline text-slate-400">|</span>
       <span class="hidden md:inline text-brand-yellow font-bold">Next Batch Admissions Closing Soon!</span>
     </div>
@@ -17,13 +20,13 @@
   <!-- ============================================== -->
   <!-- 1. TOP STICKY NAVIGATION / BREADCRUMBS BAR     -->
   <!-- ============================================== -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 py-3.5 transition-all">
+  <header
+    class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 py-3.5 transition-all">
     <div class="max-w-[1500px] mx-auto flex items-center justify-between gap-4">
-      
+
       <!-- Logo & Back Button -->
       <div class="flex items-center gap-4 sm:gap-6">
-        <button 
-          (click)="goBack.emit()" 
+        <button (click)="goBack.emit()"
           class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-bold border border-slate-200 transition-all hover:scale-105 cursor-pointer">
           <span>← Back to Home</span>
         </button>
@@ -33,23 +36,21 @@
           <span>/</span>
           <span class="hover:text-brand-blue cursor-pointer" (click)="goBack.emit()">Programs</span>
           <span>/</span>
-          <span class="text-brand-blue font-bold truncate max-w-xs">Social Media Marketing</span>
+          <span class="text-brand-blue font-bold truncate max-w-xs">{{ courseData().shortTitle }}</span>
         </div>
       </div>
 
       <!-- Quick Actions -->
       <div class="flex items-center gap-3 sm:gap-5">
         <!-- Direct Phone -->
-        <a 
-          href="tel:+917010440863" 
+        <a href="tel:+917010440863"
           class="hidden sm:inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-brand-blue transition-colors">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span>+91 70104 40863</span>
         </a>
 
         <!-- Header CTA Yellow Pill (Home Theme) -->
-        <button 
-          (click)="triggerBooking('Course Detail Header CTA')"
+        <button (click)="triggerBooking('Course Detail Header CTA')"
           class="inline-flex items-center gap-2 bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-yellow-glow hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 cursor-pointer">
           <span>Book 1:1 Slot</span>
           <svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -65,46 +66,50 @@
   <!-- ======================================================== -->
   <section id="hero" class="relative bg-white pt-10 sm:pt-14 pb-14 sm:pb-20 overflow-hidden border-b border-slate-100">
     <!-- Ambient subtle background glow -->
-    <div class="absolute top-1/3 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-blue-50/80 via-yellow-50/40 to-transparent blur-3xl -z-10 pointer-events-none"></div>
+    <div
+      class="absolute top-1/3 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-blue-50/80 via-yellow-50/40 to-transparent blur-3xl -z-10 pointer-events-none">
+    </div>
 
     <div class="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-12">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-        
+
         <!-- Left Column: Copy & CTAs (CareerFoundry Style) -->
         <div class="lg:col-span-7 space-y-6">
-          
+
           <!-- CareerFoundry Pill Tags Row -->
           <div class="flex items-center gap-2.5 flex-wrap">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-brand-blue/30 text-brand-blue text-xs font-bold">
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-brand-blue/30 text-brand-blue text-xs font-bold">
               <span>🛡️</span>
               <span>100% Job Guarantee</span>
             </span>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-800 text-xs font-black">
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-800 text-xs font-black">
               <span>👥</span>
               <span>Strictly 4 Students / Batch (1:4 Ratio)</span>
             </span>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold">
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold">
               <span>⚡</span>
-              <span>AI-Enhanced Mastery</span>
+              <span>{{ courseData().heroPill3 }}</span>
             </span>
           </div>
 
           <!-- Headline (Outfit Bold) -->
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0F172A] tracking-tight leading-[1.12]">
-            Social Media Marketing &amp; AI Automation 
-            <span class="text-brand-blue">Program</span>
+            {{ courseData().titlePrefix }}
+            <span class="text-brand-blue">{{ courseData().titleHighlight }}</span>
           </h1>
 
           <!-- Lead Paragraph -->
           <p class="text-base sm:text-lg text-slate-600 font-normal leading-relaxed max-w-2xl">
-            Develop the in-demand skills of a high-performance digital marketer, learn how to leverage GenAI tools &amp; automations, and work with personal mentors in an exclusive 4-student cohort. Complete hands-on client projects with a job guarantee at graduation.
+            {{ courseData().tagline }}
           </p>
 
           <!-- Dual CTA Buttons (CareerFoundry Hero Actions) -->
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
             <!-- Primary Yellow Pill CTA -->
-            <button 
-              (click)="scrollToSection('tuition-fee')"
+            <button (click)="scrollToSection('tuition-fee')"
               class="inline-flex items-center justify-center gap-2 bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-black text-sm sm:text-base px-8 py-4 rounded-full shadow-yellow-glow hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 cursor-pointer">
               <span>Reserve 1 of 4 Batch Seats</span>
               <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -113,12 +118,12 @@
             </button>
 
             <!-- Secondary Outline Pill CTA -->
-            <button 
-              (click)="downloadBrochure()"
+            <button (click)="downloadBrochure()"
               class="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base px-7 py-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all cursor-pointer">
               <span>Get Program Guide</span>
               <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </button>
           </div>
@@ -127,12 +132,16 @@
           <div class="flex items-center gap-4 pt-4 border-t border-slate-100">
             <!-- Overlapping Avatars -->
             <div class="flex -space-x-2 overflow-hidden">
-              <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 border-2 border-white text-xs font-black text-brand-blue">DS</span>
-              <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-amber-100 border-2 border-white text-xs font-black text-amber-700">KR</span>
-              <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-emerald-100 border-2 border-white text-xs font-black text-emerald-700">PR</span>
-              <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-purple-100 border-2 border-white text-xs font-black text-purple-700">AK</span>
+              <span
+                class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 border-2 border-white text-xs font-black text-brand-blue">DS</span>
+              <span
+                class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-amber-100 border-2 border-white text-xs font-black text-amber-700">KR</span>
+              <span
+                class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-emerald-100 border-2 border-white text-xs font-black text-emerald-700">PR</span>
+              <span
+                class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-purple-100 border-2 border-white text-xs font-black text-purple-700">AK</span>
             </div>
-            
+
             <div class="text-xs sm:text-sm text-slate-700">
               <span class="font-bold text-slate-900">+220 Avirbhav students graduated</span>
               <span class="text-slate-400 mx-1.5">•</span>
@@ -145,30 +154,30 @@
         <!-- Right Column: Hero Portrait Card (CareerFoundry Visual Style) -->
         <div class="lg:col-span-5">
           <div class="relative mx-auto max-w-md lg:max-w-none">
-            
+
             <!-- Main Portrait Card -->
-            <div class="relative rounded-[32px] overflow-hidden bg-slate-900 border border-slate-200/80 shadow-2xl group">
-              <img 
-                src="images/instructor.png" 
-                alt="Deekshith Ravisankar - Lead Mentor" 
-                class="w-full h-[480px] sm:h-[540px] object-cover object-top filter brightness-[0.98] group-hover:scale-105 transition-transform duration-700">
-              
+            <div class="relative rounded-[32px] overflow-hidden  border-slate-200/80  group">
+              <img src="images/instructor.png" alt="Deekshith Ravisankar - Lead Mentor"
+                class="w-full h-[300px] sm:h-[540px] object-cover object-top filter brightness-[0.98] group-hover:scale-105 transition-transform duration-700">
+
               <!-- Subtle dark vignette at bottom -->
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+              <!-- <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div> -->
 
               <!-- Top Star Badge (Course Report Style) -->
-              <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-md border border-slate-200 flex items-center gap-1.5">
+              <!-- <div
+                class="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-md border border-slate-200 flex items-center gap-1.5">
                 <span class="text-amber-400 text-xs">★★★★★</span>
                 <span class="text-[11px] font-black tracking-wider text-slate-900">4.9/5 RATED</span>
-              </div>
+              </div> -->
 
               <!-- Top Left USP Pill -->
-              <div class="absolute top-4 left-4 bg-brand-yellow/95 backdrop-blur-md px-3 py-1 rounded-full shadow-md text-slate-950 text-[11px] font-black uppercase tracking-wider">
+              <!-- <div class="absolute top-4 left-4 bg-brand-yellow/95 backdrop-blur-md px-3 py-1 rounded-full shadow-md text-slate-950 text-[11px] font-black uppercase tracking-wider">
                 Strictly 4 Students / Batch
-              </div>
+              </div> -->
 
               <!-- Bottom Overlay Profile Card -->
-              <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200/90 shadow-lg">
+              <div
+                class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200/90 shadow-lg">
                 <div class="flex items-center justify-between">
                   <div>
                     <h4 class="text-base font-black text-[#0F172A]">Deekshith Ravisankar</h4>
@@ -199,7 +208,7 @@
       <!-- ==================================================== -->
       <aside class="hidden lg:block lg:col-span-3 sticky top-24 space-y-6">
         <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6">
-          
+
           <div class="border-b border-slate-100 pb-3">
             <span class="text-[11px] font-black tracking-widest text-slate-400 uppercase">
               Program Contents
@@ -208,9 +217,7 @@
 
           <!-- Navigation Links List -->
           <nav class="space-y-1">
-            <button 
-              *ngFor="let item of sidebarItems"
-              (click)="scrollToSection(item.id)"
+            <button *ngFor="let item of sidebarItems" (click)="scrollToSection(item.id)"
               [ngClass]="activeSidebarSection() === item.id ? 'bg-blue-50 text-brand-blue font-black pl-4 border-l-4 border-brand-blue' : 'text-slate-600 hover:text-[#0F172A] hover:bg-slate-50 font-medium pl-3 border-l-4 border-transparent'"
               class="w-full text-left py-2.5 pr-3 rounded-r-xl text-sm transition-all flex items-center justify-between cursor-pointer">
               <span>{{ item.label }}</span>
@@ -220,13 +227,11 @@
 
           <!-- Sidebar Actions -->
           <div class="pt-4 border-t border-slate-100 space-y-3">
-            <button 
-              (click)="scrollToSection('tuition-fee')"
+            <button (click)="scrollToSection('tuition-fee')"
               class="w-full bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-black text-xs py-3 px-4 rounded-full shadow-yellow-glow hover:shadow-md transition-all text-center cursor-pointer">
               Reserve 1 of 4 Seats ↗
             </button>
-            <button 
-              (click)="downloadBrochure()"
+            <button (click)="downloadBrochure()"
               class="w-full bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs py-2.5 px-4 rounded-full border border-slate-200 transition-all text-center cursor-pointer">
               Get Program Guide
             </button>
@@ -255,26 +260,25 @@
         <!-- SECTION 1: OVERVIEW (#overview)                    -->
         <!-- -------------------------------------------------- -->
         <section id="overview" class="scroll-mt-header space-y-8">
-          
+
           <div class="space-y-3">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tight">
-              Launch a career in tech 
-              <span class="text-brand-blue">that lasts</span>
+              {{ courseData().overviewHeading }}
+              <span class="text-brand-blue">{{ courseData().overviewHighlight }}</span>
             </h2>
             <p class="text-slate-600 text-base sm:text-lg max-w-3xl leading-relaxed">
-              Launch a new career as a full-stack digital marketer in as little as 5 months with personalized 1-on-1 mentorship.
+              {{ courseData().overviewSubheading }}
             </p>
           </div>
 
           <!-- CareerFoundry Showcase Container -->
           <div class="relative rounded-3xl overflow-hidden bg-slate-950 border border-slate-200 shadow-xl group">
-            <img 
-              src="images/poster1.png" 
-              alt="Course Overview Showcase" 
+            <img src="images/poster1.png" alt="Course Overview Showcase"
               class="w-full h-[320px] sm:h-[460px] object-cover filter brightness-[0.85] group-hover:scale-102 transition-transform duration-500">
-            
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 flex flex-col justify-between p-6 sm:p-8">
-              
+
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 flex flex-col justify-between p-6 sm:p-8">
+
               <div class="flex items-center justify-between">
                 <span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-[#0F172A] font-bold text-xs">
                   Mastery Program Breakdown
@@ -286,8 +290,7 @@
 
               <!-- Centered Play Button -->
               <div class="self-center my-auto">
-                <button 
-                  (click)="triggerBooking('Overview Video Play')"
+                <button (click)="triggerBooking('Overview Video Play')"
                   class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white text-brand-blue flex items-center justify-center shadow-2xl hover:scale-110 transition-transform cursor-pointer">
                   <svg class="w-7 h-7 sm:w-8 sm:h-8 fill-brand-blue ml-1" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
@@ -297,21 +300,9 @@
 
               <!-- Bottom Stats Row -->
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-white pt-4 border-t border-white/20">
-                <div>
-                  <div class="text-lg sm:text-xl font-black text-brand-yellow">4 Only</div>
-                  <div class="text-xs text-slate-300">Strict Students / Batch</div>
-                </div>
-                <div>
-                  <div class="text-lg sm:text-xl font-black">5 Months</div>
-                  <div class="text-xs text-slate-300">150 Days Mastery</div>
-                </div>
-                <div>
-                  <div class="text-lg sm:text-xl font-black">30+ Tools</div>
-                  <div class="text-xs text-slate-300">GenAI &amp; Ad Stack</div>
-                </div>
-                <div>
-                  <div class="text-lg sm:text-xl font-black text-brand-blue">₹10L+</div>
-                  <div class="text-xs text-slate-300">Live Client Ad Spend</div>
+                <div *ngFor="let st of courseData().statBar; let idx = index">
+                  <div class="text-lg sm:text-xl font-black" [ngClass]="idx === 0 ? 'text-brand-yellow' : (idx === 3 ? 'text-brand-blue' : '')">{{ st.value }}</div>
+                  <div class="text-xs text-slate-300">{{ st.label }}</div>
                 </div>
               </div>
 
@@ -324,36 +315,36 @@
         <!-- SECTION 2: JOB GUARANTEE & BENTO GRID (#job-guarantee) -->
         <!-- -------------------------------------------------- -->
         <section id="job-guarantee" class="scroll-mt-header space-y-8">
-          
+
           <div class="space-y-3">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tight">
-              Graduate with our job 
+              Graduate with our job
               <span class="text-brand-blue">guarantee</span>
             </h2>
             <p class="text-slate-600 text-base sm:text-lg max-w-3xl leading-relaxed">
-              Land a high-income marketing role or client retainers within 6 months of graduation—or we’ll refund your tuition.
+              Land a high-income marketing role or client retainers within 6 months of graduation—or we’ll refund your
+              tuition.
             </p>
           </div>
 
           <!-- CareerFoundry 4-Card Bento Grid -->
           <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-            
+
             <!-- Bento Card 1: Video Story -->
-            <div class="md:col-span-7 rounded-3xl overflow-hidden bg-slate-100 border border-slate-200 relative shadow-sm min-h-[260px] flex flex-col justify-end p-6 group">
-              <img 
-                src="images/instructor.png" 
-                alt="Student Story Thumbnail" 
+            <div
+              class="md:col-span-7 rounded-3xl overflow-hidden bg-slate-100 border border-slate-200 relative shadow-sm min-h-[260px] flex flex-col justify-end p-6 group">
+              <img src="images/instructor.png" alt="Student Story Thumbnail"
                 class="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.75] group-hover:scale-105 transition-transform duration-500">
               <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
 
               <div class="relative z-10 space-y-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 text-slate-900 text-xs font-bold">
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 text-slate-900 text-xs font-bold">
                   <span>🎥</span>
                   <span>Alumni Case Breakdown</span>
                 </span>
-                <h4 class="text-xl font-black text-white">How Karthik Scaled ₹10L Ad Spend in Month 3</h4>
-                <button 
-                  (click)="triggerBooking('Watch Alumni Story')"
+                <h4 class="text-xl font-black text-white">{{ courseData().alumniCaseTitle }}</h4>
+                <button (click)="triggerBooking('Watch Alumni Story')"
                   class="inline-flex items-center gap-2 text-xs font-bold text-brand-yellow hover:underline cursor-pointer">
                   <span>View Student Story ↗</span>
                 </button>
@@ -361,13 +352,14 @@
             </div>
 
             <!-- Bento Card 2: Deep Navy Salary Stat Card -->
-            <div class="md:col-span-5 rounded-3xl bg-[#0F172A] text-white p-8 border border-slate-800 shadow-md flex flex-col justify-center space-y-3">
+            <div
+              class="md:col-span-5 rounded-3xl bg-[#0F172A] text-white p-8 border border-slate-800 shadow-md flex flex-col justify-center space-y-3">
               <span class="text-xs font-black uppercase tracking-wider text-brand-yellow">Average Outcome</span>
               <div class="text-4xl sm:text-5xl font-black text-white tracking-tight">
-                ₹6.5L – 12L
+                {{ courseData().averageSalary }}
               </div>
               <p class="text-sm text-slate-300 leading-relaxed">
-                Starting CTC &amp; high-ticket freelancing retainers achieved by Avirbhav academy graduates.
+                {{ courseData().salarySubtext }}
               </p>
               <div class="pt-2 text-xs font-medium text-slate-400">
                 100% individual placement assistance with 40+ agency partners.
@@ -378,40 +370,44 @@
             <div class="md:col-span-5 rounded-3xl bg-slate-50 border border-slate-200 p-6 space-y-4 shadow-sm">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-black text-brand-blue uppercase tracking-wider">Live Portfolio</span>
-                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Verified ROAS 4.8x</span>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">{{ courseData().portfolioCase.verifiedBadge }}</span>
               </div>
               <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-inner space-y-2">
-                <div class="text-xs text-slate-500 font-mono">CLIENT CASE STUDY</div>
-                <h5 class="text-base font-black text-[#0F172A]">E-Commerce Brand Scale: 0 to ₹35L Revenue</h5>
-                <p class="text-xs text-slate-600">Built using Meta Ads Manager, Klaviyo funnels, and viral Reels content.</p>
+                <div class="text-xs text-slate-500 font-mono">{{ courseData().portfolioCase.clientType }}</div>
+                <h5 class="text-base font-black text-[#0F172A]">{{ courseData().portfolioCase.title }}</h5>
+                <p class="text-xs text-slate-600">{{ courseData().portfolioCase.desc }}</p>
               </div>
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-brand-blue/20 text-brand-blue flex items-center justify-center font-black text-xs">
-                  PR
+                <div
+                  class="w-8 h-8 rounded-full bg-brand-blue/20 text-brand-blue flex items-center justify-center font-black text-xs">
+                  {{ courseData().portfolioCase.author.substring(0, 2).toUpperCase() }}
                 </div>
                 <div>
-                  <div class="text-xs font-bold text-slate-900">Priya Ramanathan</div>
-                  <div class="text-[11px] text-slate-500">Graduated Batch 08 • Now at SocialBeat</div>
+                  <div class="text-xs font-bold text-slate-900">{{ courseData().portfolioCase.author }}</div>
+                  <div class="text-[11px] text-slate-500">{{ courseData().portfolioCase.authorRole }}</div>
                 </div>
               </div>
             </div>
 
             <!-- Bento Card 4: Detailed Testimonial Card -->
-            <div class="md:col-span-7 rounded-3xl bg-white border border-slate-200 p-8 shadow-sm flex flex-col justify-between space-y-4">
+            <div
+              class="md:col-span-7 rounded-3xl bg-white border border-slate-200 p-8 shadow-sm flex flex-col justify-between space-y-4">
               <p class="text-slate-700 text-base sm:text-lg leading-relaxed font-medium italic">
-                "Crowded institutes pack 40 people in a class where you can’t ask questions. At Avirbhav, with strictly 4 students per batch, Deekshith sir literally sat beside me, auditing my ad campaigns and video scripts every single day."
+                {{ courseData().studentQuote.quote }}
               </p>
               <div class="flex items-center justify-between pt-4 border-t border-slate-100">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-black text-sm">
-                    DR
+                  <div
+                    class="w-10 h-10 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-black text-sm">
+                    {{ courseData().studentQuote.author.substring(0, 2).toUpperCase() }}
                   </div>
                   <div>
-                    <h5 class="text-sm font-black text-slate-900">Dani Rodriguez / Vignesh</h5>
-                    <p class="text-xs text-slate-500">From Non-Tech Background to Performance Marketer</p>
+                    <h5 class="text-sm font-black text-slate-900">{{ courseData().studentQuote.author }}</h5>
+                    <p class="text-xs text-slate-500">{{ courseData().studentQuote.role }}</p>
                   </div>
                 </div>
-                <button (click)="triggerBooking('Read Stories')" class="text-xs font-bold text-brand-blue hover:underline cursor-pointer">
+                <button (click)="triggerBooking('Read Stories')"
+                  class="text-xs font-bold text-brand-blue hover:underline cursor-pointer">
                   Read more stories →
                 </button>
               </div>
@@ -424,7 +420,8 @@
             <p class="text-xs sm:text-sm font-semibold text-slate-500">
               Avirbhav graduates have launched exciting marketing careers at top agencies &amp; brands:
             </p>
-            <div class="flex items-center justify-center gap-8 sm:gap-14 flex-wrap opacity-70 grayscale hover:grayscale-0 transition-all">
+            <div
+              class="flex items-center justify-center gap-8 sm:gap-14 flex-wrap opacity-70 grayscale hover:grayscale-0 transition-all">
               <span class="font-black text-lg text-slate-800 tracking-wider">ZOHO</span>
               <span class="font-black text-lg text-slate-800 tracking-wider">FRESHWORKS</span>
               <span class="font-black text-lg text-slate-800 tracking-wider">SWIGGY</span>
@@ -440,27 +437,26 @@
         <!-- SECTION 3: CURRICULUM & TIMELINE (#curriculum)     -->
         <!-- -------------------------------------------------- -->
         <section id="curriculum" class="scroll-mt-header space-y-8">
-          
+
           <div class="space-y-3">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tight">
-              Hands-on education in the skills of 
+              Hands-on education in the skills of
               <span class="text-brand-blue">the future</span>
             </h2>
             <p class="text-slate-600 text-base sm:text-lg max-w-3xl leading-relaxed">
-              We work together with senior agency leaders to create learning materials to get you job-ready. Manage your schedule however you like in small 4-member squads.
+              We work together with senior agency leaders to create learning materials to get you job-ready. Manage your
+              schedule however you like in small 4-member squads.
             </p>
           </div>
 
           <!-- CareerFoundry Study Pace Tabs -->
           <div class="flex items-center gap-2 p-1.5 rounded-full bg-slate-100 max-w-xs border border-slate-200">
-            <button 
-              (click)="setPace('flexible')"
+            <button (click)="setPace('flexible')"
               [ngClass]="activePace() === 'flexible' ? 'bg-white text-[#0F172A] shadow-sm font-black' : 'text-slate-600 font-bold hover:text-slate-900'"
               class="flex-1 py-2 text-xs rounded-full transition-all cursor-pointer text-center">
               Flexible (15-20 hrs/wk)
             </button>
-            <button 
-              (click)="setPace('fulltime')"
+            <button (click)="setPace('fulltime')"
               [ngClass]="activePace() === 'fulltime' ? 'bg-white text-[#0F172A] shadow-sm font-black' : 'text-slate-600 font-bold hover:text-slate-900'"
               class="flex-1 py-2 text-xs rounded-full transition-all cursor-pointer text-center">
               Full-Time (30-40 hrs/wk)
@@ -469,39 +465,19 @@
 
           <!-- CareerFoundry Visual Timeline Bar -->
           <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-            
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              
-              <!-- Timeline Milestone 1 -->
-              <div class="p-4 rounded-2xl bg-blue-50/70 border border-blue-200 space-y-1">
-                <div class="flex items-center justify-between text-xs text-brand-blue font-black">
-                  <span>PHASE 1</span>
-                  <span>{{ activePace() === 'flexible' ? 'Weeks 1 – 4' : 'Weeks 1 – 2' }}</span>
+              <div *ngFor="let ph of courseData().timelinePhases; let pIdx = index"
+                class="p-4 rounded-2xl space-y-1"
+                [ngClass]="pIdx === 0 ? 'bg-blue-50/70 border border-blue-200' : (pIdx === 1 ? 'bg-purple-50/70 border border-purple-200' : 'bg-emerald-50/70 border border-emerald-200')">
+                <div class="flex items-center justify-between text-xs font-black"
+                  [ngClass]="pIdx === 0 ? 'text-brand-blue' : (pIdx === 1 ? 'text-purple-700' : 'text-emerald-700')">
+                  <span>PHASE {{ pIdx + 1 }}</span>
+                  <span>{{ ph.weeks }}</span>
                 </div>
-                <h5 class="text-sm font-black text-[#0F172A]">Intro to Marketing Strategy &amp; Psychology</h5>
-                <p class="text-xs text-slate-600">Consumer behavior, brand positioning, buyer personas &amp; offer design.</p>
+                <h5 class="text-sm font-black text-[#0F172A]">{{ ph.title }}</h5>
+                <p class="text-xs text-slate-600">{{ ph.desc }}</p>
               </div>
-
-              <!-- Timeline Milestone 2 -->
-              <div class="p-4 rounded-2xl bg-purple-50/70 border border-purple-200 space-y-1">
-                <div class="flex items-center justify-between text-xs text-purple-700 font-black">
-                  <span>PHASE 2</span>
-                  <span>{{ activePace() === 'flexible' ? 'Weeks 5 – 16' : 'Weeks 3 – 8' }}</span>
-                </div>
-                <h5 class="text-sm font-black text-[#0F172A]">Full-Stack Video, AI &amp; Meta Ads Immersion</h5>
-                <p class="text-xs text-slate-600">Viral 3s hooks, CapCut, AI copywriting, and real ₹10L+ Meta ad campaigns.</p>
-              </div>
-
-              <!-- Timeline Milestone 3 -->
-              <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1">
-                <div class="flex items-center justify-between text-xs text-emerald-700 font-black">
-                  <span>PHASE 3</span>
-                  <span>{{ activePace() === 'flexible' ? 'Weeks 17 – 24' : 'Weeks 9 – 12' }}</span>
-                </div>
-                <h5 class="text-sm font-black text-[#0F172A]">Automation, Attribution &amp; Placement</h5>
-                <p class="text-xs text-slate-600">n8n workflows, GA4 dashboards, freelance retainer contracts &amp; mock interviews.</p>
-              </div>
-
             </div>
 
             <!-- Horizontal Track Indicator -->
@@ -525,19 +501,17 @@
               <span class="text-xs text-slate-500 font-medium">Click any module to inspect deliverables</span>
             </div>
 
-            <div 
-              *ngFor="let mod of syllabusModules; let idx = index"
+            <div *ngFor="let mod of syllabusModules; let idx = index"
               class="border rounded-2xl transition-all duration-200 overflow-hidden"
               [ngClass]="activeSyllabusIndex() === idx ? 'bg-white border-brand-blue shadow-md' : 'bg-slate-50/60 hover:bg-white border-slate-200'">
-              
+
               <!-- Accordion Header Button -->
-              <button 
-                (click)="toggleSyllabus(idx)"
+              <button (click)="toggleSyllabus(idx)"
                 class="w-full text-left p-4 sm:p-5 flex items-center justify-between gap-4 cursor-pointer">
-                
+
                 <div class="flex items-center gap-3 sm:gap-4 flex-1">
                   <!-- Index Badge -->
-                  <span 
+                  <span
                     class="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-black transition-colors shrink-0"
                     [ngClass]="activeSyllabusIndex() === idx ? 'bg-brand-blue text-white shadow-sm' : 'bg-white text-slate-700 border border-slate-200'">
                     {{ getFormattedId(mod.id) }}
@@ -548,7 +522,8 @@
                       <span class="text-[11px] font-bold text-brand-blue uppercase tracking-wide">
                         MODULE {{ mod.id }} • {{ mod.duration }}
                       </span>
-                      <span *ngIf="mod.id === 4 || mod.id === 5 || mod.id === 10" class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 text-[10px] font-bold">
+                      <span *ngIf="mod.id === 4 || mod.id === 5 || mod.id === 10"
+                        class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 text-[10px] font-bold">
                         ⚡ Learn to apply AI
                       </span>
                     </div>
@@ -564,17 +539,18 @@
               </button>
 
               <!-- Accordion Body -->
-              <div 
-                *ngIf="activeSyllabusIndex() === idx" 
+              <div *ngIf="activeSyllabusIndex() === idx"
                 class="px-5 sm:px-6 pb-6 pt-2 border-t border-slate-100 space-y-4 animate-fadeIn">
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-                  
+
                   <!-- Left: Topics List -->
                   <div class="md:col-span-8 space-y-2">
-                    <span class="text-xs font-black uppercase tracking-wider text-slate-400">Key Competencies &amp; Deliverables:</span>
+                    <span class="text-xs font-black uppercase tracking-wider text-slate-400">Key Competencies &amp;
+                      Deliverables:</span>
                     <ul class="space-y-2">
-                      <li *ngFor="let topic of mod.topics" class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
+                      <li *ngFor="let topic of mod.topics"
+                        class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
                         <span class="text-emerald-500 font-bold shrink-0 mt-0.5">✓</span>
                         <span>{{ topic }}</span>
                       </li>
@@ -585,7 +561,8 @@
                   <div class="md:col-span-4 p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
                     <span class="text-xs font-black uppercase tracking-wider text-slate-400">Hands-on Tools:</span>
                     <div class="flex flex-wrap gap-1.5">
-                      <span *ngFor="let tool of mod.tools" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-800 text-xs font-bold shadow-xs">
+                      <span *ngFor="let tool of mod.tools"
+                        class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-800 text-xs font-bold shadow-xs">
                         ⚙️ {{ tool }}
                       </span>
                     </div>
@@ -599,15 +576,16 @@
           </div>
 
           <!-- CareerFoundry AI Callout Banner -->
-          <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-purple-50 via-blue-50 to-white border border-purple-200/70 shadow-sm space-y-3">
+          <div
+            class="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-purple-50 via-blue-50 to-white border border-purple-200/70 shadow-sm space-y-3">
             <div class="flex items-center gap-2">
               <span class="text-lg">✨</span>
               <h4 class="text-base sm:text-lg font-black text-[#0F172A]">
-                Will the Social Media Marketing Program teach me how to use GenAI tools &amp; automations?
+                {{ courseData().genAiQuestion }}
               </h4>
             </div>
             <p class="text-slate-600 text-xs sm:text-sm leading-relaxed max-w-3xl">
-              <strong>Yes!</strong> You will learn to use AI in a way that is reflective of how high-growth modern agencies operate. We train you on ChatGPT-4o, Claude 3.5 Sonnet, Midjourney v6, and n8n workflow automations—empowering you to 10x your speed and output while keeping strategic human creativity intact.
+              {{ courseData().genAiAnswer }}
             </p>
           </div>
 
@@ -617,10 +595,10 @@
         <!-- SECTION 4: HUMAN-CENTRIC LEARNING (#how-it-works)  -->
         <!-- -------------------------------------------------- -->
         <section id="how-it-works" class="scroll-mt-header space-y-8">
-          
+
           <div class="space-y-3">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tight">
-              Human-centric learning in an 
+              Human-centric learning in an
               <span class="text-brand-blue">intimate setup</span>
             </h2>
             <p class="text-slate-600 text-base sm:text-lg max-w-3xl leading-relaxed">
@@ -630,26 +608,31 @@
 
           <!-- CareerFoundry 4-Card Bento Grid -->
           <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-            
+
             <!-- Card 1: 1:4 Personal Mentorship -->
             <div class="md:col-span-8 rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm space-y-4">
               <div class="flex items-center justify-between">
-                <span class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-black">
+                <span
+                  class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-black">
                   1:4 Individual Mentor Ratio
                 </span>
                 <span class="text-xs text-slate-500 font-mono">DAILY AUDITS</span>
               </div>
               <h4 class="text-xl font-black text-[#0F172A]">1:4 Desk-to-Desk Mentorship with Deekshith Ravisankar</h4>
               <p class="text-sm text-slate-600 leading-relaxed">
-                Your mentor personally reviews your video hooks, copy scripts, ad campaign structures, and budget bids within hours. No waiting in lines or getting ignored in crowded Zoom rooms.
+                Your mentor personally reviews your video hooks, copy scripts, ad campaign structures, and budget bids
+                within hours. No waiting in lines or getting ignored in crowded Zoom rooms.
               </p>
-              
+
               <!-- Tools Row -->
               <div class="pt-2 flex items-center gap-2 flex-wrap">
-                <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">🤖 ChatGPT-4o</span>
-                <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">🎨 Midjourney</span>
+                <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">🤖
+                  ChatGPT-4o</span>
+                <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">🎨
+                  Midjourney</span>
                 <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">📊 Meta Ads</span>
-                <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">⚡ n8n &amp; Make</span>
+                <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">⚡ n8n &amp;
+                  Make</span>
                 <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">📈 GA4</span>
               </div>
             </div>
@@ -658,7 +641,7 @@
             <div class="md:col-span-4 rounded-3xl bg-slate-50 border border-slate-200 p-6 shadow-sm space-y-3">
               <span class="text-xs font-black text-brand-blue uppercase tracking-wider">Practice Schedule</span>
               <h5 class="text-base font-black text-[#0F172A]">Agency Daily Rhythm</h5>
-              
+
               <div class="space-y-2 text-xs">
                 <div class="p-2.5 rounded-xl bg-white border border-slate-200 flex justify-between items-center">
                   <span class="font-bold text-slate-800">09:30 AM</span>
@@ -680,16 +663,19 @@
               <span class="text-xs font-black text-brand-blue uppercase tracking-wider">Zero Simulation</span>
               <h4 class="text-xl font-black text-[#0F172A]">Real ₹10L+ Client Ad Budgets</h4>
               <p class="text-sm text-slate-600 leading-relaxed">
-                You will never practice on fake screenshots or dummy demo accounts. Avirbhav provides real money budgets across live e-commerce and B2B client accounts.
+                You will never practice on fake screenshots or dummy demo accounts. Avirbhav provides real money budgets
+                across live e-commerce and B2B client accounts.
               </p>
             </div>
 
             <!-- Card 4: Placement Specialist -->
             <div class="md:col-span-7 rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 space-y-3 shadow-sm">
               <span class="text-xs font-black text-emerald-600 uppercase tracking-wider">Career Services</span>
-              <h4 class="text-xl font-black text-[#0F172A]">1-on-1 Placement Coaching &amp; Direct Agency Introductions</h4>
+              <h4 class="text-xl font-black text-[#0F172A]">1-on-1 Placement Coaching &amp; Direct Agency Introductions
+              </h4>
               <p class="text-sm text-slate-600 leading-relaxed">
-                Work 1:1 with our career team to craft a high-converting LinkedIn profile, assemble an agency-grade case study portfolio, and prepare for interviews with top marketing agencies.
+                Work 1:1 with our career team to craft a high-converting LinkedIn profile, assemble an agency-grade case
+                study portfolio, and prepare for interviews with top marketing agencies.
               </p>
             </div>
 
@@ -698,7 +684,8 @@
           <!-- CareerFoundry Inline Lead Magnet Card -->
           <div class="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-xl space-y-6">
             <div class="max-w-2xl space-y-2">
-              <span class="px-2.5 py-0.5 rounded-full bg-brand-yellow text-slate-950 text-[10px] font-black uppercase tracking-wider">
+              <span
+                class="px-2.5 py-0.5 rounded-full bg-brand-yellow text-slate-950 text-[10px] font-black uppercase tracking-wider">
                 FREE 1:1 STRATEGY CONSULTATION
               </span>
               <h3 class="text-2xl sm:text-3xl font-black text-white">
@@ -711,26 +698,16 @@
 
             <form (ngSubmit)="handleHeroFormSubmit()" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
               <div class="sm:col-span-4">
-                <input 
-                  type="text" 
-                  [(ngModel)]="leadName" 
-                  name="leadNameInline"
-                  placeholder="Your Full Name"
+                <input type="text" [(ngModel)]="leadName" name="leadNameInline" placeholder="Your Full Name" required
+                  class="w-full px-4 py-3 rounded-full bg-slate-800 border border-slate-700 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-blue">
+              </div>
+              <div class="sm:col-span-4">
+                <input type="tel" [(ngModel)]="leadPhone" name="leadPhoneInline" placeholder="WhatsApp Mobile Number"
                   required
                   class="w-full px-4 py-3 rounded-full bg-slate-800 border border-slate-700 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-blue">
               </div>
               <div class="sm:col-span-4">
-                <input 
-                  type="tel" 
-                  [(ngModel)]="leadPhone" 
-                  name="leadPhoneInline"
-                  placeholder="WhatsApp Mobile Number"
-                  required
-                  class="w-full px-4 py-3 rounded-full bg-slate-800 border border-slate-700 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-blue">
-              </div>
-              <div class="sm:col-span-4">
-                <button 
-                  type="submit"
+                <button type="submit"
                   class="w-full bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-black text-xs sm:text-sm py-3.5 px-6 rounded-full shadow-yellow-glow hover:shadow-lg transition-all text-center cursor-pointer">
                   Reserve 1 of 4 Seats ↗
                 </button>
@@ -751,28 +728,27 @@
         <!-- SECTION 5: WHO IT IS FOR (#who-it-is-for)          -->
         <!-- -------------------------------------------------- -->
         <section id="who-it-is-for" class="scroll-mt-header space-y-8">
-          
+
           <div class="space-y-3">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tight">
-              Flexible study for 
+              Flexible study for
               <span class="text-brand-blue">beginners &amp; career-switchers</span>
             </h2>
             <p class="text-slate-600 text-base sm:text-lg max-w-3xl leading-relaxed">
-              No prior marketing or technical knowledge needed. We take you from complete beginner to agency-ready professional.
+              No prior marketing or technical knowledge needed. We take you from complete beginner to agency-ready
+              professional.
             </p>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
+
             <!-- Left: Accordion Questions (CareerFoundry Style) -->
             <div class="lg:col-span-7 space-y-4">
-              <div 
-                *ngFor="let item of whyFaqs; let idx = index"
+              <div *ngFor="let item of whyFaqs; let idx = index"
                 class="border rounded-2xl transition-all duration-200 overflow-hidden bg-white"
                 [ngClass]="activeWhyFaqIndex() === idx ? 'border-brand-blue shadow-md' : 'border-slate-200 hover:border-slate-300'">
-                
-                <button 
-                  (click)="toggleWhyFaq(idx)"
+
+                <button (click)="toggleWhyFaq(idx)"
                   class="w-full text-left p-5 flex items-center justify-between gap-4 cursor-pointer">
                   <h4 class="text-base font-black text-[#0F172A] leading-snug">
                     {{ item.q }}
@@ -782,8 +758,7 @@
                   </span>
                 </button>
 
-                <div 
-                  *ngIf="activeWhyFaqIndex() === idx" 
+                <div *ngIf="activeWhyFaqIndex() === idx"
                   class="px-5 pb-5 pt-1 text-slate-600 text-sm leading-relaxed border-t border-slate-100 animate-fadeIn">
                   {{ item.a }}
                 </div>
@@ -791,13 +766,16 @@
             </div>
 
             <!-- Right: Visual Guarantee Graphic -->
-            <div class="lg:col-span-5 bg-gradient-to-br from-blue-50 to-slate-100 rounded-3xl p-6 sm:p-8 border border-slate-200 space-y-4 shadow-sm">
-              <div class="w-12 h-12 rounded-2xl bg-brand-blue text-white flex items-center justify-center font-black text-xl shadow-md">
+            <div
+              class="lg:col-span-5 bg-gradient-to-br from-blue-50 to-slate-100 rounded-3xl p-6 sm:p-8 border border-slate-200 space-y-4 shadow-sm">
+              <div
+                class="w-12 h-12 rounded-2xl bg-brand-blue text-white flex items-center justify-center font-black text-xl shadow-md">
                 ★
               </div>
               <h4 class="text-xl font-black text-[#0F172A]">The Avirbhav Guarantee</h4>
               <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                If you complete all 12 modules, attend the live 1:4 mentor reviews, and fail to receive job offers or high-ticket client retainers within 180 days, you get a <strong>100% full tuition refund</strong>.
+                If you complete all 12 modules, attend the live 1:4 mentor reviews, and fail to receive job offers or
+                high-ticket client retainers within 180 days, you get a <strong>100% full tuition refund</strong>.
               </p>
               <div class="pt-2">
                 <span class="inline-flex items-center gap-1.5 text-xs font-black text-brand-blue">
@@ -816,31 +794,32 @@
         <!-- SECTION 6: TUITION & BATCH FEES (#tuition-fee)     -->
         <!-- -------------------------------------------------- -->
         <section id="tuition-fee" class="scroll-mt-header space-y-8">
-          
+
           <div class="space-y-3">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tight">
               Tuition <span class="text-brand-blue">fee &amp; batch options</span>
             </h2>
             <p class="text-slate-600 text-base sm:text-lg max-w-3xl leading-relaxed">
-              Transparent fees with 100% placement guarantee. Flexible payment options for students from all backgrounds.
+              Transparent fees with 100% placement guarantee. Flexible payment options for students from all
+              backgrounds.
             </p>
           </div>
 
           <!-- CareerFoundry 3-Card Plan Grid -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-            
-            <div 
-              *ngFor="let plan of pricingPlans"
+
+            <div *ngFor="let plan of pricingPlans"
               [ngClass]="plan.isPopular ? 'border-2 border-brand-blue shadow-xl relative' : 'border border-slate-200 shadow-sm'"
               class="bg-white rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-6 transition-all hover:shadow-md">
-              
+
               <div class="space-y-4">
                 <!-- Badges -->
                 <div class="flex items-center justify-between gap-2 flex-wrap">
                   <span class="px-2.5 py-1 rounded-full text-xs font-bold border" [ngClass]="plan.badgeColor">
                     {{ plan.badge }}
                   </span>
-                  <span *ngIf="plan.isPopular" class="px-2 py-0.5 rounded-full bg-brand-yellow text-slate-950 text-[10px] font-black uppercase">
+                  <span *ngIf="plan.isPopular"
+                    class="px-2 py-0.5 rounded-full bg-brand-yellow text-slate-950 text-[10px] font-black uppercase">
                     BEST CHOICE
                   </span>
                 </div>
@@ -849,7 +828,8 @@
                   <h4 class="text-lg font-black text-[#0F172A]">{{ plan.name }}</h4>
                   <div class="flex items-baseline gap-2 pt-2">
                     <span class="text-3xl sm:text-4xl font-black text-[#0F172A]">{{ plan.price }}</span>
-                    <span *ngIf="plan.originalPrice" class="text-xs text-slate-400 line-through">{{ plan.originalPrice }}</span>
+                    <span *ngIf="plan.originalPrice" class="text-xs text-slate-400 line-through">{{ plan.originalPrice
+                      }}</span>
                   </div>
                   <div class="text-xs font-bold text-emerald-600 pt-1">{{ plan.savings }}</div>
                   <p class="text-xs text-slate-500 pt-1">{{ plan.period }}</p>
@@ -869,8 +849,7 @@
               </div>
 
               <!-- CTA Button -->
-              <button 
-                (click)="triggerBooking(plan.name)"
+              <button (click)="triggerBooking(plan.name)"
                 [ngClass]="plan.isPopular ? 'bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 shadow-yellow-glow' : 'bg-slate-900 hover:bg-slate-800 text-white'"
                 class="w-full font-black text-xs sm:text-sm py-3.5 px-4 rounded-full transition-all text-center cursor-pointer shadow-sm hover:scale-102">
                 {{ plan.ctaText }}
@@ -882,7 +861,7 @@
 
           <!-- Cohort & Benefit Details Cards (CareerFoundry Style) -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-            
+
             <!-- Cohort Schedule Card -->
             <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
               <div class="flex items-center gap-2 text-brand-blue text-sm font-black">
@@ -943,15 +922,16 @@
           </div>
 
           <!-- Need Flexibility Advisor Banner -->
-          <div class="p-6 sm:p-8 rounded-3xl bg-blue-50/80 border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div
+            class="p-6 sm:p-8 rounded-3xl bg-blue-50/80 border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div class="space-y-1 text-center sm:text-left">
               <h4 class="text-lg font-black text-[#0F172A]">Need more flexibility or custom batch timings?</h4>
               <p class="text-xs sm:text-sm text-slate-600">
-                Book a quick 15-minute 1-on-1 consultation with Deekshith to discuss customized payment plans or weekend options.
+                Book a quick 15-minute 1-on-1 consultation with Deekshith to discuss customized payment plans or weekend
+                options.
               </p>
             </div>
-            <button 
-              (click)="triggerBooking('Custom Plan Consultation')"
+            <button (click)="triggerBooking('Custom Plan Consultation')"
               class="bg-white hover:bg-slate-50 text-brand-blue font-black text-xs sm:text-sm px-6 py-3 rounded-full border border-brand-blue transition-all shrink-0 cursor-pointer shadow-xs">
               Talk to Deekshith ↗
             </button>
@@ -963,7 +943,7 @@
         <!-- SECTION 7: FULL FAQ ACCORDION (#faq)               -->
         <!-- -------------------------------------------------- -->
         <section id="faq" class="scroll-mt-header space-y-8">
-          
+
           <div class="space-y-3">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tight">
               Frequently Asked <span class="text-brand-blue">Questions</span>
@@ -974,13 +954,11 @@
           </div>
 
           <div class="space-y-3">
-            <div 
-              *ngFor="let item of faqs; let idx = index"
+            <div *ngFor="let item of faqs; let idx = index"
               class="border rounded-2xl transition-all duration-200 overflow-hidden bg-white"
               [ngClass]="activeFaqIndex() === idx ? 'border-brand-blue shadow-md' : 'border-slate-200 hover:border-slate-300'">
-              
-              <button 
-                (click)="toggleFaq(idx)"
+
+              <button (click)="toggleFaq(idx)"
                 class="w-full text-left p-5 flex items-center justify-between gap-4 cursor-pointer">
                 <h4 class="text-sm sm:text-base font-black text-[#0F172A] leading-snug">
                   {{ item.q }}
@@ -990,8 +968,7 @@
                 </span>
               </button>
 
-              <div 
-                *ngIf="activeFaqIndex() === idx" 
+              <div *ngIf="activeFaqIndex() === idx"
                 class="px-5 pb-5 pt-1 text-slate-600 text-xs sm:text-sm leading-relaxed border-t border-slate-100 animate-fadeIn">
                 {{ item.a }}
               </div>
@@ -1003,22 +980,24 @@
         <!-- -------------------------------------------------- -->
         <!-- SECTION 8: BOTTOM ADVISOR FOOTER BANNER            -->
         <!-- -------------------------------------------------- -->
-        <div class="p-8 sm:p-12 rounded-[32px] bg-gradient-to-br from-brand-blue to-blue-600 text-white shadow-2xl relative overflow-hidden">
-          
+        <div
+          class="p-8 sm:p-12 rounded-[32px] bg-gradient-to-br from-brand-blue to-blue-600 text-white shadow-2xl relative overflow-hidden">
+
           <div class="relative z-10 max-w-2xl space-y-4">
-            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black tracking-wide uppercase">
+            <span
+              class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black tracking-wide uppercase">
               ★ STRICTLY 4 SEATS PER BATCH • ADMISSIONS CLOSING
             </span>
             <h3 class="text-3xl sm:text-4xl font-black text-white leading-tight">
-              Launch Your High-Income Social Media Career in 150 Days.
+              Launch Your High-Income {{ courseData().shortTitle }} Career in 150 Days.
             </h3>
             <p class="text-sm sm:text-base text-blue-50 leading-relaxed font-normal">
-              Speak directly with founder Deekshith Ravisankar to map your 1-on-1 personalized growth plan and confirm seat availability.
+              Speak directly with founder Deekshith Ravisankar to map your 1-on-1 personalized growth plan and confirm
+              seat availability.
             </p>
-            
+
             <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-              <button 
-                (click)="triggerBooking('Bottom Advisor Banner')"
+              <button (click)="triggerBooking('Bottom Advisor Banner')"
                 class="inline-flex items-center justify-center gap-2 bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-black text-sm sm:text-base px-8 py-4 rounded-full shadow-yellow-glow hover:shadow-xl transition-all duration-200 cursor-pointer">
                 <span>Book Your 1:1 Strategy Slot</span>
                 <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -1026,8 +1005,7 @@
                 </svg>
               </button>
 
-              <button 
-                (click)="downloadBrochure()"
+              <button (click)="downloadBrochure()"
                 class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base px-6 py-4 rounded-full border border-white/30 transition-all cursor-pointer">
                 <span>Download Syllabus PDF</span>
               </button>

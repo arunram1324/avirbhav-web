@@ -79,32 +79,12 @@ import { AcademyDataService } from '../../services/academy-data.service';
           </div>
 
           <!-- Right Column: Pill Badges Stack matching Figma -->
-          <div class="flex flex-col items-start lg:items-end gap-3.5 sm:gap-4">
-            
-            <!-- Row 1 -->
-            <div>
+          <div class="flex flex-wrap items-center lg:justify-end gap-3 max-w-lg">
+            @for (tag of (academyService.siteContent().floatingTags || ['Clarity in positioning', 'Performance-Driven Marketing', 'Media Planning', 'Growth Systems']); track tag) {
               <div class="inline-flex items-center px-6 py-2.5 rounded-full border border-white/80 bg-white/10 backdrop-blur-md text-white font-medium text-sm sm:text-base hover:bg-white/20 transition-colors shadow-sm select-none">
-                Clarity in positioning
+                {{ tag }}
               </div>
-            </div>
-
-            <!-- Row 2 -->
-            <div>
-              <div class="inline-flex items-center px-6 py-2.5 rounded-full border border-white/80 bg-white/10 backdrop-blur-md text-white font-medium text-sm sm:text-base hover:bg-white/20 transition-colors shadow-sm select-none">
-                Performance-Driven Marketing
-              </div>
-            </div>
-
-            <!-- Row 3 (Two pills together) -->
-            <div class="flex flex-wrap items-center gap-3">
-              <div class="inline-flex items-center px-6 py-2.5 rounded-full border border-white/80 bg-white/10 backdrop-blur-md text-white font-medium text-sm sm:text-base hover:bg-white/20 transition-colors shadow-sm select-none">
-                Media Planning
-              </div>
-              <div class="inline-flex items-center px-6 py-2.5 rounded-full border border-white/80 bg-white/10 backdrop-blur-md text-white font-medium text-sm sm:text-base hover:bg-white/20 transition-colors shadow-sm select-none">
-                Growth Systems
-              </div>
-            </div>
-
+            }
           </div>
 
         </div>

@@ -51,6 +51,20 @@ export class AppComponent {
     }
   }
 
+  private readonly COURSE_ID_TO_SLUG: Record<string, string> = {
+    '01': 'social-media-marketing',
+    '02': 'instagram-reels-growth',
+    '03': 'meta-google-ads',
+    '04': 'seo-website-ranking'
+  };
+
+  private readonly SLUG_TO_COURSE_ID: Record<string, string> = {
+    'social-media-marketing': '01',
+    'instagram-reels-growth': '02',
+    'meta-google-ads': '03',
+    'seo-website-ranking': '04'
+  };
+
   private checkRoute() {
     if (typeof window !== 'undefined') {
       const pathname = window.location.pathname || '';
@@ -67,17 +81,33 @@ export class AppComponent {
                        hash.includes('course');
                        
       if (isCourse && !isAdmin) {
-        this.selectedCourseId.set('01');
-      } else if (!isCourse && !isAdmin) {
+        let matchedId = '01';
+        const catalog = this.academyService.courseCatalog();
+        
+        for (const [id, course] of Object.entries(catalog)) {
+          if (course.slug && (pathname.includes(course.slug) || hash.includes(course.slug))) {
+            matchedId = id;
+            break;
+          }
+          if (pathname.includes('/courses/' + id) || hash.includes('course=' + id)) {
+            matchedId = id;
+            break;
+          }
+        }
+        this.selectedCourseId.set(matchedId);
+      } else if (!isAdmin) {
         this.selectedCourseId.set(null);
       }
     }
   }
 
   openCourse(courseId: string) {
-    this.selectedCourseId.set(courseId || '01');
+    const id = courseId || '01';
+    this.selectedCourseId.set(id);
+    const detail = this.academyService.getCourseDetail(id);
+    const slug = detail?.slug || this.COURSE_ID_TO_SLUG[id] || 'social-media-marketing';
     if (typeof window !== 'undefined') {
-      window.history.pushState(null, '', '/courses/social-media-marketing');
+      window.history.pushState(null, '', `/courses/${slug}`);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }

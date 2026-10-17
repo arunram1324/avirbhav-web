@@ -37,7 +37,7 @@
     </app-curriculum>
 
     <!-- Footer with Contact & Location -->
-    <app-footer (openBooking)="openModal($event)"></app-footer>
+    <app-footer (openBooking)="openModal($event)" (viewCourse)="openCourse($event)"></app-footer>
 
     <!-- Interactive Booking / WhatsApp Modal -->
     <app-booking-modal 

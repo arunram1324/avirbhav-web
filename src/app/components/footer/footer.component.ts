@@ -31,20 +31,22 @@ import { AcademyDataService } from '../../services/academy-data.service';
             <div class="mt-6 flex items-center gap-4 text-xs font-semibold">
               <span class="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-emerald-400 flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                Admissions Open 2026
+                {{ academyService.siteContent().admissionsStatus }}
               </span>
             </div>
           </div>
 
-          <!-- Column 2: Programs -->
+          <!-- Column 2: Programs (Dynamically rendered from courses) -->
           <div>
             <h4 class="text-sm font-bold uppercase tracking-wider text-slate-200 mb-4">Core Programs</h4>
             <ul class="space-y-2.5 text-sm text-slate-400">
-              <li><a href="#curriculum" class="hover:text-brand-blue transition-colors">Digital Marketing 150D</a></li>
-              <li><a href="#curriculum" class="hover:text-brand-blue transition-colors">Meta & Google Ads</a></li>
-              <li><a href="#curriculum" class="hover:text-brand-blue transition-colors">SEO & Web Ranking</a></li>
-              <li><a href="#curriculum" class="hover:text-brand-blue transition-colors">AI Content Creation</a></li>
-              <li><a href="#curriculum" class="hover:text-brand-blue transition-colors">Freelancing Blueprint</a></li>
+              @for (course of academyService.courses(); track course.id) {
+                <li>
+                  <button type="button" (click)="viewCourse.emit(course.id)" class="hover:text-brand-blue transition-colors text-left cursor-pointer">
+                    {{ course.title }}
+                  </button>
+                </li>
+              }
             </ul>
           </div>
 
@@ -87,7 +89,7 @@ import { AcademyDataService } from '../../services/academy-data.service';
 
         <!-- Copyright Row -->
         <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© 2026 Avirbhav Infotech. All Rights Reserved. Crafted with pixel precision.</p>
+          <p>{{ academyService.siteContent().copyrightText }}</p>
           <div class="flex items-center gap-6">
             <a href="#" class="hover:text-slate-300 transition-colors">Privacy Policy</a>
             <a href="#" class="hover:text-slate-300 transition-colors">Terms of Service</a>
@@ -102,4 +104,5 @@ import { AcademyDataService } from '../../services/academy-data.service';
 export class FooterComponent {
   academyService = inject(AcademyDataService);
   @Output() openBooking = new EventEmitter<string>();
+  @Output() viewCourse = new EventEmitter<string>();
 }

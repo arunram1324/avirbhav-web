@@ -1,0 +1,1494 @@
+<div class="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans">
+  
+  <!-- ========================================== -->
+  <!-- 1. ADMIN AUTHENTICATION SCREEN (LOGIN GATE) -->
+  <!-- ========================================== -->
+  @if (!academyService.isAuthenticated()) {
+    <div class="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+      
+      <div class="w-full max-w-md bg-slate-950/90 border border-slate-800 rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+        <!-- Glow background effect -->
+        <div class="absolute -top-24 -left-24 w-52 h-52 bg-brand-blue/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-52 h-52 bg-brand-yellow/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Brand Icon & Header -->
+        <div class="flex flex-col items-center text-center mb-8 relative z-10">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-blue to-cyan-400 flex items-center justify-center font-black text-white text-2xl shadow-xl shadow-blue-500/20 mb-4">
+            AV
+          </div>
+          <h1 class="text-2xl font-extrabold text-white tracking-tight">Avirbhav Digital Academy</h1>
+          <p class="text-sm text-slate-400 mt-1">Admin CMS & Management Portal</p>
+        </div>
+
+        <!-- Login Error Alert -->
+        @if (loginError()) {
+          <div class="mb-6 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs sm:text-sm flex items-center gap-2.5">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>{{ loginError() }}</span>
+          </div>
+        }
+
+        <!-- Login Form -->
+        <form (ngSubmit)="handleLogin()" class="space-y-4 relative z-10">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Admin Email</label>
+            <div class="relative">
+              <svg class="w-5 h-5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+              </svg>
+              <input 
+                type="email" 
+                [(ngModel)]="loginEmail" 
+                name="email"
+                required
+                placeholder="admin@avirbhav.com"
+                class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-sm text-slate-100 placeholder-slate-500 transition-colors" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Password</label>
+            <div class="relative">
+              <svg class="w-5 h-5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <input 
+                [type]="showPassword() ? 'text' : 'password'" 
+                [(ngModel)]="loginPassword" 
+                name="password"
+                required
+                placeholder="••••••••"
+                class="w-full pl-11 pr-11 py-3 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none text-sm text-slate-100 placeholder-slate-500 transition-colors" />
+              
+              <button 
+                type="button" 
+                (click)="showPassword.set(!showPassword())"
+                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  @if (showPassword()) {
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                  } @else {
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  }
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Demo Credentials Filler -->
+          <div class="pt-2">
+            <button 
+              type="button"
+              (click)="fillDemoCredentials()"
+              class="w-full py-2 px-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-[11px] text-slate-400 hover:text-brand-blue flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+              <span>🔑 Auto-Fill Demo Credentials (admin&#64;avirbhav.com / admin123)</span>
+            </button>
+          </div>
+
+          <div class="pt-2">
+            <button 
+              type="submit" 
+              class="w-full py-3.5 px-6 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-sm tracking-wide shadow-lg shadow-blue-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer">
+              <span>Sign In to Admin Portal</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="pt-4 text-center">
+            <button 
+              type="button" 
+              (click)="navigateToLiveSite('/')" 
+              class="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer">
+              ← Return to Public Website
+            </button>
+          </div>
+        </form>
+
+      </div>
+
+      <p class="mt-8 text-xs text-slate-600 text-center">
+        Avirbhav Infotech & Academy Management System • Protected Route
+      </p>
+    </div>
+  }
+
+  <!-- ========================================== -->
+  <!-- 2. ADMIN DASHBOARD (AUTHENTICATED)        -->
+  <!-- ========================================== -->
+  @else {
+    <!-- Top Admin Header -->
+    <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-30 px-6 py-4">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+        
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-blue to-cyan-400 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-blue-500/20">
+            AV
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-lg sm:text-xl font-extrabold text-white tracking-tight">Avirbhav Digital Academy</h1>
+              <span class="px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-brand-blue text-[11px] font-bold uppercase tracking-wider">
+                Full CMS Portal
+              </span>
+            </div>
+            <p class="text-xs text-slate-400">Manage Assets, Courses, Syllabus, Content & Backups</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Back to Live Site -->
+          <button 
+            (click)="navigateToLiveSite('/')" 
+            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold border border-slate-700 transition-all hover:scale-105 cursor-pointer">
+            <span>← View Live Site</span>
+          </button>
+
+          <!-- Export Excel -->
+          <button 
+            (click)="exportAllToExcel()" 
+            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-emerald-600/20 transition-all hover:scale-105 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span class="hidden sm:inline">Export Leads</span>
+          </button>
+
+          <!-- Log Out Button -->
+          <button 
+            (click)="handleLogout()" 
+            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs sm:text-sm font-semibold transition-all cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Logout</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Admin Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+      
+      <!-- Summary KPI Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Total Enquiries</span>
+          <div class="flex items-baseline justify-between">
+            <span class="text-2xl sm:text-3xl font-extrabold text-white font-heading">{{ academyService.leads().length }}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-brand-blue font-bold">1:1 Bookings</span>
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">New Leads</span>
+          <div class="flex items-baseline justify-between">
+            <span class="text-2xl sm:text-3xl font-extrabold text-brand-yellow font-heading">{{ newLeadsCount() }}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/10 text-brand-yellow font-bold">Pending</span>
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Enrolled</span>
+          <div class="flex items-baseline justify-between">
+            <span class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-heading">{{ enrolledCount() }}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-bold">Confirmed</span>
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Course Catalog</span>
+          <div class="flex items-baseline justify-between">
+            <span class="text-2xl sm:text-3xl font-extrabold text-cyan-400 font-heading">{{ academyService.courses().length }}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 font-bold">Active Tracks</span>
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md col-span-2 sm:col-span-1">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Media Assets</span>
+          <div class="flex items-baseline justify-between">
+            <span class="text-2xl sm:text-3xl font-extrabold text-pink-400 font-heading">{{ academyService.assets().length }}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-400 font-bold">In Library</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tab Switcher (6 TABS) -->
+      <div class="flex flex-wrap items-center gap-2 border-b border-slate-800 pb-3">
+        <button 
+          id="tab-btn-leads"
+          (click)="activeTab.set('leads')"
+          [class.bg-brand-blue]="activeTab() === 'leads'"
+          [class.text-white]="activeTab() === 'leads'"
+          [class.bg-slate-800]="activeTab() !== 'leads'"
+          [class.text-slate-400]="activeTab() !== 'leads'"
+          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>📋 Bookings & Leads (CRM)</span>
+          <span class="px-2 py-0.5 rounded-full text-[11px] bg-black/20 text-white font-mono">
+            {{ academyService.leads().length }}
+          </span>
+        </button>
+
+        <button 
+          id="tab-btn-courses"
+          (click)="activeTab.set('courses')"
+          [class.bg-brand-blue]="activeTab() === 'courses'"
+          [class.text-white]="activeTab() === 'courses'"
+          [class.bg-slate-800]="activeTab() !== 'courses'"
+          [class.text-slate-400]="activeTab() !== 'courses'"
+          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>🎓 Courses & Syllabus (CRUD)</span>
+          <span class="px-2 py-0.5 rounded-full text-[11px] bg-black/20 text-white font-mono">
+            {{ academyService.courses().length }}
+          </span>
+        </button>
+
+        <button 
+          id="tab-btn-assets"
+          (click)="activeTab.set('assets')"
+          [class.bg-brand-blue]="activeTab() === 'assets'"
+          [class.text-white]="activeTab() === 'assets'"
+          [class.bg-slate-800]="activeTab() !== 'assets'"
+          [class.text-slate-400]="activeTab() !== 'assets'"
+          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>🖼️ Assets & Media Library</span>
+          <span class="px-2 py-0.5 rounded-full text-[11px] bg-black/20 text-white font-mono">
+            {{ academyService.assets().length }}
+          </span>
+        </button>
+
+        <button 
+          id="tab-btn-content"
+          (click)="activeTab.set('content')"
+          [class.bg-brand-blue]="activeTab() === 'content'"
+          [class.text-white]="activeTab() === 'content'"
+          [class.bg-slate-800]="activeTab() !== 'content'"
+          [class.text-slate-400]="activeTab() !== 'content'"
+          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>🎨 Page Content Editor</span>
+        </button>
+
+        <button 
+          id="tab-btn-seo"
+          (click)="activeTab.set('seo')"
+          [class.bg-brand-blue]="activeTab() === 'seo'"
+          [class.text-white]="activeTab() === 'seo'"
+          [class.bg-slate-800]="activeTab() !== 'seo'"
+          [class.text-slate-400]="activeTab() !== 'seo'"
+          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>🔍 SEO & Meta Tags</span>
+        </button>
+
+        <button 
+          id="tab-btn-backup"
+          (click)="activeTab.set('backup')"
+          [class.bg-brand-blue]="activeTab() === 'backup'"
+          [class.text-white]="activeTab() === 'backup'"
+          [class.bg-slate-800]="activeTab() !== 'backup'"
+          [class.text-slate-400]="activeTab() !== 'backup'"
+          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer">
+          <span>⚙️ Backup & Reset</span>
+        </button>
+      </div>
+
+      <!-- Toast Notification Banner -->
+      @if (toastMessage()) {
+        <div class="p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-sm flex items-center justify-between shadow-lg fade-in">
+          <div class="flex items-center gap-2">
+            <span>✅</span>
+            <span>{{ toastMessage() }}</span>
+          </div>
+          <button (click)="toastMessage.set('')" class="text-emerald-400 hover:text-white cursor-pointer">✕</button>
+        </div>
+      }
+
+      <!-- ============================================== -->
+      <!-- TAB 1: LEADS & BOOKINGS MANAGER (CRM)          -->
+      <!-- ============================================== -->
+      @if (activeTab() === 'leads') {
+        <div class="space-y-6 fade-in">
+          
+          <!-- Filter Bar & Search & Add Manual Lead -->
+          <div class="bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Search Input -->
+            <div class="relative w-full md:w-80">
+              <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input 
+                type="text" 
+                [(ngModel)]="searchQuery" 
+                placeholder="Search by student name, phone..."
+                class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-xs sm:text-sm text-slate-200 placeholder-slate-500" />
+            </div>
+
+            <!-- Status Filter Pills -->
+            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+              @for (st of ['All', 'New', 'Contacted', 'Enrolled', 'Closed']; track st) {
+                <button 
+                  type="button"
+                  (click)="selectedStatusFilter.set($any(st))"
+                  [class.bg-brand-blue]="selectedStatusFilter() === st"
+                  [class.text-white]="selectedStatusFilter() === st"
+                  [class.bg-slate-900]="selectedStatusFilter() !== st"
+                  [class.text-slate-400]="selectedStatusFilter() !== st"
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-800 hover:border-slate-700 transition-colors cursor-pointer">
+                  {{ st }}
+                </button>
+              }
+            </div>
+
+            <!-- Add Manual Lead Button -->
+            <button 
+              (click)="openAddLeadModal()"
+              class="w-full md:w-auto px-4 py-2 rounded-xl bg-brand-yellow hover:bg-yellow-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer">
+              <span>+ Record New Enquiry</span>
+            </button>
+          </div>
+
+          <!-- Leads Table -->
+          <div class="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs sm:text-sm text-slate-300">
+                <thead class="bg-slate-900/80 text-slate-400 text-[11px] uppercase tracking-wider font-semibold border-b border-slate-800">
+                  <tr>
+                    <th class="py-3.5 px-4">Student & Contact</th>
+                    <th class="py-3.5 px-4">Course Track</th>
+                    <th class="py-3.5 px-4">Source & Date</th>
+                    <th class="py-3.5 px-4">Status</th>
+                    <th class="py-3.5 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60">
+                  @for (lead of filteredLeads(); track lead.id) {
+                    <tr class="hover:bg-slate-900/40 transition-colors">
+                      <td class="py-3.5 px-4">
+                        <div class="font-bold text-white text-sm">{{ lead.name }}</div>
+                        <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
+                          <span>{{ lead.phone }}</span>
+                          @if (lead.email) {
+                            <span>• {{ lead.email }}</span>
+                          }
+                        </div>
+                        @if (lead.notes) {
+                          <div class="text-[11px] text-amber-300/80 mt-1 italic">Note: {{ lead.notes }}</div>
+                        }
+                      </td>
+
+                      <td class="py-3.5 px-4">
+                        <span class="inline-block px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-brand-blue font-semibold text-xs">
+                          {{ lead.program }}
+                        </span>
+                      </td>
+
+                      <td class="py-3.5 px-4 text-xs text-slate-400">
+                        <div>{{ lead.source }}</div>
+                        <div class="text-[11px] text-slate-500">{{ formatDate(lead.createdAt) }}</div>
+                      </td>
+
+                      <td class="py-3.5 px-4">
+                        <select 
+                          [ngModel]="lead.status" 
+                          (ngModelChange)="changeLeadStatus(lead.id, $event)"
+                          class="px-2.5 py-1 rounded-lg text-xs font-bold border outline-none bg-slate-900 cursor-pointer"
+                          [class.text-amber-400]="lead.status === 'New'"
+                          [class.border-amber-500-30]="lead.status === 'New'"
+                          [class.text-blue-400]="lead.status === 'Contacted'"
+                          [class.border-blue-500-30]="lead.status === 'Contacted'"
+                          [class.text-emerald-400]="lead.status === 'Enrolled'"
+                          [class.border-emerald-500-30]="lead.status === 'Enrolled'"
+                          [class.text-slate-400]="lead.status === 'Closed'">
+                          <option value="New">🟡 New</option>
+                          <option value="Contacted">🔵 Contacted</option>
+                          <option value="Enrolled">🟢 Enrolled</option>
+                          <option value="Closed">⚪ Closed</option>
+                        </select>
+                      </td>
+
+                      <td class="py-3.5 px-4 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                          <!-- Direct WhatsApp Link -->
+                          <a 
+                            [href]="getWhatsAppLink(lead)" 
+                            target="_blank" 
+                            class="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
+                            title="Chat on WhatsApp">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.97.53 1.939.816 2.8.816 3.181 0 5.767-2.586 5.768-5.766.001-3.181-2.585-5.803-5.772-5.803zm3.377 8.243c-.145.408-.847.781-1.183.829-.336.048-.77.067-1.246-.086-.475-.154-1.096-.364-1.895-.816-.799-.452-1.391-1.026-1.879-1.564-.488-.538-.795-1.137-.905-1.428-.11-.291-.013-.483.109-.647.108-.146.241-.371.362-.556.121-.186.161-.318.242-.53.08-.212.04-.398-.02-.557-.061-.159-.544-1.312-.746-1.798-.197-.474-.398-.41-.548-.418-.141-.007-.302-.008-.463-.008-.161 0-.423.06-.645.301-.222.241-.847.828-.847 2.019 0 1.191.867 2.343.988 2.505.121.161 1.708 2.608 4.137 3.657.578.249 1.029.398 1.381.51.554.176 1.058.151 1.457.092.444-.067 1.365-.559 1.557-1.099.192-.54.192-1.003.134-1.099-.058-.096-.214-.154-.447-.27z"/>
+                            </svg>
+                          </a>
+
+                          <!-- Edit Lead -->
+                          <button 
+                            (click)="openEditLeadModal(lead)" 
+                            class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer"
+                            title="Edit notes / details">
+                            ✏️
+                          </button>
+
+                          <!-- Delete Lead -->
+                          <button 
+                            (click)="deleteLead(lead.id)" 
+                            class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-colors cursor-pointer"
+                            title="Delete Lead">
+                            🗑️
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="5" class="text-center py-12 text-slate-500">
+                        No enquiries matching your search or status filter.
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      }
+
+      <!-- ============================================== -->
+      <!-- TAB 2: COURSES & DETAILED SYLLABUS (FULL CRUD) -->
+      <!-- ============================================== -->
+      @if (activeTab() === 'courses') {
+        <div class="space-y-6 fade-in">
+          
+          <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-bold text-white">Course Tracks & Syllabus Management</h2>
+              <p class="text-xs text-slate-400">Create new courses, edit 12 syllabus modules, pricing plans, salary stats, and case studies.</p>
+            </div>
+            
+            <button 
+              (click)="openCreateCourseModal()" 
+              class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all cursor-pointer">
+              <span>+ Create New Course</span>
+            </button>
+          </div>
+
+          <!-- Course Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            @for (course of academyService.courses(); track course.id) {
+              <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between hover:border-slate-700 transition-all shadow-lg">
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-3">
+                    <span class="text-xs font-mono font-bold text-brand-blue px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20">
+                      TRACK {{ course.id }}
+                    </span>
+                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300">
+                      {{ course.badge }}
+                    </span>
+                  </div>
+
+                  <h3 class="text-xl font-extrabold text-white">{{ course.title }}</h3>
+                  <p class="text-xs text-slate-400 font-medium mt-1">{{ course.category }}</p>
+                  
+                  <div class="mt-4 p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between text-xs">
+                    <span class="text-slate-400">Metric Highlight:</span>
+                    <span class="font-bold text-cyan-400 font-heading text-sm">{{ course.metric }} {{ course.metricLabel }}</span>
+                  </div>
+
+                  <p class="text-xs text-slate-400 mt-3 line-clamp-2 leading-relaxed">
+                    {{ course.desc }}
+                  </p>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between gap-3">
+                  <!-- View Live Page Button -->
+                  <button 
+                    (click)="navigateToLiveSite('/courses/' + (academyService.getCourseDetail(course.id).slug || 'social-media-marketing'))"
+                    class="text-xs font-semibold text-brand-blue hover:underline flex items-center gap-1 cursor-pointer">
+                    <span>View Public Page ↗</span>
+                  </button>
+
+                  <div class="flex items-center gap-2">
+                    <!-- Edit Button -->
+                    <button 
+                      (click)="openEditCourseModal(course.id)"
+                      class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-colors cursor-pointer">
+                      ✏️ Edit Syllabus
+                    </button>
+
+                    <!-- Delete Button -->
+                    <button 
+                      (click)="deleteCourse(course.id, course.title)"
+                      class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs transition-colors cursor-pointer"
+                      title="Delete Course">
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+        </div>
+      }
+
+      <!-- ============================================== -->
+      <!-- TAB 3: ASSETS & MEDIA LIBRARY (NEW!)           -->
+      <!-- ============================================== -->
+      @if (activeTab() === 'assets') {
+        <div class="space-y-6 fade-in">
+          
+          <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-bold text-white">Media Assets & Graphics Library</h2>
+              <p class="text-xs text-slate-400">Upload, manage, and assign logos, mentor portraits, promotional posters, and brochure files.</p>
+            </div>
+            
+            <button 
+              (click)="openUploadAssetModal()" 
+              class="px-5 py-2.5 rounded-xl bg-brand-yellow hover:bg-yellow-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg transition-all cursor-pointer">
+              <span>+ Upload New Asset</span>
+            </button>
+          </div>
+
+          <!-- Category Filter & Search -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <!-- Filter Pills -->
+            <div class="flex flex-wrap items-center gap-2">
+              @for (cat of ['All', 'logo', 'mentor', 'poster', 'badge', 'document']; track cat) {
+                <button 
+                  type="button"
+                  (click)="selectedAssetCategory.set($any(cat))"
+                  [class.bg-brand-blue]="selectedAssetCategory() === cat"
+                  [class.text-white]="selectedAssetCategory() === cat"
+                  [class.bg-slate-950]="selectedAssetCategory() !== cat"
+                  [class.text-slate-400]="selectedAssetCategory() !== cat"
+                  class="px-3.5 py-1.5 rounded-xl text-xs font-bold border border-slate-800 hover:border-slate-700 uppercase transition-colors cursor-pointer">
+                  {{ cat }}
+                </button>
+              }
+            </div>
+
+            <!-- Search -->
+            <div class="relative w-full sm:w-64">
+              <input 
+                type="text" 
+                [(ngModel)]="assetSearchQuery" 
+                placeholder="Search assets..." 
+                class="w-full pl-9 pr-4 py-1.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-brand-blue outline-none text-xs text-slate-200 placeholder-slate-500" />
+              <svg class="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Assets Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            @for (asset of filteredAssets(); track asset.id) {
+              <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-slate-700 transition-all shadow-md group">
+                
+                <!-- Image Preview Container -->
+                <div class="h-44 bg-slate-900 flex items-center justify-center p-3 relative overflow-hidden">
+                  <img 
+                    [src]="asset.url" 
+                    [alt]="asset.alt" 
+                    class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105" />
+                  
+                  <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider">
+                    {{ asset.category }}
+                  </span>
+                </div>
+
+                <!-- Info Body -->
+                <div class="p-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h4 class="font-bold text-white text-sm line-clamp-1" [title]="asset.title">{{ asset.title }}</h4>
+                    <p class="text-[11px] text-slate-400 mt-0.5">{{ asset.size || 'Web' }} • {{ formatDate(asset.createdAt) }}</p>
+                    
+                    @if (asset.assignedTo) {
+                      <div class="mt-2.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-brand-blue text-[10px] font-bold">
+                        <span>✓ {{ asset.assignedTo }}</span>
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Quick Action Buttons -->
+                  <div class="mt-4 pt-3 border-t border-slate-800 flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                      <button 
+                        (click)="copyAssetUrl(asset.url)" 
+                        class="flex-1 py-1.5 px-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>📋 Copy URL</span>
+                      </button>
+
+                      <button 
+                        (click)="deleteAsset(asset.id, asset.title)" 
+                        class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs transition-colors cursor-pointer"
+                        title="Delete Asset">
+                        🗑️
+                      </button>
+                    </div>
+
+                    <!-- 1-Click Assignment Actions -->
+                    @if (asset.category === 'logo') {
+                      <button 
+                        (click)="assignAsset('logo', asset)" 
+                        class="w-full py-1 px-2 rounded-md bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 text-[11px] font-bold border border-cyan-500/20 transition-colors cursor-pointer">
+                        Set as Header Logo
+                      </button>
+                    }
+                    @if (asset.category === 'mentor') {
+                      <button 
+                        (click)="assignAsset('mentor', asset)" 
+                        class="w-full py-1 px-2 rounded-md bg-pink-500/10 hover:bg-pink-500/20 text-pink-300 text-[11px] font-bold border border-pink-500/20 transition-colors cursor-pointer">
+                        Set as Mentor Portrait
+                      </button>
+                    }
+                  </div>
+
+                </div>
+
+              </div>
+            } @empty {
+              <div class="col-span-full text-center py-16 text-slate-500 bg-slate-950 rounded-2xl border border-slate-800">
+                No assets found in this category. Click "+ Upload New Asset" above to add media.
+              </div>
+            }
+          </div>
+
+        </div>
+      }
+
+      <!-- ============================================== -->
+      <!-- TAB 4: PAGE CONTENT & COPY EDITOR (ALL PAGES)  -->
+      <!-- ============================================== -->
+      @if (activeTab() === 'content') {
+        <div class="space-y-6 fade-in">
+          
+          <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-20 z-20 shadow-xl backdrop-blur-xl">
+            <div>
+              <h2 class="text-lg font-bold text-white">Full Website Copy & Content CMS</h2>
+              <p class="text-xs text-slate-400">Directly edit headlines, USP badge, blue stats, benefits, and mentor details.</p>
+            </div>
+            
+            <button 
+              (click)="saveSiteContent()" 
+              class="px-6 py-2.5 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 transition-all cursor-pointer">
+              💾 Save All Site Content
+            </button>
+          </div>
+
+          <!-- Section 1: Hero Section & Announcement Ticker -->
+          <div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 space-y-5">
+            <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+              <span class="text-lg">📢</span>
+              <h3 class="text-base font-bold text-white">Hero Section & Announcement Ticker</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Micro-Batch USP Badge (Top Pill)
+                </label>
+                <input 
+                  type="text" 
+                  [(ngModel)]="contentForm.heroBadge" 
+                  class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+                <p class="text-[11px] text-slate-500 mt-1">Highlights the strictly 4 students per batch USP.</p>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Hero CTA Button Label
+                </label>
+                <input 
+                  type="text" 
+                  [(ngModel)]="contentForm.heroCtaText" 
+                  class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Main Headline (Supports newline break)
+                </label>
+                <textarea 
+                  rows="2" 
+                  [(ngModel)]="contentForm.heroHeadline" 
+                  class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100"></textarea>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Subheading Description
+                </label>
+                <textarea 
+                  rows="2" 
+                  [(ngModel)]="contentForm.heroSubheading" 
+                  class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Blue Stats Banner & Floating Tags -->
+          <div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 space-y-5">
+            <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+              <span class="text-lg">📊</span>
+              <h3 class="text-base font-bold text-white">Blue Stats Banner & Floating Badges</h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Stat 1 Value</label>
+                <input type="text" [(ngModel)]="contentForm.stat1Value" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100 font-bold" />
+                <label class="block text-xs font-semibold text-slate-400 mt-2 mb-1">Stat 1 Label</label>
+                <input type="text" [(ngModel)]="contentForm.stat1Label" class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-xs text-slate-200" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Stat 2 Value</label>
+                <input type="text" [(ngModel)]="contentForm.stat2Value" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100 font-bold" />
+                <label class="block text-xs font-semibold text-slate-400 mt-2 mb-1">Stat 2 Label</label>
+                <input type="text" [(ngModel)]="contentForm.stat2Label" class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-xs text-slate-200" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Stat 3 Value</label>
+                <input type="text" [(ngModel)]="contentForm.stat3Value" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100 font-bold" />
+                <label class="block text-xs font-semibold text-slate-400 mt-2 mb-1">Stat 3 Label</label>
+                <input type="text" [(ngModel)]="contentForm.stat3Label" class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-xs text-slate-200" />
+              </div>
+
+              <div class="sm:col-span-3">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Value Statement (Left Column Text)
+                </label>
+                <textarea rows="2" [(ngModel)]="contentForm.valueText" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100"></textarea>
+              </div>
+
+              <div class="sm:col-span-3">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Floating Pill Badges (Comma-separated)
+                </label>
+                <input type="text" [(ngModel)]="floatingTagsString" placeholder="Clarity in positioning, Performance-Driven Marketing, Media Planning, Growth Systems" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Curriculum & Guaranteed Benefits -->
+          <div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 space-y-5">
+            <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+              <span class="text-lg">🎯</span>
+              <h3 class="text-base font-bold text-white">Curriculum & Guaranteed Benefits</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Curriculum Section Heading</label>
+                <input type="text" [(ngModel)]="contentForm.curriculumHeading" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Free Starter Pack Banner Title</label>
+                <input type="text" [(ngModel)]="contentForm.starterPackTitle" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Curriculum Subheading</label>
+                <textarea rows="2" [(ngModel)]="contentForm.curriculumSubheading" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100"></textarea>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  6 Guaranteed Outcome Benefits (One per line)
+                </label>
+                <textarea rows="4" [(ngModel)]="benefitsString" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100 font-mono"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 4: Mentor Spotlight (Deekshith) -->
+          <div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 space-y-5">
+            <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+              <span class="text-lg">👨‍🏫</span>
+              <h3 class="text-base font-bold text-white">Mentor Spotlight (Deekshith)</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Mentor Full Name</label>
+                <input type="text" [(ngModel)]="contentForm.mentorName" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Role / Designation</label>
+                <input type="text" [(ngModel)]="contentForm.mentorRole" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Verified Ad Budget Managed Badge</label>
+                <input type="text" [(ngModel)]="contentForm.mentorAdBudgets" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Mentor Image Asset URL</label>
+                <input type="text" [(ngModel)]="contentForm.mentorImage" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Mentor Bio & Experience</label>
+                <textarea rows="2" [(ngModel)]="contentForm.mentorBio" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 5: Direct Contact & Location & Footer -->
+          <div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 space-y-5">
+            <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+              <span class="text-lg">📍</span>
+              <h3 class="text-base font-bold text-white">Direct Contact & Footer Details</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Contact Phone</label>
+                <input type="text" [(ngModel)]="contentForm.phone" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Contact Email</label>
+                <input type="email" [(ngModel)]="contentForm.email" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Campus Physical Address</label>
+                <input type="text" [(ngModel)]="contentForm.address" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Admissions Status Badge</label>
+                <input type="text" [(ngModel)]="contentForm.admissionsStatus" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Copyright Notice</label>
+                <input type="text" [(ngModel)]="contentForm.copyrightText" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-4">
+            <button 
+              (click)="saveSiteContent()" 
+              class="px-8 py-3.5 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-sm shadow-xl shadow-blue-500/25 transition-all cursor-pointer">
+              💾 Save All Site Content
+            </button>
+          </div>
+
+        </div>
+      }
+
+      <!-- ============================================== -->
+      <!-- TAB 5: SEO & META TAGS MANAGER                 -->
+      <!-- ============================================== -->
+      @if (activeTab() === 'seo') {
+        <div class="space-y-6 fade-in">
+          
+          <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-bold text-white">Search Engine Optimization (SEO) & Social Sharing</h2>
+              <p class="text-xs text-slate-400">Configure global metadata, Open Graph cards, and view live Google SERP preview.</p>
+            </div>
+            
+            <button 
+              (click)="saveSeoConfig()" 
+              class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 transition-all cursor-pointer">
+              🚀 Apply SEO Tags Live
+            </button>
+          </div>
+
+          <!-- Google SERP Live Snippet Preview Card -->
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block">
+              Google Desktop Search Snippet Preview
+            </span>
+            <div class="bg-white p-5 rounded-xl max-w-2xl border border-slate-200 text-left shadow-sm">
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-4 h-4 rounded-full bg-brand-blue flex items-center justify-center text-[8px] text-white font-bold">AV</div>
+                <span class="text-xs text-slate-700">avirbhavinfotech.com</span>
+                <span class="text-xs text-slate-400">› courses</span>
+              </div>
+              <h4 class="text-base sm:text-lg font-semibold text-blue-700 hover:underline cursor-pointer leading-tight">
+                {{ seoForm.title }}
+              </h4>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1 line-clamp-2 leading-relaxed">
+                {{ seoForm.metaDescription }}
+              </p>
+            </div>
+          </div>
+
+          <!-- SEO Form -->
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Meta Title Tag</label>
+                <input type="text" [(ngModel)]="seoForm.title" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Meta Description Tag</label>
+                <textarea rows="2" [(ngModel)]="seoForm.metaDescription" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100"></textarea>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Meta Keywords (Comma-separated)</label>
+                <input type="text" [(ngModel)]="seoForm.metaKeywords" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Canonical URL</label>
+                <input type="text" [(ngModel)]="seoForm.canonicalUrl" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Robots Meta</label>
+                <input type="text" [(ngModel)]="seoForm.robots" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Open Graph (OG) Title</label>
+                <input type="text" [(ngModel)]="seoForm.ogTitle" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">OG Banner Image URL</label>
+                <input type="text" [(ngModel)]="seoForm.ogImage" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-brand-blue outline-none text-sm text-slate-100" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      }
+
+      <!-- ============================================== -->
+      <!-- TAB 6: BACKUP & SYSTEM SETTINGS                -->
+      <!-- ============================================== -->
+      @if (activeTab() === 'backup') {
+        <div class="space-y-6 fade-in max-w-4xl">
+          
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-2">
+            <h2 class="text-xl font-extrabold text-white">Website Backups & Safety Controls</h2>
+            <p class="text-xs sm:text-sm text-slate-400">
+              Export your entire website state (enquiries, custom courses, 12 syllabus modules, uploaded assets, and page content) as a single portable JSON file.
+            </p>
+          </div>
+
+          <!-- Export Box -->
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <span>📥</span>
+                <span>Export Full Site Backup</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                Generates an encrypted JSON archive containing all site configuration, leads, and assets.
+              </p>
+            </div>
+            <button 
+              (click)="handleExportBackup()"
+              class="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-600/20 transition-all cursor-pointer">
+              Download Backup (.json)
+            </button>
+          </div>
+
+          <!-- Import Box -->
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span>📤</span>
+              <span>Restore from Backup File</span>
+            </h3>
+            <p class="text-xs text-slate-400">
+              Upload a previously exported .json file or paste its contents below to restore the complete site state.
+            </p>
+
+            <div class="space-y-3">
+              <input 
+                type="file" 
+                accept=".json"
+                (change)="handleBackupFileSelected($event)" 
+                class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 cursor-pointer" />
+
+              <textarea 
+                rows="3" 
+                [(ngModel)]="backupJsonInput" 
+                placeholder="Or paste backup JSON content directly here..."
+                class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-slate-300 outline-none focus:border-brand-blue"></textarea>
+            </div>
+
+            <button 
+              (click)="handleImportBackup()"
+              class="px-6 py-2.5 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer">
+              Restore Site from JSON
+            </button>
+          </div>
+
+          <!-- Factory Reset / Danger Zone -->
+          <div class="bg-rose-950/20 border border-rose-500/30 p-6 rounded-2xl space-y-3">
+            <div class="flex items-center gap-2">
+              <span class="text-rose-400 font-bold">⚠️ Danger Zone:</span>
+              <h3 class="text-base font-bold text-rose-300">Factory Reset Website</h3>
+            </div>
+            <p class="text-xs text-rose-400/80 leading-relaxed">
+              This will clear all custom edits and reset the course tracks, 12 syllabus modules, and site copy back to default factory settings.
+            </p>
+            <button 
+              (click)="handleFactoryReset()"
+              class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+              Reset to Factory Defaults
+            </button>
+          </div>
+
+        </div>
+      }
+
+    </main>
+  }
+
+  <!-- ============================================== -->
+  <!-- MODAL: CREATE / EDIT COURSE & SYLLABUS DRAWER  -->
+  <!-- ============================================== -->
+  @if (isCourseModalOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md fade-in overflow-y-auto">
+      
+      <div class="bg-slate-950 border border-slate-800 w-full max-w-5xl rounded-3xl p-6 sm:p-8 max-h-[92vh] flex flex-col shadow-2xl relative my-auto">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div>
+            <h3 class="text-lg sm:text-xl font-extrabold text-white">
+              {{ editingCourseId() ? 'Edit Course: ' + courseFormDetail.shortTitle : 'Create New Course Program' }}
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Course ID: {{ courseFormDetail.id }} • URL: /courses/{{ courseFormDetail.slug }}
+            </p>
+          </div>
+          
+          <button (click)="isCourseModalOpen.set(false)" class="text-slate-400 hover:text-white p-2 text-lg cursor-pointer">✕</button>
+        </div>
+
+        <!-- Sub Tabs Switcher inside Course Modal -->
+        <div class="flex flex-wrap items-center gap-2 border-b border-slate-800 py-3">
+          <button 
+            type="button" 
+            (click)="courseActiveSubTab.set('basic')"
+            [class.bg-brand-blue]="courseActiveSubTab() === 'basic'"
+            [class.text-white]="courseActiveSubTab() === 'basic'"
+            [class.bg-slate-900]="courseActiveSubTab() !== 'basic'"
+            [class.text-slate-400]="courseActiveSubTab() !== 'basic'"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">
+            1. Title & URL Slug
+          </button>
+
+          <button 
+            type="button" 
+            (click)="courseActiveSubTab.set('stats')"
+            [class.bg-brand-blue]="courseActiveSubTab() === 'stats'"
+            [class.text-white]="courseActiveSubTab() === 'stats'"
+            [class.bg-slate-900]="courseActiveSubTab() !== 'stats'"
+            [class.text-slate-400]="courseActiveSubTab() !== 'stats'"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">
+            2. Hero, Stats & Outcomes
+          </button>
+
+          <button 
+            type="button" 
+            (click)="courseActiveSubTab.set('modules')"
+            [class.bg-brand-blue]="courseActiveSubTab() === 'modules'"
+            [class.text-white]="courseActiveSubTab() === 'modules'"
+            [class.bg-slate-900]="courseActiveSubTab() !== 'modules'"
+            [class.text-slate-400]="courseActiveSubTab() !== 'modules'"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+            <span>3. Syllabus Modules</span>
+            <span class="px-1.5 py-0.2 rounded-full bg-black/20 text-[10px] font-mono">
+              {{ courseFormDetail.syllabusModules.length }}
+            </span>
+          </button>
+
+          <button 
+            type="button" 
+            (click)="courseActiveSubTab.set('faqs')"
+            [class.bg-brand-blue]="courseActiveSubTab() === 'faqs'"
+            [class.text-white]="courseActiveSubTab() === 'faqs'"
+            [class.bg-slate-900]="courseActiveSubTab() !== 'faqs'"
+            [class.text-slate-400]="courseActiveSubTab() !== 'faqs'"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">
+            4. FAQs & Case Study
+          </button>
+        </div>
+
+        <!-- Scrollable Modal Body -->
+        <div class="flex-1 overflow-y-auto py-5 space-y-5 custom-scroll pr-1">
+          
+          <!-- SUBTAB 1: Basic Info & Slug -->
+          @if (courseActiveSubTab() === 'basic') {
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Short Title (Display)</label>
+                  <input type="text" [(ngModel)]="courseFormDetail.shortTitle" placeholder="e.g. Social Media Marketing" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">URL Slug (e.g. /courses/slug)</label>
+                  <input type="text" [(ngModel)]="courseFormDetail.slug" placeholder="e.g. social-media-marketing" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue font-mono" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Title Prefix</label>
+                  <input type="text" [(ngModel)]="courseFormDetail.titlePrefix" placeholder="e.g. Social Media Marketing & AI" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Title Highlight (Yellow word)</label>
+                  <input type="text" [(ngModel)]="courseFormDetail.titleHighlight" placeholder="e.g. Program" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Category</label>
+                  <input type="text" [(ngModel)]="courseFormDetail.category" placeholder="Marketing Service • Organic Virality" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Badge</label>
+                  <input type="text" [(ngModel)]="courseFormDetail.badge" placeholder="Core Track" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Hero Tagline Description</label>
+                  <textarea rows="3" [(ngModel)]="courseFormDetail.tagline" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue"></textarea>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- SUBTAB 2: Hero & Stats -->
+          @if (courseActiveSubTab() === 'stats') {
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Average Salary Stat</label>
+                  <input type="text" [(ngModel)]="courseFormDetail.averageSalary" placeholder="₹6.5L – 12L" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 font-bold outline-none focus:border-brand-blue" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Salary Subtext</label>
+                  <input type="text" [(ngModel)]="courseFormDetail.salarySubtext" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Hero Card Heading</label>
+                  <input type="text" [(ngModel)]="courseFormDetail.heroCardHeading" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">Hero Card Key Masteries (Comma-separated)</label>
+                  <input type="text" [(ngModel)]="courseHeroMasteriesString" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+                </div>
+
+                <!-- 4 Stat Bar Items -->
+                <div class="sm:col-span-2 border-t border-slate-800 pt-3">
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-3">4 Stat Bar Counters</span>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    @for (st of courseFormDetail.statBar; track $index) {
+                      <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                        <label class="text-[10px] text-slate-400 font-bold block">Stat {{ $index + 1 }}</label>
+                        <input type="text" [(ngModel)]="st.value" placeholder="Value" class="w-full p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-bold text-white" />
+                        <input type="text" [(ngModel)]="st.label" placeholder="Label" class="w-full p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-[11px] text-slate-300" />
+                      </div>
+                    }
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          }
+
+          <!-- SUBTAB 3: 12 Syllabus Modules -->
+          @if (courseActiveSubTab() === 'modules') {
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 class="font-bold text-white text-sm">Course Syllabus Modules</h4>
+                  <p class="text-xs text-slate-400">Add, edit, or remove syllabus modules for this course.</p>
+                </div>
+                <button 
+                  type="button" 
+                  (click)="addSyllabusModule()"
+                  class="px-3.5 py-1.5 rounded-lg bg-brand-yellow hover:bg-yellow-400 text-slate-950 font-bold text-xs cursor-pointer">
+                  + Add Module
+                </button>
+              </div>
+
+              <div class="space-y-3">
+                @for (mod of courseFormDetail.syllabusModules; track $index) {
+                  <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between gap-3">
+                      <div class="flex items-center gap-2 flex-1">
+                        <span class="w-6 h-6 rounded-full bg-blue-500/10 text-brand-blue flex items-center justify-center font-bold text-xs shrink-0 font-mono">
+                          {{ $index + 1 }}
+                        </span>
+                        <input 
+                          type="text" 
+                          [(ngModel)]="mod.title" 
+                          placeholder="Module Title" 
+                          class="flex-1 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-bold text-white" />
+                      </div>
+
+                      <div class="flex items-center gap-2">
+                        <label class="flex items-center gap-1.5 text-xs text-slate-400 cursor-pointer select-none">
+                          <input type="checkbox" [(ngModel)]="mod.hasAi" class="rounded text-brand-blue" />
+                          <span>AI Badge</span>
+                        </label>
+
+                        <button 
+                          type="button" 
+                          (click)="deleteSyllabusModule($index)" 
+                          class="text-rose-400 hover:text-rose-300 text-xs p-1 cursor-pointer">
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Duration & Hours</label>
+                        <input type="text" [(ngModel)]="mod.duration" placeholder="e.g. 2 Weeks • 12 Hrs" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200" />
+                      </div>
+
+                      <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Tools Tags</label>
+                        <input 
+                          type="text" 
+                          [ngModel]="getModuleTools(mod)" 
+                          (ngModelChange)="setModuleTools(mod, $event)"
+                          placeholder="e.g. ChatGPT, Meta Ads, Canva" 
+                          class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200" />
+                      </div>
+
+                      <div class="sm:col-span-2">
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Topics Covered (Comma-separated)</label>
+                        <input 
+                          type="text" 
+                          [ngModel]="getModuleTopics(mod)" 
+                          (ngModelChange)="setModuleTopics(mod, $event)"
+                          placeholder="e.g. Audience Discovery, Ad Copy Testing, Conversion Funnel" 
+                          class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200" />
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- SUBTAB 4: FAQs & Case Study -->
+          @if (courseActiveSubTab() === 'faqs') {
+            <div class="space-y-5">
+              
+              <!-- Case Study Card -->
+              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block">Alumni Bento Case Study</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input type="text" [(ngModel)]="courseFormDetail.portfolioCase.title" placeholder="Case Title" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs font-bold text-white" />
+                  <input type="text" [(ngModel)]="courseFormDetail.portfolioCase.clientType" placeholder="Client Type (e.g. D2C Brand)" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200" />
+                  <textarea rows="2" [(ngModel)]="courseFormDetail.portfolioCase.desc" placeholder="Case outcome description" class="sm:col-span-2 w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200"></textarea>
+                </div>
+              </div>
+
+              <!-- Student Testimonial -->
+              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block">Student Quote Testimonial</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input type="text" [(ngModel)]="courseFormDetail.studentQuote.author" placeholder="Student Name" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs font-bold text-white" />
+                  <input type="text" [(ngModel)]="courseFormDetail.studentQuote.role" placeholder="Current Role / Job" class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200" />
+                  <textarea rows="2" [(ngModel)]="courseFormDetail.studentQuote.quote" placeholder="Quote statement" class="sm:col-span-2 w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200"></textarea>
+                </div>
+              </div>
+
+              <!-- Course FAQs -->
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Course FAQs</span>
+                  <button type="button" (click)="addCourseFaq()" class="text-xs text-brand-blue hover:underline font-bold cursor-pointer">+ Add FAQ</button>
+                </div>
+
+                @for (faq of courseFormDetail.faqs; track $index) {
+                  <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <input type="text" [(ngModel)]="faq.q" placeholder="Question" class="flex-1 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-bold text-white" />
+                      <button type="button" (click)="deleteCourseFaq($index)" class="text-rose-400 text-xs cursor-pointer">🗑️</button>
+                    </div>
+                    <textarea rows="2" [(ngModel)]="faq.a" placeholder="Answer" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200"></textarea>
+                  </div>
+                }
+              </div>
+
+            </div>
+          }
+
+        </div>
+
+        <!-- Footer Action -->
+        <div class="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+          <button 
+            type="button" 
+            (click)="isCourseModalOpen.set(false)" 
+            class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition-colors cursor-pointer">
+            Cancel
+          </button>
+
+          <button 
+            type="button" 
+            (click)="saveCourseDetailModal()" 
+            class="px-6 py-2.5 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 transition-all cursor-pointer">
+            Save Course & Syllabus
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- ============================================== -->
+  <!-- MODAL: UPLOAD NEW ASSET MODAL                  -->
+  <!-- ============================================== -->
+  @if (isUploadAssetModalOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md fade-in">
+      <div class="bg-slate-950 border border-slate-800 w-full max-w-lg rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl relative">
+        
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white">Upload New Asset</h3>
+          <button (click)="isUploadAssetModalOpen.set(false)" class="text-slate-400 hover:text-white cursor-pointer">✕</button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Asset Title</label>
+            <input type="text" [(ngModel)]="assetUploadForm.title" placeholder="e.g. Header Brand Logo" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Category</label>
+            <select [(ngModel)]="assetUploadForm.category" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue cursor-pointer">
+              <option value="logo">Logo</option>
+              <option value="mentor">Mentor Photo</option>
+              <option value="poster">Poster / Banner</option>
+              <option value="badge">Badge / Icon</option>
+              <option value="document">Document / PDF</option>
+            </select>
+          </div>
+
+          <!-- File Upload Option -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Choose File from Device</label>
+            <input 
+              type="file" 
+              accept="image/*,.pdf" 
+              (change)="handleAssetFileUpload($event)" 
+              class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 cursor-pointer" />
+          </div>
+
+          <!-- Direct URL Option -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Or Direct Asset URL</label>
+            <input type="text" [(ngModel)]="assetUploadForm.url" placeholder="https://... or /images/..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue font-mono" />
+          </div>
+
+          <!-- Live Preview -->
+          @if (assetUploadForm.url) {
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-3">
+              <img [src]="assetUploadForm.url" alt="Preview" class="w-14 h-14 object-contain rounded-lg bg-black/40" />
+              <div class="text-xs text-slate-300">
+                <span class="font-bold block">Preview Ready</span>
+                <span class="text-slate-500">{{ assetUploadForm.size || 'Web' }}</span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-3">
+          <button (click)="isUploadAssetModalOpen.set(false)" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold text-xs cursor-pointer">Cancel</button>
+          <button (click)="saveNewAsset()" class="px-5 py-2 rounded-xl bg-brand-yellow hover:bg-yellow-400 text-slate-950 font-bold text-xs cursor-pointer">Add to Library</button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- ============================================== -->
+  <!-- MODAL: ADD / EDIT LEAD MODAL                   -->
+  <!-- ============================================== -->
+  @if (isLeadModalOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md fade-in">
+      <div class="bg-slate-950 border border-slate-800 w-full max-w-lg rounded-3xl p-6 sm:p-8 space-y-4 shadow-2xl relative">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white">
+            {{ editingLeadId() ? 'Update Student Enquiry' : 'Record New Manual Lead' }}
+          </h3>
+          <button (click)="isLeadModalOpen.set(false)" class="text-slate-400 hover:text-white cursor-pointer">✕</button>
+        </div>
+
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Student Full Name *</label>
+            <input type="text" [(ngModel)]="leadForm.name" placeholder="Karthik Subramanian" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Phone / WhatsApp *</label>
+            <input type="tel" [(ngModel)]="leadForm.phone" placeholder="+91 98401 23456" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Email Address</label>
+            <input type="email" [(ngModel)]="leadForm.email" placeholder="karthik@gmail.com" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Program of Interest</label>
+            <select [(ngModel)]="leadForm.program" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue cursor-pointer">
+              @for (c of academyService.courses(); track c.id) {
+                <option [value]="c.title">{{ c.title }}</option>
+              }
+              <option value="Digital Marketing 150 Days">Digital Marketing 150 Days (Full Suite)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Lead Status</label>
+            <select [(ngModel)]="leadForm.status" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 outline-none focus:border-brand-blue cursor-pointer">
+              <option value="New">🟡 New Enquiry</option>
+              <option value="Contacted">🔵 Contacted</option>
+              <option value="Enrolled">🟢 Enrolled</option>
+              <option value="Closed">⚪ Closed</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Admin Notes</label>
+            <textarea rows="2" [(ngModel)]="leadForm.notes" placeholder="Interested in weekend batch, budget discussed..." class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none focus:border-brand-blue"></textarea>
+          </div>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-3">
+          <button (click)="isLeadModalOpen.set(false)" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold text-xs cursor-pointer">Cancel</button>
+          <button (click)="saveLeadModal()" class="px-5 py-2 rounded-xl bg-brand-blue hover:bg-sky-400 text-white font-bold text-xs cursor-pointer">Save Lead</button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>
