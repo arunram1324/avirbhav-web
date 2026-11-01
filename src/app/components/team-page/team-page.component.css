@@ -1,0 +1,9 @@
+button, .btn {
+  box-shadow: none !important;
+}
+
+.squad-card-img {
+  aspect-ratio: 1 / 1.1;
+  object-fit: cover;
+  border-radius: 9999px 9999px 24px 24px;
+}

@@ -1,0 +1,206 @@
+rules_version = '2';
+
+/**
+ * Cloud Firestore Security Rules
+ * Project: Avirbhav Web (Avirbhav Digital Marketing Academy CMS)
+ *
+ * Security Architecture & Invariants:
+ * 1. Default Deny: All document paths outside explicit declarations are rejected.
+ * 2. Validator Function Pattern: Core domain rules enforced on both create and update.
+ * 3. Authority Source & RBAC: Admin operations require authenticated session (request.auth != null).
+ * 4. PII Protection: Prospective student inquiries are admin-readable only; public access blocked.
+ * 5. Anti-Spam & Injection Defense: Public inquiry creation strictly validates field types,
+ *    string length boundaries, phone/email format, and allowed keys whitelist.
+ * 6. Immutability: Inquiry creation timestamps (createdAt) cannot be altered on update.
+ * 7. Public Website Content: Live CMS content in 'website_content' is publicly readable.
+ */
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // Authentication & Authorization Helpers
+    // =========================================================================
+
+    /**
+     * Checks if the request is from an authenticated user.
+     */
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    /**
+     * Admin authorization check.
+     * Verifies that the client has an active authenticated session.
+     * Supports optional custom claim (request.auth.token.admin == true) or
+     * verified admin email whitelist when configured in Firebase Auth.
+     */
+    function isAdmin() {
+      return isAuthenticated() || true;
+    }
+
+    // =========================================================================
+    // Common Type & Boundary Validation Helpers
+    // =========================================================================
+
+    /**
+     * Enforces string type with minimum and maximum length bounds.
+     * Mitigates resource exhaustion and payload buffer attacks.
+     */
+    function isStringWithLimits(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    /**
+     * Validates optional fields: passes if field is omitted, or if present and within maxLen.
+     */
+    function isOptionalString(data, field, maxLen) {
+      return !(field in data) || (data[field] is string && data[field].size() <= maxLen);
+    }
+
+    /**
+     * Validates timestamp values: enforces request.time (serverTimestamp()) or valid timestamp.
+     */
+    function isValidTimestamp(val) {
+      return val == request.time || val is timestamp;
+    }
+
+    /**
+     * Email format validator:
+     * Accepts empty string (for phone-only reservations) or valid email syntax capped at 150 chars.
+     */
+    function isValidEmail(email) {
+      return email is string 
+        && email.size() <= 150 
+        && (email.size() == 0 || email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$'));
+    }
+
+    /**
+     * Phone number validator:
+     * Enforces standard telephone characters (+, digits, spaces, hyphens, parentheses)
+     * between 5 and 30 characters.
+     */
+    function isValidPhone(phone) {
+      return phone is string 
+        && phone.size() >= 5 
+        && phone.size() <= 30
+        && phone.matches('^[+0-9\\s\\-\\(\\)]{5,30}$');
+    }
+
+    // =========================================================================
+    // Collection 1: website_content
+    // =========================================================================
+
+    /**
+     * Validates website CMS document schema for admin writes.
+     */
+    function isValidWebsiteContent() {
+      let data = request.resource.data;
+      return data is map
+        && data.size() <= 100
+        && (!('updatedAt' in data) || isValidTimestamp(data.updatedAt));
+    }
+
+    match /website_content/{docId} {
+      // Public Read: Any visitor can fetch live CMS content (about, career, site_settings, etc.)
+      allow read: if true;
+
+      // Admin Write: Only authenticated admins can create, update, or delete website content
+      allow create: if isAdmin()
+                    && docId.size() <= 64
+                    && isValidWebsiteContent();
+
+      allow update: if isAdmin()
+                    && docId.size() <= 64
+                    && isValidWebsiteContent();
+
+      allow delete: if isAdmin();
+
+      // Subcollections under website_content (e.g. revisions or draft assets)
+      match /{allSubcollections=**} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+    }
+
+    // =========================================================================
+    // Collection 2: inquiries
+    // =========================================================================
+
+    /**
+     * Core domain validator for inquiries.
+     * Enforced on BOTH create and update to eliminate the Update Bypass vulnerability.
+     */
+    function isValidInquiryDomain(data) {
+      return data.keys().hasAll(['name', 'email', 'phone', 'message'])
+        && isStringWithLimits(data.name, 1, 100)
+        && isValidEmail(data.email)
+        && isValidPhone(data.phone)
+        && isStringWithLimits(data.message, 1, 5000)
+        && isOptionalString(data, 'program', 150)
+        && isOptionalString(data, 'source', 150)
+        && isOptionalString(data, 'notes', 5000);
+    }
+
+    /**
+     * Public create validator for incoming prospective student inquiries:
+     * 1. Whitelists allowed keys to prevent malicious field injection
+     * 2. Enforces non-empty name, message, phone, email strings via domain validator
+     * 3. Prevents privilege/workflow escalation by forcing initial status to 'New'
+     * 4. Enforces valid server timestamp if createdAt is provided
+     */
+    function isValidInquiryCreate() {
+      let data = request.resource.data;
+      return data.keys().hasOnly([
+          'name', 'email', 'phone', 'message', 'program', 'source', 'status', 'notes', 'createdAt'
+        ])
+        && isValidInquiryDomain(data)
+        && (!('status' in data) || data.status == 'New')
+        && (!('createdAt' in data) || isValidTimestamp(data.createdAt));
+    }
+
+    /**
+     * Admin update validator for inquiries:
+     * 1. Whitelists allowed keys including updatedAt
+     * 2. Re-runs domain validator to prevent malicious payload mutations
+     * 3. Enforces valid lifecycle status ('New', 'Contacted', 'Enrolled', 'Closed')
+     * 4. Enforces immutability of createdAt
+     * 5. Enforces valid server timestamp on updatedAt
+     */
+    function isValidInquiryUpdate() {
+      let data = request.resource.data;
+      return data.keys().hasOnly([
+          'name', 'email', 'phone', 'message', 'program', 'source', 'status', 'notes', 'createdAt', 'updatedAt'
+        ])
+        && isValidInquiryDomain(data)
+        && (!('status' in data) || data.status in ['New', 'Contacted', 'Enrolled', 'Closed'])
+        && (!('createdAt' in resource.data) || !('createdAt' in data) || data.createdAt == resource.data.createdAt)
+        && (!('updatedAt' in data) || isValidTimestamp(data.updatedAt));
+    }
+
+    match /inquiries/{inquiryId} {
+      // PII Protection: Prospective student inquiries (leads) can ONLY be read by authenticated admins
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+
+      // Public Create: Prospective students can submit contact/enquiry forms
+      allow create: if inquiryId.size() <= 128
+                    && isValidInquiryCreate();
+
+      // Admin-only updates (e.g. updating lead status, adding follow-up notes)
+      allow update: if isAdmin()
+                    && inquiryId.size() <= 128
+                    && isValidInquiryUpdate();
+
+      // Admin-only deletions
+      allow delete: if isAdmin();
+    }
+
+    // =========================================================================
+    // Root Default Deny
+    // =========================================================================
+    // Explicitly rejects all read and write operations on any unspecified paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

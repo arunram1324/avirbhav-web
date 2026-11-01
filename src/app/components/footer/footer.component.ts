@@ -7,7 +7,7 @@ import { AcademyDataService } from '../../services/academy-data.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <footer id="about" class="bg-slate-950 text-white pt-16 sm:pt-20 pb-12 border-t border-slate-900">
+    <footer class="bg-slate-950 text-white pt-16 sm:pt-20 pb-12 border-t border-slate-900">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16">
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-12 pb-14 border-b border-slate-800">
@@ -50,15 +50,16 @@ import { AcademyDataService } from '../../services/academy-data.service';
             </ul>
           </div>
 
-          <!-- Column 3: Quick Navigation (Admin link removed) -->
-          <div id="career">
+          <!-- Column 3: Quick Navigation -->
+          <div>
             <h4 class="text-sm font-bold uppercase tracking-wider text-slate-200 mb-4">Quick Navigation</h4>
             <ul class="space-y-2.5 text-sm text-slate-400">
-              <li><a href="#home" class="hover:text-brand-blue transition-colors">Home</a></li>
-              <li><a href="#about" class="hover:text-brand-blue transition-colors">About Academy</a></li>
-              <li><a href="#curriculum" class="hover:text-brand-blue transition-colors">Curriculum</a></li>
+              <li><button type="button" (click)="onNavigate('/')" class="hover:text-brand-blue transition-colors text-left cursor-pointer">Home</button></li>
+              <li><button type="button" (click)="onNavigate('/about')" class="hover:text-brand-blue transition-colors text-left cursor-pointer">About Academy</button></li>
+              <li><button type="button" (click)="onNavigate('/#curriculum')" class="hover:text-brand-blue transition-colors text-left cursor-pointer">Curriculum & Tracks</button></li>
+              <li><button type="button" (click)="onNavigate('/career')" class="hover:text-brand-blue transition-colors text-left cursor-pointer">Avirbhav Agency Careers ({{ academyService.careerRoles().length }})</button></li>
+              <li><button type="button" (click)="onNavigate('/jobs')" class="hover:text-brand-blue transition-colors text-left cursor-pointer">Other Companies' Jobs ({{ academyService.externalJobs().length }})</button></li>
               <li><a href="https://avirbhavinfotech.com" target="_blank" class="hover:text-brand-blue transition-colors">Official Portal ↗</a></li>
-              <li><button (click)="openBooking.emit('Footer Career')" class="hover:text-brand-blue transition-colors text-left">Career Opportunities</button></li>
             </ul>
           </div>
 
@@ -105,4 +106,9 @@ export class FooterComponent {
   academyService = inject(AcademyDataService);
   @Output() openBooking = new EventEmitter<string>();
   @Output() viewCourse = new EventEmitter<string>();
+  @Output() navigate = new EventEmitter<string>();
+
+  onNavigate(path: string): void {
+    this.navigate.emit(path);
+  }
 }

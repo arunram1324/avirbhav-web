@@ -102,7 +102,7 @@ export class CourseDetailComponent {
     },
     {
       name: '3-Month Zero-Cost EMI',
-      badge: '⭐ Most Popular',
+      badge: 'Most Popular',
       badgeColor: 'bg-brand-blue/10 text-brand-blue border-brand-blue/20',
       isPopular: true,
       price: '₹14,000',
@@ -122,7 +122,7 @@ export class CourseDetailComponent {
     },
     {
       name: 'Strict 4-Member Seat Lock',
-      badge: '🔥 Strictly 4 Seats Only',
+      badge: 'Strictly 4 Seats Only',
       badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
       price: '₹5,000',
       originalPrice: 'Token Advance',
@@ -193,18 +193,18 @@ export class CourseDetailComponent {
 
   // Industry Tools Grid
   toolsCovered = [
-    { name: 'Meta Ads Manager', cat: 'Paid Advertising', icon: '📊' },
-    { name: 'Google Analytics 4', cat: 'Tracking & Attribution', icon: '📈' },
-    { name: 'Canva Pro AI', cat: 'Visual Design', icon: '🎨' },
-    { name: 'Midjourney v6', cat: 'GenAI Imagery', icon: '🖼️' },
-    { name: 'ChatGPT-4o', cat: 'Copy & Scripting', icon: '🤖' },
-    { name: 'CapCut Desktop', cat: 'Short-Form Video', icon: '🎬' },
-    { name: 'ManyChat', cat: 'DM Automation', icon: '💬' },
-    { name: 'n8n & Make', cat: 'Workflow Automation', icon: '⚡' },
-    { name: 'Notion', cat: 'Content Calendar', icon: '📝' },
-    { name: 'Semrush', cat: 'Competitive Audit', icon: '🔍' },
-    { name: 'ElevenLabs', cat: 'Voice Synthesis', icon: '🎙️' },
-    { name: 'Looker Studio', cat: 'Client Reporting', icon: '📑' }
+    { name: 'Meta Ads Manager', cat: 'Paid Advertising', icon: '' },
+    { name: 'Google Analytics 4', cat: 'Tracking & Attribution', icon: '' },
+    { name: 'Canva Pro AI', cat: 'Visual Design', icon: '' },
+    { name: 'Midjourney v6', cat: 'GenAI Imagery', icon: '' },
+    { name: 'ChatGPT-4o', cat: 'Copy & Scripting', icon: '' },
+    { name: 'CapCut Desktop', cat: 'Short-Form Video', icon: '' },
+    { name: 'ManyChat', cat: 'DM Automation', icon: '' },
+    { name: 'n8n & Make', cat: 'Workflow Automation', icon: '' },
+    { name: 'Notion', cat: 'Content Calendar', icon: '' },
+    { name: 'Semrush', cat: 'Competitive Audit', icon: '' },
+    { name: 'ElevenLabs', cat: 'Voice Synthesis', icon: '' },
+    { name: 'Looker Studio', cat: 'Client Reporting', icon: '' }
   ];
 
   // Certifications

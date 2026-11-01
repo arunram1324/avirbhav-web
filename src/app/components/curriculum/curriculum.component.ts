@@ -29,7 +29,7 @@ import { AcademyDataService, ModuleItem } from '../../services/academy-data.serv
             
             <!-- EXPANDED ACTIVE CARD (Avirbhav Home Light Theme) -->
             @if (activeModuleIndex === i) {
-              <div class="relative bg-white text-slate-900 rounded-3xl sm:rounded-[32px] p-6 sm:p-10 lg:p-12 border-2 border-brand-blue/30 shadow-2xl shadow-blue-500/10 overflow-hidden transition-all duration-500 animate-fadeIn ring-4 ring-brand-blue/5">
+              <div class="relative bg-white text-slate-900 rounded-3xl sm:rounded-[32px] p-6 sm:p-10 lg:p-12 border-2 border-brand-blue/30  overflow-hidden transition-all duration-500 animate-fadeIn ring-4 ring-brand-blue/5">
                 
                 <!-- Background Ambient Glow -->
                 <div class="absolute -top-32 -right-32 w-96 h-96 bg-brand-blue/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -40,7 +40,7 @@ import { AcademyDataService, ModuleItem } from '../../services/academy-data.serv
                   <!-- Left: 3D Visual Card / Badge (Vibrant Brand Blue Gradient) -->
                   <div 
                     (click)="viewCourse.emit(item.id)"
-                    class="lg:col-span-4 flex flex-col justify-between h-full min-h-[260px] sm:min-h-[320px] rounded-2xl sm:rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-[#0CA9FF] via-[#0098EA] to-[#0284C7] text-white border border-blue-400/30 relative overflow-hidden group cursor-pointer shadow-xl shadow-blue-500/20 hover:shadow-2xl transition-all">
+                    class="lg:col-span-4 flex flex-col justify-between h-full min-h-[260px] sm:min-h-[320px] rounded-2xl sm:rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-[#0CA9FF] via-[#0098EA] to-[#0284C7] text-white border border-blue-400/30 relative overflow-hidden group cursor-pointer  transition-all">
                     
                     <div class="flex items-center justify-between">
                       <span class="text-xs font-mono font-bold tracking-widest text-white/90 uppercase">
@@ -52,7 +52,7 @@ import { AcademyDataService, ModuleItem } from '../../services/academy-data.serv
                     </div>
 
                     <div class="my-auto py-6 flex flex-col items-center text-center">
-                      <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center text-4xl sm:text-5xl shadow-xl shadow-blue-900/15 transform transition-transform group-hover:scale-110 duration-300">
+                      <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center text-4xl sm:text-5xl  transform transition-transform group-hover:scale-110 duration-300">
                         {{ item.icon }}
                       </div>
                       <span class="mt-4 text-sm font-bold text-white">
@@ -66,7 +66,7 @@ import { AcademyDataService, ModuleItem } from '../../services/academy-data.serv
 
                     <div class="flex items-center justify-between text-xs text-white/90 border-t border-white/20 pt-3">
                       <span>Live Client Training</span>
-                      <span class="font-bold text-white">Avirbhav Certified ✓</span>
+                      <span class="font-bold text-white">Avirbhav Certified</span>
                     </div>
                   </div>
 
@@ -87,7 +87,7 @@ import { AcademyDataService, ModuleItem } from '../../services/academy-data.serv
                           <!-- View Course Details (Reference Site Style: Warm Sunny Yellow Pill) -->
                           <button 
                             (click)="viewCourse.emit(item.id)"
-                            class="inline-flex items-center gap-2 bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-md shadow-yellow-500/20 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer">
+                            class="inline-flex items-center gap-2 bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full border border-amber-300/60 transition-colors duration-150 cursor-pointer">
                             <span>View Full Syllabus & Batches</span>
                             <span class="text-base leading-none">↗</span>
                           </button>
@@ -95,7 +95,7 @@ import { AcademyDataService, ModuleItem } from '../../services/academy-data.serv
                           <!-- Quick Enroll Modal (Brand Blue Pill) -->
                           <button 
                             (click)="openBooking.emit(item.title)"
-                            class="inline-flex items-center gap-2 bg-brand-blue hover:bg-brand-blueHover text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-brand transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer">
+                            class="inline-flex items-center gap-2 bg-brand-blue hover:bg-brand-blueHover text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full border border-sky-400/30 transition-colors duration-150 cursor-pointer">
                             <span>Enroll</span>
                           </button>
                         </div>
@@ -200,7 +200,7 @@ import { AcademyDataService, ModuleItem } from '../../services/academy-data.serv
         <div class="mt-16 sm:mt-24 bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-12 shadow-sm">
           <div class="text-center max-w-2xl mx-auto mb-10">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-xs font-bold text-emerald-700 mb-3">
-              ★ GUARANTEED OUTCOMES
+              GUARANTEED OUTCOMES
             </div>
             <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">What You Get With Every Enrollment</h3>
             <p class="text-sm sm:text-base text-slate-500 mt-2">Comprehensive career acceleration, live portfolio assets, and dedicated mentorship</p>
@@ -220,10 +220,10 @@ import { AcademyDataService, ModuleItem } from '../../services/academy-data.serv
           </div>
 
           <!-- High-converting Banner for Free Strategy Kit (Avirbhav Brand Blue Theme) -->
-          <div class="mt-10 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-brand-blue via-[#0098EA] to-[#0284C7] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl shadow-blue-500/20">
+          <div class="mt-10 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-brand-blue via-[#0098EA] to-[#0284C7] text-white flex flex-col md:flex-row items-center justify-between gap-6 ">
             <div>
               <span class="px-3 py-1 rounded-full bg-white/20 border border-white/30 text-white text-xs font-bold uppercase tracking-wider">
-                🎁 Free Starter Pack Included
+                Exclusive Starter Pack Included
               </span>
               <h4 class="text-xl sm:text-2xl font-bold mt-2 text-white">{{ academyService.siteContent().starterPackTitle }}</h4>
               <p class="text-xs sm:text-sm text-white/90 mt-1">{{ academyService.siteContent().starterPackDesc }}</p>
@@ -231,7 +231,7 @@ import { AcademyDataService, ModuleItem } from '../../services/academy-data.serv
             
             <button 
               (click)="openBooking.emit('Free Starter Pack Banner')"
-              class="shrink-0 inline-flex items-center gap-2 bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-bold text-sm px-7 py-3.5 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer">
+              class="shrink-0 inline-flex items-center gap-2 bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-bold text-sm px-7 py-3.5 rounded-full border border-amber-300/60 transition-colors duration-150 cursor-pointer">
               <span>{{ academyService.siteContent().starterPackCta }}</span>
             </button>
           </div>

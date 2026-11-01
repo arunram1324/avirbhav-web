@@ -1,0 +1,369 @@
+<!-- ABOUT US PAGE (GrowthLab Framer Layout & Aesthetic) -->
+<div class="bg-white text-slate-900 font-outfit antialiased selection:bg-brand-blue selection:text-white">
+
+  <!-- ========================================== -->
+  <!-- 1. HERO SECTION (GrowthLab Editorial Style) -->
+  <!-- ========================================== -->
+  <section class="relative pt-12 pb-20 sm:pt-16 sm:pb-28 overflow-hidden border-b border-slate-100 bg-[#FAF9F5]">
+    <!-- Subtle grid texture -->
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40 pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      
+      <!-- Top Pill Tag -->
+      <div class="flex items-center gap-2 mb-6">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 text-amber-300 text-xs font-semibold uppercase tracking-wider border border-slate-800">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          {{ content.heroBadge }}
+        </span>
+        <span class="text-xs text-slate-500 font-medium hidden sm:inline">• Powered by Avirbhav Infotech Agency</span>
+      </div>
+
+      <!-- Main Headline -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
+        <div class="lg:col-span-8">
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-950 tracking-tight leading-[1.12]">
+            {{ content.heroTitle }}
+          </h1>
+        </div>
+        <div class="lg:col-span-4">
+          <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+            {{ content.heroDescription }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="mt-8 sm:mt-10 flex flex-wrap items-center gap-3.5">
+        <button 
+          (click)="openConsultation()"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-blue hover:bg-brand-blueHover text-white font-semibold text-sm border border-sky-400/30 transition-colors cursor-pointer"
+          style="box-shadow: none;">
+          <span>{{ content.heroCtaText }}</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+          </svg>
+        </button>
+
+        <button 
+          (click)="navigateToCareer()"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white hover:bg-slate-100 text-slate-800 font-semibold text-sm border border-slate-300 transition-colors cursor-pointer"
+          style="box-shadow: none;">
+          <span>Explore Career & Culture →</span>
+        </button>
+
+        <button 
+          (click)="navigateToJobs()"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm border border-slate-200 transition-colors cursor-pointer"
+          style="box-shadow: none;">
+          <span>View Hiring Board ({{ academyService.externalJobs().length }})</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 2. IMPACT NUMBERS STRIP (GrowthLab Style) -->
+  <!-- ========================================== -->
+  <section class="py-14 sm:py-18 bg-slate-950 text-white border-y border-slate-900">
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        
+        <!-- Metric 1 -->
+        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+          <div class="text-3xl sm:text-4xl lg:text-5xl font-black text-amber-300 font-mono tracking-tight">{{ content.stat1Value }}</div>
+          <div class="text-xs sm:text-sm font-bold text-slate-200 mt-2 uppercase tracking-wider">{{ content.stat1Label }}</div>
+          <p class="text-xs text-slate-400 mt-1">{{ content.stat1Desc }}</p>
+        </div>
+
+        <!-- Metric 2 -->
+        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+          <div class="text-3xl sm:text-4xl lg:text-5xl font-black text-brand-blue font-mono tracking-tight">{{ content.stat2Value }}</div>
+          <div class="text-xs sm:text-sm font-bold text-slate-200 mt-2 uppercase tracking-wider">{{ content.stat2Label }}</div>
+          <p class="text-xs text-slate-400 mt-1">{{ content.stat2Desc }}</p>
+        </div>
+
+        <!-- Metric 3 -->
+        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+          <div class="text-3xl sm:text-4xl lg:text-5xl font-black text-emerald-400 font-mono tracking-tight">{{ content.stat3Value }}</div>
+          <div class="text-xs sm:text-sm font-bold text-slate-200 mt-2 uppercase tracking-wider">{{ content.stat3Label }}</div>
+          <p class="text-xs text-slate-400 mt-1">{{ content.stat3Desc }}</p>
+        </div>
+
+        <!-- Metric 4 -->
+        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+          <div class="text-3xl sm:text-4xl lg:text-5xl font-black text-white font-mono tracking-tight">{{ content.stat4Value }}</div>
+          <div class="text-xs sm:text-sm font-bold text-slate-200 mt-2 uppercase tracking-wider">{{ content.stat4Label }}</div>
+          <p class="text-xs text-slate-400 mt-1">{{ content.stat4Desc }}</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 3. OUR STORY & AGENCY MANIFESTO            -->
+  <!-- ========================================== -->
+  <section class="py-16 sm:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        
+        <!-- Left: Editorial Content -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold uppercase tracking-wider border border-blue-200">
+            <span>{{ content.storyBadge }}</span>
+          </div>
+
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-950 tracking-tight leading-tight">
+            {{ content.storyTitle }}
+          </h2>
+
+          <div class="space-y-4 text-sm sm:text-base text-slate-600 leading-relaxed">
+            <p>{{ content.storyP1 }}</p>
+            <p>{{ content.storyP2 }}</p>
+            <p>{{ content.storyP3 }}</p>
+          </div>
+
+          <!-- Highlight Box -->
+          <div class="p-6 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-amber-950">
+            <div class="font-bold text-sm sm:text-base flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+              <span>{{ content.guaranteeBadge }}</span>
+            </div>
+            <p class="text-xs sm:text-sm text-amber-900 mt-2 leading-relaxed">
+              {{ content.guaranteeText }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Bento Proof Card -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="p-7 rounded-2xl bg-slate-900 text-white border border-slate-800 space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+              <span class="text-xs text-slate-400 uppercase tracking-wider font-mono">{{ content.incubationBadge }}</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">Active</span>
+            </div>
+
+            <div class="space-y-3">
+              <div class="text-xs text-slate-400 font-medium">Cohort Curriculum Structure:</div>
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                <span class="w-6 h-6 rounded-full bg-brand-blue text-white flex items-center justify-center font-bold text-xs shrink-0">1</span>
+                <div>
+                  <div class="text-xs font-bold text-slate-200">{{ content.step1Title }}</div>
+                  <div class="text-[11px] text-slate-400">{{ content.step1Desc }}</div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                <span class="w-6 h-6 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-xs shrink-0">2</span>
+                <div>
+                  <div class="text-xs font-bold text-slate-200">{{ content.step2Title }}</div>
+                  <div class="text-[11px] text-slate-400">{{ content.step2Desc }}</div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                <span class="w-6 h-6 rounded-full bg-emerald-400 text-slate-950 flex items-center justify-center font-bold text-xs shrink-0">3</span>
+                <div>
+                  <div class="text-xs font-bold text-slate-200">{{ content.step3Title }}</div>
+                  <div class="text-[11px] text-slate-400">{{ content.step3Desc }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2 text-center">
+              <span class="text-[11px] text-slate-400 flex items-center justify-center gap-1.5"><svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg><span>{{ content.hqAddress }}</span></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 4. CORE VALUES BENTO GRID (Framer Style)   -->
+  <!-- ========================================== -->
+  <section class="py-16 sm:py-24 bg-[#FAF9F5] border-t border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      
+      <div class="max-w-2xl mb-12">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 text-white text-xs font-semibold uppercase tracking-wider mb-3">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span>{{ content.valuesBadge }}</span>
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">
+          {{ content.valuesTitle }}
+        </h2>
+        <p class="text-sm text-slate-600 mt-2">
+          {{ content.valuesSubtitle }}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (val of content.values; track val.id) {
+          <div class="p-7 rounded-2xl bg-white border border-slate-200/80 space-y-4 hover:border-slate-300 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center font-bold text-lg">
+              {{ val.icon }}
+            </div>
+            <h3 class="text-lg font-bold text-slate-950">{{ val.title }}</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              {{ val.desc }}
+            </p>
+          </div>
+        }
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 5. LEADERSHIP & FOUNDERS SPOTLIGHT         -->
+  <!-- ========================================== -->
+  <section class="py-16 sm:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold uppercase tracking-wider mb-3">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-blue"></span>
+          <span>{{ content.leadershipBadge }}</span>
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">
+          {{ content.leadershipTitle }}
+        </h2>
+        <p class="text-sm text-slate-600 mt-2">
+          {{ content.leadershipSubtitle }}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        
+        <!-- Mentor 1 -->
+        <div class="p-8 rounded-2xl bg-slate-950 text-white border border-slate-800 space-y-5 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-blue to-cyan-400 flex items-center justify-center text-white font-black text-xl">
+                {{ content.mentor1Name.charAt(0) }}
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-white">{{ content.mentor1Name }}</h3>
+                <div class="text-xs font-semibold text-brand-blue uppercase tracking-wider mt-0.5">
+                  {{ content.mentor1Role }}
+                </div>
+                <div class="text-[11px] text-slate-400">Avirbhav Infotech</div>
+              </div>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              {{ content.mentor1Bio }}
+            </p>
+            <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800 text-[11px] text-slate-400">
+              @for (tag of content.mentor1Tags; track tag) {
+                <span class="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-300">{{ tag }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800">
+            <button 
+              (click)="navigate.emit('/team/deekshith')" 
+              class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-brand-blue text-xs font-bold text-white transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              style="box-shadow: none;">
+              <span>View Deekshith's Full Profile & Case Studies →</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mentor 2 -->
+        <div class="p-8 rounded-2xl bg-slate-900 text-white border border-slate-800 space-y-5 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-yellow-500 flex items-center justify-center text-slate-950 font-black text-xl">
+                {{ content.mentor2Name.charAt(0) }}
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-white">{{ content.mentor2Name }}</h3>
+                <div class="text-xs font-semibold text-amber-300 uppercase tracking-wider mt-0.5">
+                  {{ content.mentor2Role }}
+                </div>
+                <div class="text-[11px] text-slate-400">Avirbhav Infotech</div>
+              </div>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              {{ content.mentor2Bio }}
+            </p>
+            <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800 text-[11px] text-slate-400">
+              @for (tag of content.mentor2Tags; track tag) {
+                <span class="px-2.5 py-1 rounded-full bg-slate-950 border border-slate-800 text-slate-300">{{ tag }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800">
+            <button 
+              (click)="navigate.emit('/team/arun-kr')" 
+              class="w-full py-2.5 rounded-xl bg-slate-950 hover:bg-brand-blue text-xs font-bold text-white transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              style="box-shadow: none;">
+              <span>View Arun's Full Profile & Systems →</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Link to The Squad Page -->
+      <div class="mt-10 text-center">
+        <button 
+          (click)="navigate.emit('/team')"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold text-xs uppercase tracking-wider border border-slate-200 transition-colors cursor-pointer"
+          style="box-shadow: none;">
+          <span>Explore All Mentors on The Squad Page (Consult-X Layout) →</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 6. CLOSING CTA BANNER (GrowthLab Style)    -->
+  <!-- ========================================== -->
+  <section class="py-16 sm:py-24 bg-[#FAF9F5] border-t border-slate-200">
+    <div class="max-w-5xl mx-auto px-6 sm:px-10 text-center space-y-6">
+      
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 text-amber-300 text-xs font-semibold uppercase tracking-wider">
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-blue"></span>
+        <span>{{ content.closingBadge }}</span>
+      </div>
+
+      <h2 class="text-3xl sm:text-5xl font-extrabold text-slate-950 tracking-tight">
+        {{ content.closingTitle }}
+      </h2>
+
+      <p class="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
+        {{ content.closingDesc }}
+      </p>
+
+      <div class="pt-4 flex flex-wrap items-center justify-center gap-4">
+        <button 
+          (click)="openConsultation()"
+          class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-brand-blue hover:bg-brand-blueHover text-white font-semibold text-base border border-sky-400/30 transition-colors cursor-pointer"
+          style="box-shadow: none;">
+          <span>{{ content.closingCtaText }}</span>
+        </button>
+
+        <button 
+          (click)="navigateToJobs()"
+          class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white hover:bg-slate-100 text-slate-800 font-semibold text-base border border-slate-300 transition-colors cursor-pointer"
+          style="box-shadow: none;">
+          <span>Explore Open Hiring Roles →</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+</div>

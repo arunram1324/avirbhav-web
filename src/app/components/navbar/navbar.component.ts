@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AcademyDataService } from '../../services/academy-data.service';
 
@@ -11,7 +11,7 @@ import { AcademyDataService } from '../../services/academy-data.service';
       <div class="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 h-20 sm:h-24 flex items-center justify-between">
         
         <!-- Logo -->
-        <a href="#" class="flex items-center gap-3.5 group select-none">
+        <a (click)="onNavigate('/')" class="flex items-center gap-3.5 group select-none cursor-pointer">
           @if (academyService.siteContent().siteLogoUrl && academyService.siteContent().siteLogoUrl !== '/images/logo.png') {
             <img [src]="academyService.siteContent().siteLogoUrl" alt="Avirbhav Logo" class="h-9 sm:h-10 w-auto object-contain" />
           } @else {
@@ -34,12 +34,21 @@ import { AcademyDataService } from '../../services/academy-data.service';
         </a>
 
         <!-- Desktop Navigation Links -->
-        <nav class="hidden md:flex items-center gap-8 lg:gap-11 text-slate-700 font-medium text-base">
-          <a href="#home" class="text-brand-blue font-semibold hover:text-brand-blueHover transition-colors">Home</a>
+        <nav class="hidden md:flex items-center gap-7 lg:gap-10 text-slate-700 font-medium text-sm lg:text-base">
+          <!-- Home -->
+          <a 
+            (click)="onNavigate('/')" 
+            [class.text-brand-blue]="activeRoute === 'home'"
+            [class.font-semibold]="activeRoute === 'home'"
+            class="hover:text-brand-blue transition-colors cursor-pointer py-2">
+            Home
+          </a>
           
           <!-- Programs Dropdown -->
           <div class="relative group" (mouseenter)="isProgramsOpen.set(true)" (mouseleave)="isProgramsOpen.set(false)">
-            <button class="flex items-center gap-1.5 hover:text-brand-blue transition-colors focus:outline-none py-2 cursor-pointer">
+            <button 
+              type="button"
+              class="flex items-center gap-1.5 hover:text-brand-blue transition-colors focus:outline-none py-2 cursor-pointer">
               <span>Programs</span>
               <svg class="w-4 h-4 text-slate-400 group-hover:text-brand-blue transition-transform duration-200 group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
@@ -48,7 +57,7 @@ import { AcademyDataService } from '../../services/academy-data.service';
 
             <!-- Dropdown Menu -->
             @if (isProgramsOpen()) {
-              <div class="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2.5 z-50 fade-in max-h-96 overflow-y-auto">
+              <div class="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-80 bg-white rounded-2xl shadow-xl border border-slate-100 p-2.5 z-50 fade-in max-h-96 overflow-y-auto">
                 @for (course of academyService.courses(); track course.id) {
                   <button 
                     type="button"
@@ -70,15 +79,57 @@ import { AcademyDataService } from '../../services/academy-data.service';
             }
           </div>
 
-          <a href="#about" class="hover:text-brand-blue transition-colors">About</a>
-          <a href="#career" class="hover:text-brand-blue transition-colors">Career</a>
+          <!-- About (Dedicated Page) -->
+          <a 
+            (click)="onNavigate('/about')" 
+            [class.text-brand-blue]="activeRoute === 'about'"
+            [class.font-semibold]="activeRoute === 'about'"
+            class="hover:text-brand-blue transition-colors cursor-pointer py-2">
+            About
+          </a>
+
+          <!-- The Squad (Consult-X Layout) -->
+          <a 
+            (click)="onNavigate('/team')" 
+            [class.text-brand-blue]="activeRoute === 'team' || activeRoute === 'team-member'"
+            [class.font-semibold]="activeRoute === 'team' || activeRoute === 'team-member'"
+            class="hover:text-brand-blue transition-colors cursor-pointer py-2 inline-flex items-center gap-1.5">
+            <span>The Squad</span>
+            <span class="px-1.5 py-0.2 rounded-full bg-slate-900 text-amber-300 font-extrabold text-[10px]">
+              {{ academyService.teamMembers().length }}
+            </span>
+          </a>
+
+          <!-- Career (Dedicated Page) -->
+          <a 
+            (click)="onNavigate('/career')" 
+            [class.text-brand-blue]="activeRoute === 'career'"
+            [class.font-semibold]="activeRoute === 'career'"
+            class="hover:text-brand-blue transition-colors cursor-pointer py-2 inline-flex items-center gap-1.5">
+            <span>Career</span>
+            <span class="px-1.5 py-0.2 rounded-full bg-blue-50 text-brand-blue font-bold text-[10px]">
+              {{ academyService.careerRoles().length }}
+            </span>
+          </a>
+
+          <!-- Jobs (Dedicated Page next to Career) -->
+          <a 
+            (click)="onNavigate('/jobs')" 
+            [class.text-brand-blue]="activeRoute === 'jobs'"
+            [class.font-semibold]="activeRoute === 'jobs'"
+            class="hover:text-brand-blue transition-colors cursor-pointer py-2 inline-flex items-center gap-1.5">
+            <span>Jobs</span>
+            <span class="px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px]">
+              {{ academyService.externalJobs().length }}
+            </span>
+          </a>
         </nav>
 
         <!-- Header CTA Button -->
         <div class="hidden sm:flex items-center gap-4">
           <button 
             (click)="openBooking.emit('Header CTA')"
-            class="inline-flex items-center gap-2 bg-brand-blue hover:bg-brand-blueHover text-white font-semibold text-sm sm:text-base px-6 sm:px-7 py-2.5 sm:py-3 rounded-full shadow-brand hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
+            class="inline-flex items-center gap-2 bg-brand-blue hover:bg-brand-blueHover text-white font-semibold text-sm sm:text-base px-6 sm:px-7 py-2.5 sm:py-3 rounded-full border border-sky-400/30 transition-colors duration-150 cursor-pointer">
             <span>Book Now</span>
             <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
@@ -106,15 +157,26 @@ import { AcademyDataService } from '../../services/academy-data.service';
 
       <!-- Mobile Dropdown Drawer -->
       @if (isMobileMenuOpen()) {
-        <div class="sm:hidden bg-white border-b border-slate-100 px-6 py-5 flex flex-col gap-4 fade-in">
-          <a href="#home" (click)="isMobileMenuOpen.set(false)" class="text-brand-blue font-semibold text-base py-1">Home</a>
-          <a href="#curriculum" (click)="isMobileMenuOpen.set(false)" class="text-slate-700 font-medium text-base py-1">Programs</a>
-          <a href="#about" (click)="isMobileMenuOpen.set(false)" class="text-slate-700 font-medium text-base py-1">About</a>
-          <a href="#career" (click)="isMobileMenuOpen.set(false)" class="text-slate-700 font-medium text-base py-1">Career</a>
+        <div class="sm:hidden bg-white border-b border-slate-100 px-6 py-5 flex flex-col gap-3.5 fade-in">
+          <a (click)="onNavigate('/'); isMobileMenuOpen.set(false)" [class.text-brand-blue]="activeRoute === 'home'" class="font-medium text-base py-1 cursor-pointer">Home</a>
+          <a (click)="onNavigate('/#curriculum'); isMobileMenuOpen.set(false)" class="text-slate-700 font-medium text-base py-1 cursor-pointer">Programs & Tracks</a>
+          <a (click)="onNavigate('/about'); isMobileMenuOpen.set(false)" [class.text-brand-blue]="activeRoute === 'about'" class="font-medium text-base py-1 cursor-pointer">About Us</a>
+          <a (click)="onNavigate('/team'); isMobileMenuOpen.set(false)" [class.text-brand-blue]="activeRoute === 'team' || activeRoute === 'team-member'" class="font-medium text-base py-1 cursor-pointer flex items-center justify-between">
+            <span>The Squad (Mentors)</span>
+            <span class="px-2 py-0.5 rounded-full bg-slate-900 text-amber-300 font-bold text-xs">{{ academyService.teamMembers().length }}</span>
+          </a>
+          <a (click)="onNavigate('/career'); isMobileMenuOpen.set(false)" [class.text-brand-blue]="activeRoute === 'career'" class="font-medium text-base py-1 cursor-pointer flex items-center justify-between">
+            <span>Career (Avirbhav)</span>
+            <span class="px-2 py-0.5 rounded-full bg-blue-50 text-brand-blue font-bold text-xs">{{ academyService.careerRoles().length }} Openings</span>
+          </a>
+          <a (click)="onNavigate('/jobs'); isMobileMenuOpen.set(false)" [class.text-brand-blue]="activeRoute === 'jobs'" class="font-medium text-base py-1 cursor-pointer flex items-center justify-between">
+            <span>Jobs (Other Companies)</span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-xs">{{ academyService.externalJobs().length }} Openings</span>
+          </a>
           <button 
             (click)="openBooking.emit('Mobile Menu CTA'); isMobileMenuOpen.set(false)"
-            class="w-full inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-brand-blueHover text-white font-semibold text-base px-6 py-3 rounded-full mt-2 shadow-brand">
-            <span>Book Now</span>
+            class="w-full inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-brand-blueHover text-white font-semibold text-base px-6 py-3 rounded-full mt-2 border border-sky-400/30 transition-colors duration-150">
+            <span>Book 1:1 Strategy Slot</span>
             <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
             </svg>
@@ -122,13 +184,29 @@ import { AcademyDataService } from '../../services/academy-data.service';
         </div>
       }
     </header>
-  `
+  `,
+  styles: [`
+    .fade-in {
+      animation: fadeIn 0.15s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  `]
 })
 export class NavbarComponent {
   academyService = inject(AcademyDataService);
+  
+  @Input() activeRoute: string = 'home';
   @Output() openBooking = new EventEmitter<string>();
   @Output() viewCourse = new EventEmitter<string>();
+  @Output() navigate = new EventEmitter<string>();
 
   isProgramsOpen = signal(false);
   isMobileMenuOpen = signal(false);
+
+  onNavigate(path: string): void {
+    this.navigate.emit(path);
+  }
 }

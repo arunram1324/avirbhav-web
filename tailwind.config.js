@@ -20,8 +20,8 @@ module.exports = {
         outfit: ['Outfit', 'Plus Jakarta Sans', 'Inter', 'sans-serif'],
       },
       boxShadow: {
-        'brand': '0 10px 30px -5px rgba(12, 169, 255, 0.3)',
-        'yellow-glow': '0 10px 25px -5px rgba(251, 236, 82, 0.4)',
+        'brand': 'none',
+        'yellow-glow': 'none',
       }
     },
   },

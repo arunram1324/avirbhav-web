@@ -1,0 +1,166 @@
+<div class="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 font-outfit relative overflow-hidden">
+  
+  @if (isSuccess()) {
+    <div class="py-10 text-center space-y-4 fade-in">
+      <div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto">
+        <svg class="w-8 h-8 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+      </div>
+      <div>
+        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
+          Enquiry Received
+        </span>
+        <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">
+          Thank you! We've received your enquiry.
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-md mx-auto">
+          Your enquiry is logged in our system. Principal Mentor Deekshith & the Avirbhav team will connect via WhatsApp/Call within 24 hours.
+        </p>
+      </div>
+
+      <div class="pt-2">
+        <button 
+          type="button" 
+          (click)="resetSuccess()"
+          class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer"
+          style="box-shadow: none;">
+          Send Another Enquiry
+        </button>
+      </div>
+    </div>
+  } @else {
+    <!-- Form Header -->
+    <div class="mb-6 space-y-1">
+      <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-blue-50 text-brand-blue text-[11px] font-bold uppercase tracking-wider">
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-blue"></span>
+        <span>Quick Admissions Enquiry</span>
+      </div>
+      <h3 class="text-lg sm:text-xl font-bold text-slate-950">
+        Get Program Blueprint & Fee Details
+      </h3>
+      <p class="text-xs text-slate-500">
+        Submit your details. Live responses directly logged to our admissions portal.
+      </p>
+    </div>
+
+    <!-- Reactive Form -->
+    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      
+      <!-- Full Name -->
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-slate-700 flex items-center justify-between">
+          <span>Full Name <span class="text-rose-500">*</span></span>
+          @if (isFieldInvalid('name')) {
+            <span class="text-[11px] text-rose-500">{{ getErrorMessage('name') }}</span>
+          }
+        </label>
+        <input 
+          type="text" 
+          formControlName="name" 
+          placeholder="e.g. Arun Kumar"
+          [class.border-rose-400]="isFieldInvalid('name')"
+          [class.bg-rose-50]="isFieldInvalid('name')"
+          class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-brand-blue transition-colors" />
+      </div>
+
+      <!-- Email & Phone Row -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
+        <!-- Email -->
+        <div class="space-y-1">
+          <label class="text-xs font-semibold text-slate-700 flex items-center justify-between">
+            <span>Email <span class="text-rose-500">*</span></span>
+            @if (isFieldInvalid('email')) {
+              <span class="text-[11px] text-rose-500">{{ getErrorMessage('email') }}</span>
+            }
+          </label>
+          <input 
+            type="email" 
+            formControlName="email" 
+            placeholder="arun@example.com"
+            [class.border-rose-400]="isFieldInvalid('email')"
+            [class.bg-rose-50]="isFieldInvalid('email')"
+            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-brand-blue transition-colors" />
+        </div>
+
+        <!-- Phone -->
+        <div class="space-y-1">
+          <label class="text-xs font-semibold text-slate-700 flex items-center justify-between">
+            <span>Phone (WhatsApp) <span class="text-rose-500">*</span></span>
+            @if (isFieldInvalid('phone')) {
+              <span class="text-[11px] text-rose-500">{{ getErrorMessage('phone') }}</span>
+            }
+          </label>
+          <input 
+            type="tel" 
+            formControlName="phone" 
+            placeholder="+91 98401 23456"
+            [class.border-rose-400]="isFieldInvalid('phone')"
+            [class.bg-rose-50]="isFieldInvalid('phone')"
+            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-brand-blue transition-colors" />
+        </div>
+
+      </div>
+
+      <!-- Interested Program Track -->
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-slate-700">Select Program Track</label>
+        <select 
+          formControlName="program"
+          class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:outline-none focus:bg-white focus:border-brand-blue transition-colors">
+          @for (p of programs; track p) {
+            <option [value]="p">{{ p }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Message / Goals -->
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-slate-700 flex items-center justify-between">
+          <span>Your Career Goals / Questions <span class="text-rose-500">*</span></span>
+          @if (isFieldInvalid('message')) {
+            <span class="text-[11px] text-rose-500">{{ getErrorMessage('message') }}</span>
+          }
+        </label>
+        <textarea 
+          rows="3" 
+          formControlName="message" 
+          placeholder="Tell us about your background (student / working professional) and what you want to achieve..."
+          [class.border-rose-400]="isFieldInvalid('message')"
+          [class.bg-rose-50]="isFieldInvalid('message')"
+          class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-brand-blue transition-colors"></textarea>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <!-- Submit Button -->
+      <div class="pt-2">
+        <button 
+          type="submit" 
+          [disabled]="isSubmitting()"
+          class="w-full py-3.5 px-6 rounded-2xl bg-brand-blue hover:bg-brand-blueHover text-white font-bold text-sm transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+          style="box-shadow: none;">
+          @if (isSubmitting()) {
+            <svg class="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Submitting to Admissions...</span>
+          } @else {
+            <span>Submit Enquiry</span>
+            <span>↗</span>
+          }
+        </button>
+      </div>
+
+      <div class="text-center pt-1 text-[11px] text-slate-400">
+        Your contact information is never shared. Handled strictly by Avirbhav mentors.
+      </div>
+
+    </form>
+  }
+
+</div>

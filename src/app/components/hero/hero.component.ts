@@ -34,7 +34,7 @@ import { AcademyDataService } from '../../services/academy-data.service';
         <div class="mt-8 sm:mt-11">
           <button 
             (click)="openBooking.emit('Hero Yellow Button')"
-            class="group inline-flex items-center gap-3 bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-bold text-base sm:text-lg px-10 sm:px-14 py-3.5 sm:py-4 rounded-full shadow-yellow-glow hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
+            class="group inline-flex items-center gap-3 bg-brand-yellow hover:bg-brand-yellowHover text-slate-950 font-bold text-base sm:text-lg px-10 sm:px-14 py-3.5 sm:py-4 rounded-full border border-amber-300/60 transition-colors duration-150 cursor-pointer">
             <span>{{ academyService.siteContent().heroCtaText }}</span>
             <svg class="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />

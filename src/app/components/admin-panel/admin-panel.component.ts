@@ -1,17 +1,22 @@
 import { Component, computed, inject, signal, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { 
-  AcademyDataService, 
-  Lead, 
-  ModuleItem, 
-  AssetItem, 
-  SiteContent, 
+import {
+  AcademyDataService,
+  Lead,
+  ModuleItem,
+  AssetItem,
+  SiteContent,
   SeoConfig,
   SiteSnapshot,
-  AutoReplySettings
+  AutoReplySettings,
+  AboutPageContent,
+  CareerPageContent,
+  JobListing,
+  TeamMember
 } from "../../services/academy-data.service";
 import { CourseDetailData, SyllabusModule } from "../../data/course-catalog.data";
+import { FirebaseService } from "../../services/firebase.service";
 
 @Component({
   selector: "app-admin-panel",
@@ -22,9 +27,27 @@ import { CourseDetailData, SyllabusModule } from "../../data/course-catalog.data
 })
 export class AdminPanelComponent implements OnDestroy {
   academyService = inject(AcademyDataService);
+  firebaseService = inject(FirebaseService);
+
+  // Firebase Storage & Cloud Sync Signals
+  isUploadingToStorage = signal(false);
+  uploadProgress = signal(0);
+  storageError = signal<string | null>(null);
+  isSyncingToFirestore = signal(false);
+  isPullingFromFirestore = signal(false);
+
+  // Computed Enquiry Metrics for Bento Grid
+  newLeadsCount = computed(() => this.academyService.leads().filter(l => l.status === 'New').length);
+  contactedLeadsCount = computed(() => this.academyService.leads().filter(l => l.status === 'Contacted').length);
+  enrolledLeadsCount = computed(() => this.academyService.leads().filter(l => l.status === 'Enrolled').length);
+  enquiryConversionRate = computed(() => {
+    const total = this.academyService.leads().length;
+    if (!total) return 0;
+    return Math.round((this.enrolledLeadsCount() / total) * 100);
+  });
 
   // Active Admin Tab: 8 comprehensive tabs matching arun-portfolio + Pages Studio
-  activeTab = signal<"overview" | "leads" | "pages" | "courses" | "assets" | "content" | "seo" | "snapshots">("overview");
+  activeTab = signal<"overview" | "leads" | "pages" | "team" | "jobs" | "courses" | "assets" | "content" | "seo" | "snapshots">("overview");
 
   // Theme toggle
   isDarkMode = signal(true);
@@ -87,13 +110,13 @@ export class AdminPanelComponent implements OnDestroy {
     status: Lead["status"];
     notes: string;
   } = {
-    name: "",
-    phone: "",
-    email: "",
-    program: "Digital Marketing 150 Days",
-    status: "New",
-    notes: ""
-  };
+      name: "",
+      phone: "",
+      email: "",
+      program: "Digital Marketing 150 Days",
+      status: "New",
+      notes: ""
+    };
 
   // Course Deep Editor Modal & Form
   isCourseModalOpen = signal(false);
@@ -108,7 +131,7 @@ export class AdminPanelComponent implements OnDestroy {
     shortTitle: "",
     badge: "Specialized Track",
     category: "Marketing Service",
-    heroPill3: "⚡ AI-Enhanced Mastery",
+    heroPill3: "AI-Enhanced Mastery",
     tagline: "",
     heroCardHeading: "",
     heroCardPills: ["Practical Projects", "Agency SOPs", "1:1 Mentorship"],
@@ -131,7 +154,7 @@ export class AdminPanelComponent implements OnDestroy {
       desc: "Scaled revenue by 340% while maintaining a 4.2x ROAS in 90 days.",
       author: "Avirbhav Alumni Team",
       authorRole: "Performance Marketer",
-      verifiedBadge: "Verified Agency Audit ✓"
+      verifiedBadge: "Verified Agency Audit"
     },
     studentQuote: {
       quote: "The 4-student batch size made all the difference. Deekshith audited my ad accounts directly and helped me close my first retainer.",
@@ -164,12 +187,12 @@ export class AdminPanelComponent implements OnDestroy {
     alt: string;
     size?: string;
   } = {
-    title: "",
-    category: "poster",
-    url: "",
-    alt: "",
-    size: ""
-  };
+      title: "",
+      category: "poster",
+      url: "",
+      alt: "",
+      size: ""
+    };
 
   // Site Content Form
   contentForm: SiteContent = { ...this.academyService.siteContent() };
@@ -194,10 +217,6 @@ export class AdminPanelComponent implements OnDestroy {
   backupJsonInput = "";
 
   // Computed metrics for Overview
-  newLeadsCount = computed(() => {
-    return this.academyService.leads().filter(l => l.status === "New").length;
-  });
-
   enrolledCount = computed(() => {
     return this.academyService.leads().filter(l => l.status === "Enrolled").length;
   });
@@ -215,7 +234,7 @@ export class AdminPanelComponent implements OnDestroy {
     const status = this.selectedStatusFilter();
 
     return list.filter(lead => {
-      const matchQuery = !query || 
+      const matchQuery = !query ||
         lead.name.toLowerCase().includes(query) ||
         lead.phone.toLowerCase().includes(query) ||
         lead.email.toLowerCase().includes(query) ||
@@ -240,7 +259,7 @@ export class AdminPanelComponent implements OnDestroy {
   });
 
   // --- Dedicated Pages & Live Content Studio (Senior Frontend Dev UX) ---
-  selectedPageId = signal<"home" | "01" | "02" | "03" | "04">("home");
+  selectedPageId = signal<"home" | "about" | "career" | "01" | "02" | "03" | "04">("home");
   pageEditorViewMode = signal<"split" | "editor">("split");
   selectedPageSection = signal<string>("all");
   isPageDirty = signal<boolean>(false);
@@ -249,6 +268,12 @@ export class AdminPanelComponent implements OnDestroy {
   homeEditForm: SiteContent = { ...this.academyService.siteContent() };
   homeFloatingTagsStr = "";
   homeBenefitsStr = "";
+
+  // About Page live editable form state
+  aboutEditForm: AboutPageContent = JSON.parse(JSON.stringify(this.academyService.aboutContent()));
+
+  // Career Page live editable form state
+  careerEditForm: CareerPageContent = JSON.parse(JSON.stringify(this.academyService.careerContent()));
 
   // Course Pages live editable form state
   courseEditForm: CourseDetailData = { ...this.academyService.getCourseDetail("01") };
@@ -271,13 +296,17 @@ export class AdminPanelComponent implements OnDestroy {
     return seconds < 60 ? `~${seconds}s read` : `~${Math.ceil(seconds / 60)}m read`;
   }
 
-  selectPage(pageId: "home" | "01" | "02" | "03" | "04"): void {
+  selectPage(pageId: "home" | "about" | "career" | "01" | "02" | "03" | "04"): void {
     this.selectedPageId.set(pageId);
     if (pageId === "home") {
       const content = this.academyService.siteContent();
       this.homeEditForm = { ...content };
       this.homeFloatingTagsStr = (content.floatingTags || []).join(", ");
       this.homeBenefitsStr = (content.benefits || []).join("\n");
+    } else if (pageId === "about") {
+      this.aboutEditForm = JSON.parse(JSON.stringify(this.academyService.aboutContent()));
+    } else if (pageId === "career") {
+      this.careerEditForm = JSON.parse(JSON.stringify(this.academyService.careerContent()));
     } else {
       const detail = this.academyService.getCourseDetail(pageId);
       this.courseEditForm = JSON.parse(JSON.stringify(detail));
@@ -300,10 +329,16 @@ export class AdminPanelComponent implements OnDestroy {
         .map(s => s.trim())
         .filter(Boolean);
       this.academyService.updateSiteContent(this.homeEditForm);
-      this.showToast("⚡ Home Page live copy published successfully!");
+      this.showToast("Home Page live copy published successfully!");
+    } else if (this.selectedPageId() === "about") {
+      this.academyService.updateAboutContent(this.aboutEditForm);
+      this.showToast("About Us page live copy published successfully!");
+    } else if (this.selectedPageId() === "career") {
+      this.academyService.updateCareerContent(this.careerEditForm);
+      this.showToast("Career page live copy published successfully!");
     } else {
       this.academyService.saveCourse(this.courseEditForm);
-      this.showToast(`⚡ ${this.courseEditForm.shortTitle || 'Course'} page published successfully!`);
+      this.showToast(`${this.courseEditForm.shortTitle || 'Course'} page published successfully!`);
     }
     this.isPageDirty.set(false);
   }
@@ -316,8 +351,486 @@ export class AdminPanelComponent implements OnDestroy {
   getPageLiveUrl(): string {
     const pid = this.selectedPageId();
     if (pid === "home") return "/";
+    if (pid === "about") return "/about";
+    if (pid === "career") return "/career";
     const detail = this.academyService.getCourseDetail(pid);
     return `/courses/${detail.slug || "social-media-marketing"}`;
+  }
+
+
+
+  // --- The Squad / Team Members Management ---
+  isTeamMemberModalOpen = signal(false);
+  isNewTeamMember = signal(false);
+  isUploadingTeamPhoto = signal(false);
+
+  teamMemberForm: TeamMember = {
+    id: '',
+    slug: '',
+    name: '',
+    role: '',
+    badge: '',
+    image: '',
+    bioSnippet: '',
+    fullBio: '',
+    experienceYears: '',
+    social: {},
+    focusHeadline: '',
+    focusDescription: '',
+    highlights: [],
+    stepsTitle: '',
+    steps: [],
+    quote: '',
+    quoteAuthor: '',
+    metrics: []
+  };
+
+  teamMemberHighlightsStr = '';
+  teamMemberMetricsStr = '';
+
+  openAddTeamMember(): void {
+    const newId = `member_${Date.now()}`;
+    const count = this.academyService.teamMembers().length + 1;
+    this.isNewTeamMember.set(true);
+    this.teamMemberForm = {
+      id: newId,
+      slug: `mentor-${count}`,
+      name: '',
+      role: 'Performance Marketing Specialist',
+      badge: 'Mentor',
+      image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80',
+      bioSnippet: 'Oversees high-impact acquisition funnels and live campaign testing.',
+      fullBio: 'Passionate performance practitioner specializing in data-driven campaign architecture, creative strategy, and direct student mentorship.',
+      experienceYears: '5+ Years',
+      social: {
+        linkedin: 'https://linkedin.com',
+        twitter: 'https://x.com',
+        instagram: 'https://instagram.com',
+        email: ''
+      },
+      focusHeadline: 'The Importance of Performance Marketing',
+      focusDescription: 'Customized media plans cater to the unique economics of each brand with transparent ROAS targets.',
+      highlights: [
+        'Live Client Ad Account Deployments',
+        'Meta CAPI & Server-side GTM Architecture',
+        'Weekly 1:1 Ad Account Portfolio Audits',
+        '100% Guaranteed Agency Placement Pipeline'
+      ],
+      stepsTitle: 'Steps to Starting Mentorship',
+      steps: [
+        {
+          number: '01',
+          title: 'Discovery & Skills Assessment',
+          desc: 'We evaluate your baseline analytical skills to design a tailored roadmap.'
+        },
+        {
+          number: '02',
+          title: 'Live Ad Account Incubation',
+          desc: 'Step into active client ad managers with real budgets and test ad angles.'
+        },
+        {
+          number: '03',
+          title: 'Agency Placement & Retainers',
+          desc: 'Graduate with an audited portfolio and get placed at premier digital agencies.'
+        }
+      ],
+      quote: "“SCALING ADS ISN'T ABOUT LUCK; IT'S SYSTEMATIC DATA-DRIVEN EXECUTION.”",
+      quoteAuthor: 'Mentor',
+      metrics: [
+        { label: 'Ad Spend Managed', value: '₹1Cr+' },
+        { label: 'Live Campaigns', value: '100+' },
+        { label: 'Placement Rate', value: '100%' },
+        { label: 'Avg ROAS', value: '4.5x' }
+      ]
+    };
+    this.teamMemberHighlightsStr = this.teamMemberForm.highlights.join('\n');
+    this.teamMemberMetricsStr = this.teamMemberForm.metrics.map(m => `${m.label}: ${m.value}`).join('\n');
+    this.isTeamMemberModalOpen.set(true);
+  }
+
+  openEditTeamMember(member: TeamMember): void {
+    this.isNewTeamMember.set(false);
+    this.teamMemberForm = JSON.parse(JSON.stringify(member));
+    this.teamMemberHighlightsStr = (member.highlights || []).join('\n');
+    this.teamMemberMetricsStr = (member.metrics || []).map(m => `${m.label}: ${m.value}`).join('\n');
+    this.isTeamMemberModalOpen.set(true);
+  }
+
+  closeTeamMemberModal(): void {
+    this.isTeamMemberModalOpen.set(false);
+  }
+
+  saveTeamMember(): void {
+    if (!this.teamMemberForm.name || !this.teamMemberForm.slug) {
+      this.showToast('Name and URL Slug are required.');
+      return;
+    }
+
+    // Parse highlights
+    this.teamMemberForm.highlights = this.teamMemberHighlightsStr
+      .split('\n')
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    // Parse metrics
+    const metrics: { label: string; value: string }[] = [];
+    this.teamMemberMetricsStr.split('\n').forEach(line => {
+      const parts = line.split(':');
+      if (parts.length >= 2) {
+        metrics.push({
+          label: parts[0].trim(),
+          value: parts.slice(1).join(':').trim()
+        });
+      }
+    });
+    if (metrics.length > 0) {
+      this.teamMemberForm.metrics = metrics;
+    }
+
+    if (this.isNewTeamMember()) {
+      this.academyService.addTeamMember(this.teamMemberForm);
+      this.showToast(`Added ${this.teamMemberForm.name} to The Squad & synced to Firestore!`);
+    } else {
+      this.academyService.updateTeamMember(this.teamMemberForm);
+      this.showToast(`Updated ${this.teamMemberForm.name} & synced to Firestore!`);
+    }
+
+    this.isTeamMemberModalOpen.set(false);
+  }
+
+  confirmDeleteTeamMember(member: TeamMember): void {
+    this.confirmModal.set({
+      isOpen: true,
+      title: 'Delete Squad Member',
+      message: `Are you sure you want to delete "${member.name}" from The Squad? This will permanently delete their profile from the website and Firebase Firestore.`,
+      confirmBtnText: 'Delete Member',
+      isDanger: true,
+      action: () => {
+        this.academyService.deleteTeamMember(member.id);
+        this.showToast(`Squad member ${member.name} deleted.`);
+        this.confirmModal.set(null);
+      }
+    });
+  }
+
+  async onUploadTeamMemberPhoto(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    this.isUploadingTeamPhoto.set(true);
+
+    try {
+      const res = await this.firebaseService.uploadImage(file, 'squad_photos');
+      if (res && res.downloadUrl) {
+        this.teamMemberForm.image = res.downloadUrl;
+        this.showToast('Photo uploaded directly to Firebase Storage!');
+      }
+    } catch (err: any) {
+      this.showToast('Upload error: ' + (err?.message || err));
+    } finally {
+      this.isUploadingTeamPhoto.set(false);
+    }
+  }
+
+  // --- Decoupled Jobs & Career Management ---
+  jobsSearchQuery = signal("");
+  jobsSourceFilter = signal<string>("All");
+  isJobModalOpen = signal(false);
+  editingJobId = signal<string | null>(null);
+  isInternalRoleModal = signal(false); // true when adding/editing Avirbhav career role, false when managing external jobs
+
+  jobForm: {
+    title: string;
+    companyName: string;
+    department: string;
+    location: string;
+    type: string;
+    experience: string;
+    salary: string;
+    deadline: string;
+    urgentBadge: string;
+    description: string;
+    responsibilitiesStr: string;
+    requirementsStr: string;
+    perksStr: string;
+    source: 'Avirbhav' | 'LinkedIn' | 'Naukri' | 'Indeed' | 'Apna' | 'Shine' | 'Google';
+    sourceUrl: string;
+    postedDate: string;
+    isFresherFriendly: boolean;
+  } = {
+    title: "",
+    companyName: "Avirbhav Infotech",
+    department: "Performance Marketing",
+    location: "Chennai, Tamil Nadu",
+    type: "Full Time • On-site",
+    experience: "0 - 2 Years",
+    salary: "₹25,000 – ₹40,000 / month",
+    deadline: "Open until filled",
+    urgentBadge: "Urgent Hiring",
+    description: "",
+    responsibilitiesStr: "",
+    requirementsStr: "",
+    perksStr: "",
+    source: "Avirbhav",
+    sourceUrl: "",
+    postedDate: "Today",
+    isFresherFriendly: true
+  };
+
+  agencyJobsCount = computed(() => {
+    return this.academyService.careerRoles().length;
+  });
+
+  externalJobsCount = computed(() => {
+    return this.academyService.externalJobs().length;
+  });
+
+  adminNaukriCount = computed(() => {
+    return this.academyService.externalJobs().filter(j => j.source === 'Naukri').length;
+  });
+
+  adminApnaCount = computed(() => {
+    return this.academyService.externalJobs().filter(j => j.source === 'Apna').length;
+  });
+
+  adminLinkedinCount = computed(() => {
+    return this.academyService.externalJobs().filter(j => j.source === 'LinkedIn').length;
+  });
+
+  // Filtered external jobs for Admin Jobs Board (other companies only)
+  filteredAdminExternalJobs = computed(() => {
+    const list = this.academyService.externalJobs();
+    const query = this.jobsSearchQuery().toLowerCase().trim();
+    const src = this.jobsSourceFilter();
+
+    return list.filter(j => {
+      if (src !== 'All' && j.source !== src) return false;
+      if (query) {
+        const titleMatch = j.title.toLowerCase().includes(query);
+        const compMatch = (j.companyName || '').toLowerCase().includes(query);
+        const locMatch = j.location.toLowerCase().includes(query);
+        const deptMatch = j.department.toLowerCase().includes(query);
+        return titleMatch || compMatch || locMatch || deptMatch;
+      }
+      return true;
+    });
+  });
+
+  // Backward compatibility alias
+  filteredAdminJobs = computed(() => this.filteredAdminExternalJobs());
+
+  // === 1. Avirbhav Internal Career Roles Modal & Actions ===
+  openAddCareerRoleModal(): void {
+    this.isInternalRoleModal.set(true);
+    this.editingJobId.set(null);
+    this.jobForm = {
+      title: "",
+      companyName: "Avirbhav Infotech",
+      department: "Performance Marketing",
+      location: "Chennai, Tamil Nadu",
+      type: "Full Time • On-site",
+      experience: "0 - 2 Years",
+      salary: "₹25,000 – ₹45,000 / month",
+      deadline: "Open until filled",
+      urgentBadge: "Urgent Hiring",
+      description: "",
+      responsibilitiesStr: "",
+      requirementsStr: "",
+      perksStr: "",
+      source: "Avirbhav",
+      sourceUrl: "",
+      postedDate: "Today",
+      isFresherFriendly: true
+    };
+    this.isJobModalOpen.set(true);
+  }
+
+  openEditCareerRoleModal(job: JobListing): void {
+    this.isInternalRoleModal.set(true);
+    this.editingJobId.set(job.id);
+    this.jobForm = {
+      title: job.title,
+      companyName: "Avirbhav Infotech",
+      department: job.department,
+      location: job.location,
+      type: job.type,
+      experience: job.experience,
+      salary: job.salary,
+      deadline: job.deadline,
+      urgentBadge: job.urgentBadge || "",
+      description: job.description,
+      responsibilitiesStr: (job.responsibilities || []).join("\n"),
+      requirementsStr: (job.requirements || []).join("\n"),
+      perksStr: (job.perks || []).join("\n"),
+      source: "Avirbhav",
+      sourceUrl: "",
+      postedDate: job.postedDate || "Today",
+      isFresherFriendly: !!job.isFresherFriendly
+    };
+    this.isJobModalOpen.set(true);
+  }
+
+  deleteCareerRole(job: JobListing): void {
+    this.confirmModal.set({
+      isOpen: true,
+      title: "Delete Avirbhav Career Opening?",
+      message: `Are you sure you want to permanently remove "${job.title}" from Avirbhav Agency Careers (/career)?`,
+      confirmBtnText: "Delete Role",
+      isDanger: true,
+      action: () => {
+        this.academyService.deleteCareerRole(job.id);
+        this.showToast("Avirbhav career role deleted.");
+        this.confirmModal.set(null);
+      }
+    });
+  }
+
+  // === 2. External Jobs (Naukri, Apna, LinkedIn, etc.) Modal & Actions ===
+  openAddExternalJobModal(): void {
+    this.isInternalRoleModal.set(false);
+    this.editingJobId.set(null);
+    this.jobForm = {
+      title: "",
+      companyName: "Freshworks",
+      department: "SEO & Growth",
+      location: "Chennai, Tamil Nadu",
+      type: "Full Time • On-site",
+      experience: "0 - 2 Years",
+      salary: "₹30,000 – ₹50,000 / month",
+      deadline: "Open until filled",
+      urgentBadge: "",
+      description: "",
+      responsibilitiesStr: "",
+      requirementsStr: "",
+      perksStr: "",
+      source: "Naukri",
+      sourceUrl: "https://www.naukri.com/job-listings",
+      postedDate: "Today",
+      isFresherFriendly: true
+    };
+    this.isJobModalOpen.set(true);
+  }
+
+  openEditExternalJobModal(job: JobListing): void {
+    this.isInternalRoleModal.set(false);
+    this.editingJobId.set(job.id);
+    this.jobForm = {
+      title: job.title,
+      companyName: job.companyName || "Top Digital Agency",
+      department: job.department,
+      location: job.location,
+      type: job.type,
+      experience: job.experience,
+      salary: job.salary,
+      deadline: job.deadline,
+      urgentBadge: job.urgentBadge || "",
+      description: job.description,
+      responsibilitiesStr: (job.responsibilities || []).join("\n"),
+      requirementsStr: (job.requirements || []).join("\n"),
+      perksStr: (job.perks || []).join("\n"),
+      source: job.source,
+      sourceUrl: job.sourceUrl || "",
+      postedDate: job.postedDate || "Today",
+      isFresherFriendly: !!job.isFresherFriendly
+    };
+    this.isJobModalOpen.set(true);
+  }
+
+  deleteExternalJob(job: JobListing): void {
+    this.confirmModal.set({
+      isOpen: true,
+      title: "Remove External Job Posting?",
+      message: `Are you sure you want to remove "${job.title}" at ${job.companyName || 'External Company'} from the Jobs Board (/jobs)?`,
+      confirmBtnText: "Remove Job",
+      isDanger: true,
+      action: () => {
+        this.academyService.deleteExternalJob(job.id);
+        this.showToast("External job posting removed.");
+        this.confirmModal.set(null);
+      }
+    });
+  }
+
+  // Legacy aliases
+  openAddJobModal(): void {
+    this.openAddExternalJobModal();
+  }
+
+  openEditJobModal(job: JobListing): void {
+    if (job.source === 'Avirbhav') {
+      this.openEditCareerRoleModal(job);
+    } else {
+      this.openEditExternalJobModal(job);
+    }
+  }
+
+  deleteJobListing(job: JobListing): void {
+    if (job.source === 'Avirbhav') {
+      this.deleteCareerRole(job);
+    } else {
+      this.deleteExternalJob(job);
+    }
+  }
+
+  closeJobModal(): void {
+    this.isJobModalOpen.set(false);
+    this.editingJobId.set(null);
+  }
+
+  saveJobForm(): void {
+    if (!this.jobForm.title.trim()) {
+      this.showToast("Job title is required!");
+      return;
+    }
+
+    const isInternal = this.isInternalRoleModal();
+
+    const payload: JobListing = {
+      id: this.editingJobId() || (isInternal ? 'career-' : 'ext-job-') + Date.now(),
+      title: this.jobForm.title.trim(),
+      companyName: isInternal ? 'Avirbhav Infotech' : (this.jobForm.companyName.trim() || 'Hiring Company'),
+      department: this.jobForm.department.trim() as JobListing['department'],
+      location: this.jobForm.location.trim(),
+      type: this.jobForm.type.trim() as JobListing['type'],
+      experience: this.jobForm.experience.trim(),
+      salary: this.jobForm.salary.trim(),
+      deadline: this.jobForm.deadline.trim(),
+      urgentBadge: this.jobForm.urgentBadge.trim() || undefined,
+      description: this.jobForm.description.trim(),
+      responsibilities: this.jobForm.responsibilitiesStr.split('\n').map(s => s.trim()).filter(Boolean),
+      requirements: this.jobForm.requirementsStr.split('\n').map(s => s.trim()).filter(Boolean),
+      perks: this.jobForm.perksStr.split('\n').map(s => s.trim()).filter(Boolean),
+      source: isInternal ? 'Avirbhav' : this.jobForm.source,
+      sourceUrl: isInternal ? undefined : (this.jobForm.sourceUrl.trim() || undefined),
+      postedDate: this.jobForm.postedDate.trim() || 'Today',
+      isFresherFriendly: this.jobForm.isFresherFriendly
+    };
+
+    if (isInternal) {
+      if (this.editingJobId()) {
+        this.academyService.updateCareerRole(payload);
+        this.showToast("Avirbhav career role updated successfully!");
+      } else {
+        this.academyService.addCareerRole(payload);
+        this.showToast("New Avirbhav career opening created!");
+      }
+    } else {
+      if (this.editingJobId()) {
+        this.academyService.updateExternalJob(payload);
+        this.showToast("External job listing updated successfully!");
+      } else {
+        this.academyService.addExternalJob(payload);
+        this.showToast("New external job posting added to Jobs Board!");
+      }
+    }
+
+    this.closeJobModal();
+  }
+
+  refreshLiveJobsFeed(): void {
+    this.academyService.refreshExternalJobs();
+    this.showToast("Live openings from Naukri, Apna & LinkedIn synchronized!");
   }
 
   constructor() {
@@ -325,14 +838,23 @@ export class AdminPanelComponent implements OnDestroy {
     if (typeof window !== "undefined") {
       const updateFromHash = () => {
         const hash = window.location.hash || "";
+        const pathname = window.location.pathname || "";
         if (hash.includes("overview")) this.activeTab.set("overview");
         else if (hash.includes("pages")) this.activeTab.set("pages");
+        else if (hash.includes("jobs")) this.activeTab.set("jobs");
         else if (hash.includes("assets")) this.activeTab.set("assets");
         else if (hash.includes("courses")) this.activeTab.set("courses");
         else if (hash.includes("content")) this.activeTab.set("content");
         else if (hash.includes("seo")) this.activeTab.set("seo");
         else if (hash.includes("snapshots") || hash.includes("backup")) this.activeTab.set("snapshots");
         else if (hash.includes("leads")) this.activeTab.set("leads");
+
+        // Keep address bar clean at /admin#tab (matching local dev http://localhost:4200/admin#leads)
+        if (!pathname.startsWith("/admin") && !pathname.startsWith("/login")) {
+          try {
+            window.history.replaceState(null, "", `/admin#${this.activeTab()}`);
+          } catch { }
+        }
       };
       updateFromHash();
       window.addEventListener("hashchange", updateFromHash);
@@ -360,10 +882,16 @@ export class AdminPanelComponent implements OnDestroy {
     this.courseEditForm = JSON.parse(JSON.stringify(this.academyService.getCourseDetail("01")));
   }
 
-  setTab(tab: "overview" | "leads" | "pages" | "courses" | "assets" | "content" | "seo" | "snapshots"): void {
+  setTab(tab: "overview" | "leads" | "pages" | "team" | "jobs" | "courses" | "assets" | "content" | "seo" | "snapshots"): void {
     this.activeTab.set(tab);
     if (typeof window !== "undefined") {
-      window.location.hash = "#" + tab;
+      // Maintain /admin#tab structure cleanly on both local and production
+      const targetUrl = `/admin#${tab}`;
+      try {
+        window.history.replaceState(null, "", targetUrl);
+      } catch {
+        window.location.hash = "#" + tab;
+      }
     }
   }
 
@@ -423,6 +951,11 @@ export class AdminPanelComponent implements OnDestroy {
         this.loginStep.set("email");
         this.loginOtp = "";
         this.refreshForms();
+        if (typeof window !== "undefined") {
+          try {
+            window.history.replaceState(null, "", `/admin#${this.activeTab()}`);
+          } catch { }
+        }
         this.showToast("Authentication successful! Welcome to Admin CMS.");
       } else {
         this.loginError.set(res.message);
@@ -524,7 +1057,7 @@ export class AdminPanelComponent implements OnDestroy {
     const text = this.replyPreviewBody();
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text).then(() => {
-        this.showToast("Response draft copied to clipboard! 📋");
+        this.showToast("Response draft copied to clipboard!");
       }).catch(() => this.fallbackCopyText(text));
     } else {
       this.fallbackCopyText(text);
@@ -553,7 +1086,7 @@ export class AdminPanelComponent implements OnDestroy {
       return;
     }
     this.academyService.updateAutoReplySettings(this.autoReplyForm);
-    this.showToast("Auto-Reply templates updated successfully! ✨");
+    this.showToast("Auto-Reply templates updated successfully!");
     this.isAutoReplyDrawerOpen.set(false);
     if (this.selectedLead()) {
       this.refreshReplyPreview(this.selectedLead()!);
@@ -657,7 +1190,7 @@ export class AdminPanelComponent implements OnDestroy {
       shortTitle: "New Course",
       badge: "Specialized",
       category: "Digital Marketing & Growth",
-      heroPill3: "⚡ AI-Enhanced Mastery",
+      heroPill3: "AI-Enhanced Mastery",
       tagline: "Comprehensive agency-standard curriculum with hands-on live client ad spend and 100% placement guarantee.",
       heroCardHeading: "Master High-Income Skills In 150 Days.",
       heroCardPills: ["Live Client Ad Spend", "Strictly 4 Students / Batch", "Agency SOPs"],
@@ -680,7 +1213,7 @@ export class AdminPanelComponent implements OnDestroy {
         desc: "Deployed high-converting ads and scaled monthly revenue by 320%.",
         author: "Avirbhav Student Team",
         authorRole: "Growth Strategist",
-        verifiedBadge: "Verified Result ✓"
+        verifiedBadge: "Verified Result"
       },
       studentQuote: {
         quote: "The agency-style practical learning gave me the confidence to handle large brand accounts right from day one.",
@@ -813,24 +1346,55 @@ export class AdminPanelComponent implements OnDestroy {
     this.isUploadAssetModalOpen.set(true);
   }
 
-  handleAssetFileUpload(event: Event): void {
+  async handleAssetFileUpload(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      if (file.size > 3 * 1024 * 1024) {
-        alert("File size exceeds 3MB limit. Please upload an optimized image.");
+      if (file.size > 8 * 1024 * 1024) {
+        alert("File size exceeds 8MB limit. Please upload an optimized image.");
         return;
       }
       this.assetUploadForm.title = this.assetUploadForm.title || file.name.replace(/\.[^/.]+$/, "");
       this.assetUploadForm.alt = this.assetUploadForm.alt || file.name;
       this.assetUploadForm.size = Math.round(file.size / 1024) + " KB";
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.assetUploadForm.url = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
+      this.isUploadingToStorage.set(true);
+      this.uploadProgress.set(0);
+      this.storageError.set(null);
+
+      try {
+        const result = await this.firebaseService.uploadImage(file, 'website_content/images', (progress) => {
+          this.uploadProgress.set(progress);
+        });
+        this.assetUploadForm.url = result.downloadUrl;
+        this.isUploadingToStorage.set(false);
+        this.showToast("Uploaded to Firebase Storage! URL captured.");
+      } catch (err: any) {
+        console.error('[AdminPanel] Storage upload error:', err);
+        this.isUploadingToStorage.set(false);
+        this.storageError.set(err?.message || 'Storage upload error. Using local preview.');
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.assetUploadForm.url = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+      }
     }
+  }
+
+  async syncAllToFirestore(): Promise<void> {
+    this.isSyncingToFirestore.set(true);
+    const res = await this.academyService.syncAllContentToFirestore();
+    this.isSyncingToFirestore.set(false);
+    this.showToast(res.message);
+  }
+
+  async pullAllFromFirestore(): Promise<void> {
+    this.isPullingFromFirestore.set(true);
+    const res = await this.academyService.pullAllContentFromFirestore();
+    this.isPullingFromFirestore.set(false);
+    this.showToast(res.message);
+    this.selectPage(this.selectedPageId());
   }
 
   saveNewAsset(): void {
@@ -874,7 +1438,7 @@ export class AdminPanelComponent implements OnDestroy {
   copyAssetUrl(url: string): void {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url).then(() => {
-        this.showToast("Asset URL copied to clipboard! 📋");
+        this.showToast("Asset URL copied to clipboard!");
       }).catch(() => {
         this.fallbackCopyText(url);
       });
@@ -1113,7 +1677,7 @@ export class AdminPanelComponent implements OnDestroy {
     textArea.select();
     try {
       document.execCommand("copy");
-      this.showToast("Copied to clipboard! 📋");
+      this.showToast("Copied to clipboard!");
     } catch {
       alert("Failed to copy. Please copy manually: " + text);
     }
