@@ -37,5 +37,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
           local-dir: ./dist/avirbhav-web/browser/
-          protocol: ftp
+          protocol: ftps
+          security: loose
           timeout: 300000
+          log-level: verbose
