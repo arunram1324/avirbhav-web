@@ -30,14 +30,20 @@ jobs:
           CI: "true"
 
       - name: Deploy production build to Hostinger Live Server
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          local-dir: ./dist/avirbhav-web/browser/
-          protocol: ftps
-          security: loose
-          timeout: 300000
-          log-level: verbose
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_SERVER_DIR: ${{ secrets.FTP_SERVER_DIR }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          lftp -u "${FTP_USERNAME}","${FTP_PASSWORD}" "${FTP_SERVER}" <<EOF
+          set ftp:ssl-allow yes
+          set ssl:verify-certificate no
+          set ftp:passive-mode yes
+          set net:timeout 60
+          set net:max-retries 5
+          set net:reconnect-interval-base 3
+          mirror --reverse --verbose --parallel=3 dist/avirbhav-web/browser/ ${FTP_SERVER_DIR:-/}
+          bye
+          EOF
